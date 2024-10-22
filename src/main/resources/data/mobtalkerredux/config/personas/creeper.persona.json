@@ -24,7 +24,7 @@
   "memoryData": {
     "player_memory": [
       {
-        "player_id": null,
+        "player_id": "developer",
         "reputation": 0,
         "affection": 0,
         "dialogueState": {
