@@ -1,0 +1,26 @@
+{
+  "questId": 1,
+  "title": "Make TNT for Cupa",
+  "description": "Cupa has asked you to make her a TNT. She seems rather excited about it!",
+  "objectives": [
+    {
+      "objectiveId": 1,
+      "description": "Make 1 TNT",
+      "type": "crafting",
+      "item": "minecraft:tnt",
+      "quantity": 1,
+      "completed": false
+    }
+  ],
+  "rewards": [
+    {
+      "type": "affection",
+      "amount": 10
+    },
+    {
+      "type": "item",
+      "item": "minecraft:golden_apple",
+      "quantity": 1
+    }
+  ]
+}
