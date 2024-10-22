@@ -1,0 +1,16 @@
+{
+  "mobtalkerredux:creeper": {
+    "initial": "I call upon thee, the blackest destruction! Gaze upon the eternal abyss and say your prayers!",
+    "responses": [
+      {
+        "buttonText": "Wha?",
+        "result": "EXPLOOOOSSIOOOOONNN!!!!!!!"
+      },
+      {
+        "buttonText": "Wait! Wait!",
+        "result": "*The creeper paused its explosive death and gazed at you* Something you wish to say mortal?"
+      }
+    ]
+  }
+
+}
