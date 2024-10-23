@@ -6,14 +6,20 @@ import java.util.Optional;
 
 public class DialogueManager {
     private List<Dialogue> dialogues;
-    private int currentDialogue = 1;
+
+    //Why the fuck am I starting at 1!?
+    private int currentDialogue;
+    private boolean interactionAllowed;
 
     public DialogueManager(List<Dialogue> dialogues) {
         this.dialogues = dialogues;
+        this.currentDialogue = 0;
+        this.interactionAllowed = true;
     }
 
     public void proceedToNextDialogue(Dialogue dialogue) {
         this.currentDialogue = dialogue.getNext();
+        this.interactionAllowed = false;
     }
 
     public void proceedToChosenDialogue(int nextDialogId) {
@@ -25,6 +31,10 @@ public class DialogueManager {
         return dialogues.stream()
                 .filter(dialogue -> dialogue.getDialogueId().equals(currentDialogue))
                 .findFirst();
+    }
+
+    public void allowInteraction() {
+        this.interactionAllowed = true;
     }
 
 }
