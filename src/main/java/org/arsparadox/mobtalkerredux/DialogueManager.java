@@ -62,27 +62,15 @@ class Dialogue {
         this.nextDialogue = Objects.requireNonNullElseGet(next, () -> -1);
         this.name =name;
         this.sprite = new ResourceLocation("mobtalkerredux", "textures/characters/"+sprite);
-
-
     }
 
-    public String getContent() {
-        return content;
-    }
+    public String getContent() {return content;}
     public Integer getDialogueId(){return this.dialogueId;}
     public Integer getNext(){return this.nextDialogue;}
+    public List<Choice> getChoices() {return choices == null ? List.of() : choices;}
+    public ResourceLocation getSprite() {return this.sprite;}
 
-    public List<Choice> getChoices() {
-        return choices == null ? List.of() : choices;
-    }
-
-    public ResourceLocation getSprite() {
-        return this.sprite;
-    }
-
-    public String getName() {
-        return this.name;
-    }
+    public String getName() {return this.name;}
 }
 
 // Choice class representing a choice in dialogues

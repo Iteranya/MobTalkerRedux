@@ -1,0 +1,71 @@
+[
+  {
+    "conversation_id": "creeper_1",
+    "dialogues": [
+      {
+        "dialogue_id": "1",
+        "content": "So... The 'Player' can speak after all...",
+        "choices": [
+          {
+            "buttonText": "You mean, you never hear me speak?",
+            "affection_change": 0,
+            "next": "2"
+          },
+          {
+            "buttonText": "Well yeah, also, why do you look like a chick?",
+            "affection_change": 0,
+            "next": "3"
+          }
+        ]
+      },
+      {
+        "dialogue_id": "2",
+        "content":"Not once, you've always been tight-lipped... I was convinced you're just a puppet used by some higher beings...",
+        "choices": [
+          {
+            "buttonText": "I mean... you're not wrong...",
+            "affection_change": 0,
+            "next": "4"
+          },
+          {
+            "buttonText": "Nah, I just like being silent",
+            "affection_change": -1,
+            "next": "4"
+          }
+        ]
+      },
+      {
+        "dialogue_id": "3",
+        "content":"Because I'm special, you caught me off guard, we're not even supposed to meet",
+        "choices": [
+          {
+            "buttonText": "Ooh, that's cool~ Glad to know that cute creepers actually exist",
+            "affection_change": 2,
+            "next": "4"
+          },
+          {
+            "buttonText": "Hey, I mean, company!",
+            "affection_change": 0,
+            "next": "4"
+          }
+        ]
+      },
+      {
+        "dialogue_id": "4",
+        "content":"Regardless, I'm glad we can speak peacefully. How about this, I will be on my way, no funny business... Maybe we'll meet again~",
+        "choices": [
+          {
+            "buttonText": "Okay see ya!",
+            "affection_change": 0,
+            "next": null
+          },
+          {
+            "buttonText": "Good bye!",
+            "affection_change": 0,
+            "next": null
+          }
+        ]
+      }
+    ]
+  }
+]
