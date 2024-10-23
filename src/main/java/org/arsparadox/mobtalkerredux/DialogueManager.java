@@ -1,50 +1,54 @@
 package org.arsparadox.mobtalkerredux;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DialogueManager {
     private List<Dialogue> dialogues;
-    private int currentDialogueIndex = 0;
+    private int currentDialogue = 1;
 
     public DialogueManager(List<Dialogue> dialogues) {
         this.dialogues = dialogues;
     }
 
-    public void proceedToNextDialogue() {
-        if (currentDialogueIndex < dialogues.size() - 1) {
-            currentDialogueIndex++;
-        }
+    public void proceedToNextDialogue(Dialogue dialogue) {
+        this.currentDialogue = dialogue.getNext();
     }
 
     public void proceedToChosenDialogue(int nextDialogId) {
-        currentDialogueIndex = nextDialogId;
+        this.currentDialogue = nextDialogId;
 
     }
 
     public Optional<Dialogue> getCurrentDialogue() {
-        if (currentDialogueIndex < dialogues.size()) {
-            return Optional.of(dialogues.get(currentDialogueIndex));
-        }
-        return Optional.empty();
+        return dialogues.stream()
+                .filter(dialogue -> dialogue.getDialogueId().equals(currentDialogue))
+                .findFirst();
     }
-
 
 }
 
 // Dialogue class representing a single dialogue entry
 class Dialogue {
+    private Integer dialogueId;
     private String content;
     private List<Choice> choices;
 
-    public Dialogue(String content, List<Choice> choices) {
+    private Integer nextDialogue;
+
+    public Dialogue(Integer dialogueId, String content, List<Choice> choices, Integer next) {
+        this.dialogueId = dialogueId;
         this.content = content;
         this.choices = choices;
+        this.nextDialogue = Objects.requireNonNullElseGet(next, () -> dialogueId);
     }
 
     public String getContent() {
         return content;
     }
+    public Integer getDialogueId(){return this.dialogueId;}
+    public Integer getNext(){return this.nextDialogue;}
 
     public List<Choice> getChoices() {
         return choices == null ? List.of() : choices;
@@ -62,6 +66,8 @@ class Choice {
         this.affectionChange = affectionChange;
         this.nextDialogId = nextDialogId;
     }
+
+
 
     public String getButtonText() {
         return buttonText;

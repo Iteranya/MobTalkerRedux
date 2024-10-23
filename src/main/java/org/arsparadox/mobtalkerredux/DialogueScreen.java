@@ -2,13 +2,13 @@ package org.arsparadox.mobtalkerredux;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DialogueScreen extends Screen {
 
@@ -30,10 +30,13 @@ public class DialogueScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) { // Left click
-            if (dialogueManager.getCurrentDialogue().map(Dialogue::getChoices).orElse(List.of()).isEmpty()) {
-                // Proceed to next dialogue if there are no choices
-                dialogueManager.proceedToNextDialogue();
-                updateDisplay();
+            Optional<Dialogue> currentDialogue = dialogueManager.getCurrentDialogue();
+            if (currentDialogue.isPresent()) {  // Check if we have a dialogue
+                if (currentDialogue.get().getChoices().isEmpty()) {
+                    // Proceed to next dialogue if there are no choices
+                    dialogueManager.proceedToNextDialogue(currentDialogue.get());
+                    updateDisplay();
+                }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -59,7 +62,7 @@ public class DialogueScreen extends Screen {
 
     private void onPress(Choice choice) {
         // Handle button press
-        Minecraft.getInstance().player.sendMessage(new TextComponent("You chose: " + choice.getButtonText()), Minecraft.getInstance().player.getUUID());
+        //Minecraft.getInstance().player.sendMessage(new TextComponent("You chose: " + choice.getButtonText()), Minecraft.getInstance().player.getUUID());
         // Process choice impacts here, like changing affection or proceeding to a specific next dialogue
         dialogueManager.proceedToChosenDialogue(choice.getNextDialogId());
         updateDisplay();
