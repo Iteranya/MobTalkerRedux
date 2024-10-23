@@ -37,6 +37,10 @@ public class DialogueManager {
         this.interactionAllowed = true;
     }
 
+    public boolean isInteractionAllowed(){
+        return this.interactionAllowed;
+    }
+
 }
 
 // Dialogue class representing a single dialogue entry

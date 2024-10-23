@@ -55,8 +55,10 @@ public class DialogueScreen extends Screen {
                 this.addRenderableWidget(new Button(this.width / 2 - 50, this.height / 2 + (i * 24), 100, 20,
                         new TextComponent(choice.getButtonText()), e -> onPress(choice)));
             }
+
             // Draw updated dialogue content and character name
             drawDialogue(dialogueText, characterName);
+
         });
     }
 
@@ -64,8 +66,14 @@ public class DialogueScreen extends Screen {
         // Handle button press
         //Minecraft.getInstance().player.sendMessage(new TextComponent("You chose: " + choice.getButtonText()), Minecraft.getInstance().player.getUUID());
         // Process choice impacts here, like changing affection or proceeding to a specific next dialogue
-        dialogueManager.proceedToChosenDialogue(choice.getNextDialogId());
-        updateDisplay();
+        if(dialogueManager.isInteractionAllowed()){
+            dialogueManager.proceedToChosenDialogue(choice.getNextDialogId());
+            updateDisplay();
+        }
+        else{
+            dialogueManager.allowInteraction();
+        }
+
     }
 
     private void drawDialogue(String dialogueText, String characterName) {

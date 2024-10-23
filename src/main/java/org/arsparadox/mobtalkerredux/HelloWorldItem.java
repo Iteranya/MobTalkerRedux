@@ -35,10 +35,8 @@ public class HelloWorldItem extends Item {
             DialogueManager dialogueManager = new DialogueManager(
                     List.of(start,greeting, question, answer1, answer2, goodbye)
             );
-            Minecraft.getInstance().execute(() ->
-                    {
+            Minecraft.getInstance().execute(() -> {
                         Minecraft.getInstance().setScreen(new DialogueScreen(dialogueManager));
-                        dialogueManager.allowInteraction();
                     }
             );
 
