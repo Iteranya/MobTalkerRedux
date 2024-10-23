@@ -42,9 +42,6 @@ public class DialogueScreen extends Screen {
             else{
                 this.onClose();
             }
-
-
-
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
