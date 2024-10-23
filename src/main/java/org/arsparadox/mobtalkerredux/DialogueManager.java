@@ -1,5 +1,7 @@
 package org.arsparadox.mobtalkerredux;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -7,7 +9,6 @@ import java.util.Optional;
 public class DialogueManager {
     private List<Dialogue> dialogues;
 
-    //Why the fuck am I starting at 1!?
     private int currentDialogue;
     private boolean interactionAllowed;
 
@@ -19,7 +20,7 @@ public class DialogueManager {
 
     public void proceedToNextDialogue(Dialogue dialogue) {
         this.currentDialogue = dialogue.getNext();
-        this.interactionAllowed = false;
+        //this.interactionAllowed = false;
     }
 
     public void proceedToChosenDialogue(int nextDialogId) {
@@ -51,11 +52,18 @@ class Dialogue {
 
     private Integer nextDialogue;
 
-    public Dialogue(Integer dialogueId, String content, List<Choice> choices, Integer next) {
+    private String name;
+    private ResourceLocation sprite;
+
+    public Dialogue(Integer dialogueId, String content, List<Choice> choices, Integer next, String name, String sprite) {
         this.dialogueId = dialogueId;
         this.content = content;
         this.choices = choices;
         this.nextDialogue = Objects.requireNonNullElseGet(next, () -> -1);
+        this.name =name;
+        this.sprite = new ResourceLocation("mobtalkerredux", "textures/characters/"+sprite);
+
+
     }
 
     public String getContent() {
@@ -66,6 +74,14 @@ class Dialogue {
 
     public List<Choice> getChoices() {
         return choices == null ? List.of() : choices;
+    }
+
+    public ResourceLocation getSprite() {
+        return this.sprite;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
 
