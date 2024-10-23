@@ -55,7 +55,7 @@ class Dialogue {
         this.dialogueId = dialogueId;
         this.content = content;
         this.choices = choices;
-        this.nextDialogue = Objects.requireNonNullElseGet(next, () -> dialogueId);
+        this.nextDialogue = Objects.requireNonNullElseGet(next, () -> -1);
     }
 
     public String getContent() {

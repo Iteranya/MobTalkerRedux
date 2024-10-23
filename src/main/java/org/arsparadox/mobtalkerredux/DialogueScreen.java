@@ -30,6 +30,7 @@ public class DialogueScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) { // Left click
+
             Optional<Dialogue> currentDialogue = dialogueManager.getCurrentDialogue();
             if (currentDialogue.isPresent()) {  // Check if we have a dialogue
                 if (currentDialogue.get().getChoices().isEmpty()) {
@@ -38,6 +39,12 @@ public class DialogueScreen extends Screen {
                     updateDisplay();
                 }
             }
+            else{
+                this.onClose();
+            }
+
+
+
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
