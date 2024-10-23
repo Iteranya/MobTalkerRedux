@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class DialogueScreen extends Screen {
-    private static final ResourceLocation SOLIAH = new ResourceLocation("mobtalkerredux", "textures/gui/soliah.png");
     private DialogueManager dialogueManager;
 
     protected DialogueScreen(DialogueManager dialogueManager) {
@@ -46,13 +45,6 @@ public class DialogueScreen extends Screen {
 
     private void updateDisplay() {
         clearWidgets();  // Clear previous widgets/buttons if any
-        var currentDialogueOpt = dialogueManager.getCurrentDialogue();
-
-        currentDialogueOpt.ifPresent(currentDialogue -> {
-            // Add choice buttons if available
-
-        });
-
     }
 
     private void onPress(Choice choice) {
