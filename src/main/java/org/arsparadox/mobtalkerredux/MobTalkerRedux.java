@@ -18,8 +18,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -49,11 +47,7 @@ public class MobTalkerRedux {
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         // Load dialog data from JSON file
         Gson gson = new Gson();
-        try (Reader reader = new InputStreamReader(this.getClass().getResourceAsStream("/assets/" + MODID + "/scripts/cupa/scripts.json"))) {
-            dialogData = gson.fromJson(reader, JsonObject.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
