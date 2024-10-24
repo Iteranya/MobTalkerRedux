@@ -5,7 +5,7 @@ dialogue = {
         choices = nil,
         nextDialogue = 1,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/normal.png"
     },
     [1] = {
         dialogueId = 1,
@@ -13,7 +13,7 @@ dialogue = {
         choices = nil,
         nextDialogue = 2,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/happy.png"
     },
     [2] = {
         dialogueId = 2,
@@ -23,7 +23,7 @@ dialogue = {
             { text = "Just passing by, thank you.", nextDialogue = 4 }
         },
         name = "Cupa",
-        sprite ="creeper/soliah.png"
+        sprite ="creeper/normal.png"
     },
     [3] = {
         dialogueId = 3,
@@ -31,7 +31,7 @@ dialogue = {
         choices = nil,
         nextDialogue = 6,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/normal.png"
     },
     [4] = {
         dialogueId = 4,
@@ -39,7 +39,7 @@ dialogue = {
         choices = nil,
         nextDialogue = 5,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/happy.png"
     },
     [5] = {
         dialogueId = 5,
@@ -47,7 +47,7 @@ dialogue = {
         choices = nil,
         nextDialogue = -1,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/happy.png"
     },
     [6] = {
         dialogueId = 6,
@@ -58,7 +58,7 @@ dialogue = {
             { text = "Maybe?", nextDialogue = 9 }
         },
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/normal.png"
     },
     [7] = {
         dialogueId = 7,
@@ -66,7 +66,7 @@ dialogue = {
         choices = nil,
         nextDialogue = -1,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/happy.png"
     },
     [8] = {
         dialogueId = 8,
@@ -74,7 +74,7 @@ dialogue = {
         choices = nil,
         nextDialogue = -1,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/happy.png"
     },
     [9] = {
         dialogueId = 9,
@@ -82,7 +82,7 @@ dialogue = {
         choices = nil,
         nextDialogue = -1,
         name = "Cupa",
-        sprite = "creeper/soliah.png"
+        sprite = "creeper/normal.png"
     }
 }
 return {
