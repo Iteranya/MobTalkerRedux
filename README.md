@@ -25,7 +25,7 @@ This is my attempt at recreating the old Mob Talker Mod. I have zero experience 
 - [x] Create Visual Novel Functionalities
  - [x] Branching Path
  - [x] Sprite Changing (currently only support one character sprite)
- - [x] Multi-Character Sprite 
+ - [ ] Multi-Character Sprite 
 - [x] Scripting with Lua Integration
  - [ ] Better Scripting With Lua (Current One Is Blocky)
 - [ ] Make Debug Item for Debugging Stuff In Game
