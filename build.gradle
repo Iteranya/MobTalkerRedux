@@ -88,12 +88,16 @@ configurations {
     shade
     implementation.extendsFrom shade
 }
-repositories {
-    mavenCentral()
-    maven {
-        url 'https://repo1.maven.org/maven2/org/luaj/luaj-jse/3.0.1'
+allprojects {
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+//        maven {
+//            name = "sonatype-ossrh-snapshots"
+//            url = "https://oss.sonatype.org/content/repositories/snapshots"
+//        }
     }
-
 }
 
 dependencies {
@@ -101,6 +105,12 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     minecraftLibrary "org.luaj:luaj-jse:3.0.1" // I don't know
     implementation "org.luaj:luaj-jse:3.0.1" // if I need both
+//    minecraftLibrary "com.jukusoft:rembulan-compiler:1.0.3"
+//    minecraftLibrary "com.jukusoft:rembulan-runtime:1.0.3"
+//    minecraftLibrary "com.jukusoft:rembulan-stdlib:1.0.3"
+//    implementation "com.jukusoft:rembulan-compiler:1.0.3"
+//    implementation "com.jukusoft:rembulan-runtime:1.0.3"
+//    implementation "com.jukusoft:rembulan-stdlib:1.0.3"
 
 
 }

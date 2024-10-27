@@ -6,12 +6,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.arsparadox.mobtalkerredux.lua.LuaBridge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-public class DialogueScreen extends Screen {
+public class DialogueScreen extends Screen implements DialogueManager.DialogueStateObserver {
     private static final int DIALOGUE_BOX_PADDING = 15;
     private static final int CHARACTER_NAME_OFFSET = 40;
     private static final int SPRITE_WIDTH = 530/4;  // Original sprite width
@@ -24,65 +25,39 @@ public class DialogueScreen extends Screen {
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
     private DialogueManager dialogueManager;
+    private LuaBridge luaBridge;
 
-    protected DialogueScreen(DialogueManager dialogueManager) {
+    protected DialogueScreen(DialogueManager dialogueManager, LuaBridge luaBridge) {
         super(new TextComponent("Mob Talker"));
         this.dialogueManager = dialogueManager;
+        this.luaBridge = luaBridge;
+        this.dialogueManager.addObserver(this);
     }
-
-    @Override
-    protected void init() {
-        // Initialize the display
-        updateDisplay();
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) { // Left click
-
-            Optional<Dialogue> currentDialogue = dialogueManager.getCurrentDialogue();
-            if (currentDialogue.isPresent()) {  // Check if we have a dialogue
-                if (currentDialogue.get().getChoices().isEmpty()) {
-                    // Proceed to next dialogue if there are no choices
-                    dialogueManager.proceedToNextDialogue(currentDialogue.get());
-                    updateDisplay();
-                }
-            }
-            else{
-                this.onClose();
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    private void updateDisplay() {
-        clearWidgets();  // Clear previous widgets/buttons if any
-    }
-
-    private void onPress(Choice choice) {
-        // Handle button press
-        //Minecraft.getInstance().player.sendMessage(new TextComponent("You chose: " + choice.getButtonText()), Minecraft.getInstance().player.getUUID());
-        // Process choice impacts here, like changing affection or proceeding to a specific next dialogue
-        if(dialogueManager.isInteractionAllowed()){
-            dialogueManager.proceedToChosenDialogue(choice.getNextDialogId());
-            updateDisplay();
-        }
-        else{
-            dialogueManager.allowInteraction();
-        }
-
-    }
-
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
 
-        var currentDialogueOpt = dialogueManager.getCurrentDialogue();
-        currentDialogueOpt.ifPresent(currentDialogue -> {
-            renderCharacterSprite(poseStack, currentDialogue.getSprite());
-            renderCharacterName(poseStack, currentDialogue.getName());
-            renderDialogueBox(poseStack, currentDialogue.getContent());
-            renderChoiceButtons(currentDialogue.getChoices());
+        var dialogueBoxStateOpt = dialogueManager.getDialogueBox();
+        dialogueBoxStateOpt.ifPresent(dialogueBox->{
+            renderDialogueBox(poseStack, dialogueBox.content());
+        });
+
+        var characterLabelStateOpt = dialogueManager.getCharacterLabel();
+        characterLabelStateOpt.ifPresent(characterLabel->{
+            renderCharacterName(poseStack, characterLabel.content());
+        });
+
+        var characterSpriteStateOpt = dialogueManager.getCharacterSprite();
+        characterSpriteStateOpt.ifPresent(characterSprite->{
+            ResourceLocation location = new ResourceLocation(
+                    "textures/characters/cupa/"+characterSprite.content()
+            );
+            renderCharacterSprite(poseStack, location);
+        });
+
+        var choiceStateOpt = dialogueManager.getChoicesBox();
+        choiceStateOpt.ifPresent(choiceState->{
+            renderChoiceButtons(choiceState.choices());
         });
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -184,7 +159,16 @@ public class DialogueScreen extends Screen {
         }
     }
 
-    private void renderChoiceButtons(List<Choice> choices) {
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) { // Left click
+
+            dialogueManager.displayNext();
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void renderChoiceButtons(Map<String, String> choices) {
         // Clear existing buttons
         choiceButtons.forEach(this::removeWidget);
         choiceButtons.clear();
@@ -197,18 +181,22 @@ public class DialogueScreen extends Screen {
         // Start position for first button
         int startY = this.height - dialogueBoxHeight - 40 - totalButtonsHeight;
         int buttonX = (this.width - CHOICE_BUTTON_WIDTH) / 2;
+        int i = 0;
+        for (Map.Entry<String, String> choice : choices.entrySet()) {
+            int buttonY = startY + (CHOICE_BUTTON_HEIGHT + CHOICE_BUTTON_SPACING) * i++;
 
-        for (int i = 0; i < choices.size(); i++) {
-            Choice choice = choices.get(i);
-            int buttonY = startY + (CHOICE_BUTTON_HEIGHT + CHOICE_BUTTON_SPACING) * i;
+            // Get the display text (value) from the map
+            String displayText = choice.getValue();
+            // Get the label (key) that will be passed to onPress
+            String label = choice.getKey();
 
             Button button = new Button(
                     buttonX,
                     buttonY,
                     CHOICE_BUTTON_WIDTH,
                     CHOICE_BUTTON_HEIGHT,
-                    new TextComponent(choice.getButtonText()),
-                    btn -> onPress(choice)
+                    new TextComponent(displayText),
+                    btn -> dialogueManager.buttonNav(label)
             );
 
             choiceButtons.add(button);
@@ -249,4 +237,28 @@ public class DialogueScreen extends Screen {
     public void renderBackground(PoseStack poseStack) {
         // Disable background darkening
     }
+
+    @Override
+    public void onDialogueStateChanged() {
+        // Clear existing choice buttons when state changes
+        choiceButtons.forEach(this::removeWidget);
+        choiceButtons.clear();
+
+        // Re-render choices if present
+        dialogueManager.getChoicesBox().ifPresent(choiceState -> {
+            renderChoiceButtons(choiceState.choices());
+        });
+
+        // Force a screen refresh
+        // Note: In Minecraft, this will trigger the render method on the next frame
+        this.minecraft.setScreen(this);
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        // Clean up by removing the observer when the screen is closed
+        dialogueManager.removeObserver(this);
+    }
+
 }

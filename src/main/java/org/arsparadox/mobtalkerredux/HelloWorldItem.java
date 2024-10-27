@@ -7,6 +7,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.arsparadox.mobtalkerredux.lua.LuaBridge;
 
 public class HelloWorldItem extends Item {
     public HelloWorldItem() {
@@ -20,19 +21,13 @@ public class HelloWorldItem extends Item {
             context.getPlayer().sendMessage(new TextComponent("Hewwo World"),context.getPlayer().getUUID());
         }
         else {
-            ScriptManager scriptManager = new ScriptManager();
-            DialogueManager dialogue = scriptManager.loadDialogue("debug.dialogue.lua");
+            DialogueManager dialogue = new DialogueManager();
+            LuaBridge script = new LuaBridge();
             Minecraft.getInstance().execute(() -> {
-                        Minecraft.getInstance().setScreen(new DialogueScreen(dialogue));
+                        Minecraft.getInstance().setScreen(new DialogueScreen(dialogue,script));
                     }
             );
-            WaifuManager waifuManager = new WaifuManager(context.getPlayer());
-
         }
         return InteractionResult.SUCCESS;
     }
-
-
-
-
 }

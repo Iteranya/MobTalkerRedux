@@ -1,101 +1,226 @@
 package org.arsparadox.mobtalkerredux;
-
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import java.util.*;
 
 public class DialogueManager {
-    private List<Dialogue> dialogues;
 
-    private int currentDialogue;
-    private boolean interactionAllowed;
-
-    public DialogueManager(List<Dialogue> dialogues) {
-        this.dialogues = dialogues;
-        this.currentDialogue = 0;
-        this.interactionAllowed = true;
+    public interface DialogueStateObserver {
+        void onDialogueStateChanged();
     }
 
-    public void proceedToNextDialogue(Dialogue dialogue) {
-        this.currentDialogue = dialogue.getNext();
-        //this.interactionAllowed = false;
+    private List<DialogueStateObserver> observers;
+    // State classes
+    public record DialogueBoxState(String content) {}
+    public record CharacterLabelState(String content) {}
+    public record CharacterSpriteState(String content) {}
+    public record ChoiceState(Map<String, String> choices) {
+        public ChoiceState(Map<String, String> choices) {
+            this.choices = new HashMap<>(choices);
+        }
+
+        @Override
+        public Map<String, String> choices() {
+            return Collections.unmodifiableMap(choices);
+        }
     }
 
-    public void proceedToChosenDialogue(int nextDialogId) {
-        this.currentDialogue = nextDialogId;
-
+    private enum ActionType {
+        DIALOGUE,
+        CHARACTER,
+        CHOICES
     }
 
-    public Optional<Dialogue> getCurrentDialogue() {
-        return dialogues.stream()
-                .filter(dialogue -> dialogue.getDialogueId().equals(currentDialogue))
-                .findFirst();
+    private record DialogueAction(ActionType type, Object content) {}
+
+    // State management
+    private Optional<DialogueBoxState> dialogueBox;
+    private Optional<CharacterLabelState> characterLabel;
+    private Optional<CharacterSpriteState> characterSprite;
+    private Optional<ChoiceState> choicesBox;
+
+    // Queue and mapping management
+    private final Queue<DialogueAction> dialogueQueue;
+    private final Map<String, String> choiceMappings;
+
+    // Lua integration
+    private Globals globals;
+
+    public DialogueManager() {
+        this.dialogueBox = Optional.empty();
+        this.characterLabel = Optional.empty();
+        this.characterSprite = Optional.empty();
+        this.choicesBox = Optional.empty();
+        this.dialogueQueue = new LinkedList<>();
+        this.choiceMappings = new HashMap<>();
+        this.observers = new ArrayList<>();
     }
 
-    public void allowInteraction() {
-        this.interactionAllowed = true;
+    public void addObserver(DialogueStateObserver observer) {
+        observers.add(observer);
     }
 
-    public boolean isInteractionAllowed(){
-        return this.interactionAllowed;
+    public void removeObserver(DialogueStateObserver observer) {
+        observers.remove(observer);
     }
 
-}
-
-// Dialogue class representing a single dialogue entry
-class Dialogue {
-    private Integer dialogueId;
-    private String content;
-    private List<Choice> choices;
-
-    private Integer nextDialogue;
-
-    private String name;
-    private ResourceLocation sprite;
-
-    public Dialogue(Integer dialogueId, String content, List<Choice> choices, Integer next, String name, String sprite) {
-        this.dialogueId = dialogueId;
-        this.content = content;
-        this.choices = choices;
-        this.nextDialogue = Objects.requireNonNullElseGet(next, () -> -1);
-        this.name =name;
-        this.sprite = new ResourceLocation("mobtalkerredux", "textures/characters/"+sprite);
+    // Queue management methods
+    public void queueDialogue(String content) {
+        System.out.println("public void queueDialogue offer" +  content);
+        this.dialogueQueue.offer(new DialogueAction(ActionType.DIALOGUE, content));
     }
 
-    public String getContent() {return content;}
-    public Integer getDialogueId(){return this.dialogueId;}
-    public Integer getNext(){return this.nextDialogue;}
-    public List<Choice> getChoices() {return choices == null ? List.of() : choices;}
-    public ResourceLocation getSprite() {return this.sprite;}
-
-    public String getName() {return this.name;}
-}
-
-// Choice class representing a choice in dialogues
-class Choice {
-    private String buttonText;
-    private int affectionChange;
-    private int nextDialogId;
-
-    public Choice(String buttonText, int affectionChange, int nextDialogId) {
-        this.buttonText = buttonText;
-        this.affectionChange = affectionChange;
-        this.nextDialogId = nextDialogId;
+    public void queueCharacterName(String name) {
+        this.dialogueQueue.offer(new DialogueAction(ActionType.CHARACTER, name));
     }
 
-
-
-    public String getButtonText() {
-        return buttonText;
+    public void queueChoices(Map<String, String> choices) {
+        this.dialogueQueue.offer(new DialogueAction(ActionType.CHOICES, choices));
     }
 
-    public int getAffectionChange() {
-        return affectionChange;
+    // State setters
+    public void setDialogue(String content) {
+        this.dialogueBox = Optional.of(new DialogueBoxState(content));
     }
 
-    public int getNextDialogId() {
-        return nextDialogId;
+    public void setCharacterName(String name) {
+        this.characterLabel = Optional.of(new CharacterLabelState(name));
+    }
+
+    public void setCharacterSprite(String spriteIdentifier) {
+        this.characterSprite = Optional.of(new CharacterSpriteState(spriteIdentifier));
+    }
+
+    public void setChoices(Map<String, String> choices) {
+        this.choicesBox = Optional.of(new ChoiceState(choices));
+    }
+
+//    public Optional<Dialogue> getCurrentDialogue() {
+//        return dialogues.stream()
+//                .filter(dialogue -> dialogue.getDialogueId().equals(currentDialogue))
+//                .findFirst();
+//    }
+
+    // State getters
+    public Optional<DialogueBoxState> getDialogueBox() {
+        return dialogueBox.stream().findFirst();
+    }
+
+    public Optional<CharacterLabelState> getCharacterLabel() {
+        return characterLabel;
+    }
+
+    public Optional<CharacterSpriteState> getCharacterSprite() {
+        return characterSprite;
+    }
+
+    public Optional<ChoiceState> getChoicesBox() {
+        return choicesBox;
+    }
+
+    // Clear methods
+    public void clearDialogue() {
+        this.dialogueBox = Optional.empty();
+    }
+
+    public void clearCharacterName() {
+        this.characterLabel = Optional.empty();
+    }
+
+    public void clearCharacterSprite() {
+        this.characterSprite = Optional.empty();
+    }
+
+    public void clearChoices() {
+        this.choicesBox = Optional.empty();
+    }
+
+    public void clearAll() {
+        clearDialogue();
+        clearCharacterName();
+        clearCharacterSprite();
+        clearChoices();
+        dialogueQueue.clear();
+        choiceMappings.clear();
+    }
+
+    // Choice mapping management
+    public void addChoiceMapping(String choice, String nextScene) {
+        choiceMappings.put(choice, nextScene);
+    }
+
+    // Lua integration
+    public void setGlobals(Globals globals) {
+        this.globals = globals;
+    }
+
+    // Display and navigation methods
+    public void displayNext() {
+        if (this.dialogueQueue.isEmpty()) {
+            System.out.println("Queue is Empty");
+            return;
+        }
+
+        // Clear appropriate states based on the next action
+        DialogueAction action = dialogueQueue.poll();
+        switch (action.type) {
+            case DIALOGUE -> {
+                clearDialogue();
+                setDialogue((String) action.content);
+            }
+            case CHARACTER -> {
+                clearCharacterName();
+                setCharacterName((String) action.content);
+            }
+            case CHOICES -> {
+                clearChoices();
+                @SuppressWarnings("unchecked")
+                Map<String, String> choices = (Map<String, String>) action.content;
+                setChoices(choices);
+            }
+        }
+
+        // Notify UI of state change
+        notifyDialogueScreenOfUpdate();
+    }
+
+    public void buttonNav(String label) {
+        if (label == null) {
+            // No choice selected, just advance dialogue
+            displayNext();
+            return;
+        }
+
+        if (choicesBox.isPresent()) {
+            String nextScene = choiceMappings.get(label);
+            if (nextScene != null && globals != null) {
+                clearAll();
+                globals.set("currentScene", LuaValue.valueOf(nextScene));
+                // Queue up new scene's dialogue
+                globals.get("scenes").get(nextScene).call();
+                // Display first dialogue of new scene
+                displayNext();
+            }
+        } else {
+            // If no choices are present, advance to next dialogue
+            displayNext();
+        }
+    }
+
+    // UI notification method - implement this based on your UI system
+    private void notifyDialogueScreenOfUpdate() {
+        for (DialogueStateObserver observer : observers) {
+            observer.onDialogueStateChanged();
+        }
+    }
+
+    // Helper method to check if there's more content
+    public boolean hasMoreContent() {
+        return !dialogueQueue.isEmpty() || choicesBox.isPresent();
+    }
+
+    // Helper method to get current queue size
+    public int getQueueSize() {
+        return dialogueQueue.size();
     }
 }
