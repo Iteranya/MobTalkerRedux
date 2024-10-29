@@ -1,5 +1,5 @@
 // Waifu.java
-package org.arsparadox.mobtalkerredux;
+package org.arsparadox.mobtalkerredux.vn.data;
 
 import net.minecraft.nbt.CompoundTag;
 

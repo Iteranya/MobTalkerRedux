@@ -1,4 +1,4 @@
-package org.arsparadox.mobtalkerredux;
+package org.arsparadox.mobtalkerredux.vn.view;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -6,6 +6,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.arsparadox.mobtalkerredux.Choice;
+import org.arsparadox.mobtalkerredux.Dialogue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,11 @@ public class DialogueScreen extends Screen {
     private static final int CHOICE_BUTTON_SPACING = 5;
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
-    private DialogueManager dialogueManager;
+    private DialogueScreenVM dialogueScreenVM;
 
-    protected DialogueScreen(DialogueManager dialogueManager) {
+    protected DialogueScreen(DialogueScreenVM dialogueScreenVM) {
         super(new TextComponent("Mob Talker"));
-        this.dialogueManager = dialogueManager;
+        this.dialogueScreenVM = dialogueScreenVM;
     }
 
     @Override
@@ -40,17 +42,6 @@ public class DialogueScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) { // Left click
 
-            Optional<Dialogue> currentDialogue = dialogueManager.getCurrentDialogue();
-            if (currentDialogue.isPresent()) {  // Check if we have a dialogue
-                if (currentDialogue.get().getChoices().isEmpty()) {
-                    // Proceed to next dialogue if there are no choices
-                    dialogueManager.proceedToNextDialogue(currentDialogue.get());
-                    updateDisplay();
-                }
-            }
-            else{
-                this.onClose();
-            }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -60,16 +51,6 @@ public class DialogueScreen extends Screen {
     }
 
     private void onPress(Choice choice) {
-        // Handle button press
-        //Minecraft.getInstance().player.sendMessage(new TextComponent("You chose: " + choice.getButtonText()), Minecraft.getInstance().player.getUUID());
-        // Process choice impacts here, like changing affection or proceeding to a specific next dialogue
-        if(dialogueManager.isInteractionAllowed()){
-            dialogueManager.proceedToChosenDialogue(choice.getNextDialogId());
-            updateDisplay();
-        }
-        else{
-            dialogueManager.allowInteraction();
-        }
 
     }
 
@@ -77,13 +58,27 @@ public class DialogueScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
 
-        var currentDialogueOpt = dialogueManager.getCurrentDialogue();
-        currentDialogueOpt.ifPresent(currentDialogue -> {
-            renderCharacterSprite(poseStack, currentDialogue.getSprite());
-            renderCharacterName(poseStack, currentDialogue.getName());
-            renderDialogueBox(poseStack, currentDialogue.getContent());
-            renderChoiceButtons(currentDialogue.getChoices());
+        var currentSprite = dialogueScreenVM.getCurrentSprite();
+        currentSprite.ifPresent(sprite ->{
+            renderCharacterSprite(poseStack, sprite);
         });
+
+        var currentCharacterName = dialogueScreenVM.getCharacterName();
+        currentCharacterName.ifPresent(characterName ->{
+            renderCharacterName(poseStack, characterName);
+        });
+
+        var currentDialogueContent = dialogueScreenVM.getDialogueContent();
+        currentDialogueContent.ifPresent(dialogueContent ->{
+            renderDialogueBox(poseStack, dialogueContent);
+        });
+
+        var currentChoices = dialogueScreenVM.getChoices();
+        currentChoices.ifPresent(choices ->{
+            renderChoiceButtons(poseStack, choices);
+        });
+
+
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }

@@ -100,6 +100,14 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.1'
+
+    minecraftLibrary 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    minecraftLibrary 'com.fasterxml.jackson.core:jackson-core:2.16.1'
+    minecraftLibrary 'com.fasterxml.jackson.core:jackson-annotations:2.16.1'
+
 
 }
 

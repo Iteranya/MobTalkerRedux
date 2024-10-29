@@ -1,7 +1,9 @@
-package org.arsparadox.mobtalkerredux;
+package org.arsparadox.mobtalkerredux.vn.controller;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
+import org.arsparadox.mobtalkerredux.vn.data.Waifu;
+
 import java.util.*;
 
 public class WaifuManager {

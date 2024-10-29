@@ -7,6 +7,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.arsparadox.mobtalkerredux.vn.view.DialogueScreenVM;
+import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
+import org.arsparadox.mobtalkerredux.vn.controller.WaifuManager;
+import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
 public class HelloWorldItem extends Item {
     public HelloWorldItem() {
@@ -20,8 +24,8 @@ public class HelloWorldItem extends Item {
             context.getPlayer().sendMessage(new TextComponent("Hewwo World"),context.getPlayer().getUUID());
         }
         else {
-            ScriptManager scriptManager = new ScriptManager();
-            DialogueManager dialogue = scriptManager.loadDialogue("debug.dialogue.lua");
+            ScriptLoader scriptLoader = new ScriptLoader();
+            DialogueScreenVM dialogue = scriptLoader.loadDialogue("debug.dialogue.lua");
             Minecraft.getInstance().execute(() -> {
                         Minecraft.getInstance().setScreen(new DialogueScreen(dialogue));
                     }
