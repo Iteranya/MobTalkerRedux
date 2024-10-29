@@ -99,8 +99,6 @@ repositories {
 dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    minecraftLibrary "org.luaj:luaj-jse:3.0.1" // I don't know
-    implementation "org.luaj:luaj-jse:3.0.1" // if I need both
 
 
 }
