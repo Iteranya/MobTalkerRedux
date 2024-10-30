@@ -6,14 +6,17 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.arsparadox.mobtalkerredux.Choice;
-import org.arsparadox.mobtalkerredux.Dialogue;
+import org.arsparadox.mobtalkerredux.vn.controller.DialogueManager;
+import org.arsparadox.mobtalkerredux.vn.controller.DialogueUpdater;
+import org.arsparadox.mobtalkerredux.vn.data.dialogue.ChoiceItem;
+import org.arsparadox.mobtalkerredux.vn.data.dialogue.DialogueList;
+import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class DialogueScreen extends Screen {
+public class DialogueScreen extends Screen implements DialogueUpdater{
     private static final int DIALOGUE_BOX_PADDING = 15;
     private static final int CHARACTER_NAME_OFFSET = 40;
     private static final int SPRITE_WIDTH = 530/4;  // Original sprite width
@@ -25,11 +28,16 @@ public class DialogueScreen extends Screen {
     private static final int CHOICE_BUTTON_SPACING = 5;
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
-    private DialogueScreenVM dialogueScreenVM;
+    private DialogueList dialogueList;
 
-    protected DialogueScreen(DialogueScreenVM dialogueScreenVM) {
+    private DialogueManager dialogueManager;
+
+
+
+    public DialogueScreen(String dialoguePath) throws FileNotFoundException {
         super(new TextComponent("Mob Talker"));
-        this.dialogueScreenVM = dialogueScreenVM;
+        this.dialogueList = ScriptLoader.loadDialogue(dialoguePath);
+        this.dialogueManager = new DialogueManager(this.dialogueList, this);
     }
 
     @Override
@@ -50,36 +58,15 @@ public class DialogueScreen extends Screen {
         clearWidgets();  // Clear previous widgets/buttons if any
     }
 
-    private void onPress(Choice choice) {
+    private void onPress(String choice) {
 
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
-
-        var currentSprite = dialogueScreenVM.getCurrentSprite();
-        currentSprite.ifPresent(sprite ->{
-            renderCharacterSprite(poseStack, sprite);
-        });
-
-        var currentCharacterName = dialogueScreenVM.getCharacterName();
-        currentCharacterName.ifPresent(characterName ->{
-            renderCharacterName(poseStack, characterName);
-        });
-
-        var currentDialogueContent = dialogueScreenVM.getDialogueContent();
-        currentDialogueContent.ifPresent(dialogueContent ->{
-            renderDialogueBox(poseStack, dialogueContent);
-        });
-
-        var currentChoices = dialogueScreenVM.getChoices();
-        currentChoices.ifPresent(choices ->{
-            renderChoiceButtons(poseStack, choices);
-        });
-
-
-
+        // Let the dialogue manager update the display
+        dialogueManager.update(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
@@ -179,7 +166,7 @@ public class DialogueScreen extends Screen {
         }
     }
 
-    private void renderChoiceButtons(List<Choice> choices) {
+    private void renderChoiceButtons(List<ChoiceItem> choices) {
         // Clear existing buttons
         choiceButtons.forEach(this::removeWidget);
         choiceButtons.clear();
@@ -194,7 +181,7 @@ public class DialogueScreen extends Screen {
         int buttonX = (this.width - CHOICE_BUTTON_WIDTH) / 2;
 
         for (int i = 0; i < choices.size(); i++) {
-            Choice choice = choices.get(i);
+            ChoiceItem choice = choices.get(i);
             int buttonY = startY + (CHOICE_BUTTON_HEIGHT + CHOICE_BUTTON_SPACING) * i;
 
             Button button = new Button(
@@ -202,8 +189,8 @@ public class DialogueScreen extends Screen {
                     buttonY,
                     CHOICE_BUTTON_WIDTH,
                     CHOICE_BUTTON_HEIGHT,
-                    new TextComponent(choice.getButtonText()),
-                    btn -> onPress(choice)
+                    new TextComponent(choice.display()),
+                    btn -> onPress(choice.label())
             );
 
             choiceButtons.add(button);
@@ -243,5 +230,20 @@ public class DialogueScreen extends Screen {
     @Override
     public void renderBackground(PoseStack poseStack) {
         // Disable background darkening
+    }
+
+    @Override
+    public void updateDialogue(PoseStack poseStack, String dialogue, String characterName) {
+
+    }
+
+    @Override
+    public void setChoices(PoseStack poseStack, List<ChoiceItem> choices) {
+
+    }
+
+    @Override
+    public void displayCharacter(PoseStack poseStack, ResourceLocation sprite) {
+
     }
 }
