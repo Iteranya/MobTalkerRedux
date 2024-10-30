@@ -14,7 +14,7 @@ public record Dialogue(
 	String condition,
 	String var,
 	int end,
-	int value,
+	Object value,
 	List<ActionsItem> actions,
 	List<ChoiceItem> choice,
 	int init

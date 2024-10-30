@@ -15,6 +15,7 @@ import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DialogueScreen extends Screen implements DialogueUpdater{
     private static final int DIALOGUE_BOX_PADDING = 15;
@@ -70,8 +71,9 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
-    private void renderCharacterSprite(PoseStack poseStack, ResourceLocation sprite) {
-        RenderSystem.setShaderTexture(0, sprite);
+    private void renderCharacterSprite(PoseStack poseStack, String sprite) {
+
+        RenderSystem.setShaderTexture(0, Objects.requireNonNull(ResourceLocation.tryParse(sprite)));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -234,16 +236,17 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
 
     @Override
     public void updateDialogue(PoseStack poseStack, String dialogue, String characterName) {
-
+        renderDialogueBox(poseStack, dialogue);
+        renderCharacterName(poseStack,characterName);
     }
 
     @Override
-    public void setChoices(PoseStack poseStack, List<ChoiceItem> choices) {
-
+    public void setChoices(List<ChoiceItem> choices) {
+        renderChoiceButtons(choices);
     }
 
     @Override
-    public void displayCharacter(PoseStack poseStack, ResourceLocation sprite) {
-
+    public void displayCharacter(PoseStack poseStack, String sprite) {
+        renderCharacterSprite(poseStack, sprite);
     }
 }

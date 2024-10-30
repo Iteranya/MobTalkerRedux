@@ -1,10 +1,12 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraftforge.fml.loading.FMLConfig;
 import org.arsparadox.mobtalkerredux.vn.data.dialogue.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DialogueManager {
     private final DialogueUpdater updater;
@@ -17,7 +19,7 @@ public class DialogueManager {
 //    private BackgroundComponent backgroundComponent;
     private final List<Dialogue> dialogueList;
 
-    private int currentId;
+    private int currentId = 0;
 
     // This is the part where I replicate the FSM Loader Machine in Python into Java
 
@@ -28,18 +30,17 @@ public class DialogueManager {
         this.updater = updater;
         // Start with the first dialogue entry if available
         if (!dialogueList.dialogueList().isEmpty()) {
-            initializeDialogue();
+            updateDialogue();
         }
     }
 
     public void updateDialogue(){
-
     }
 
     public void update(PoseStack poseStack) {
         // Update the display with current state
         Dialogue dialogue = findDialogueById(this.currentId);
-
+        processAction(dialogue,poseStack);
     }
 
     public Dialogue findDialogueById(int id){
@@ -51,18 +52,32 @@ public class DialogueManager {
         return null;
     }
 
-    public boolean processAction(Dialogue action) {
+    public Integer findLabelId(String var) {
+        for (Dialogue action : this.dialogueList) {
+            if ("label".equals(action.type()) && var.equals(action.label())) {
+                return action.id();
+            }
+        }
+        return null;
+    }
+
+
+    public boolean processAction(Dialogue action,PoseStack poseStack) {
         String actionType = action.type();
 
         switch (actionType) {
             case "show_sprite":
-                showSprite(action.sprite());
+                showSprite(
+                        action.sprite(),
+                        poseStack
+                );
                 break;
 
             case "dialogue":
                 showDialogue(
                         action.label(),
-                        action.content()
+                        action.content(),
+                        poseStack
                 );
                 break;
 
@@ -92,7 +107,7 @@ public class DialogueManager {
                 break;
 
             case "choice":
-                showChoices(action.choice());
+                updateChoice(action.choice());
                 break;
 
             case "command":
@@ -113,20 +128,34 @@ public class DialogueManager {
         return false;
     }
 
+    public void updateChoice(List<ChoiceItem> choices){
+        updater.setChoices(choices);
 
-    public void showSprite(String spritePath) {
-        System.out.printf("\n[Showing sprite: %s]\n", spritePath);
+    }
+
+
+    public void showSprite(String spritePath, PoseStack poseStack) {
+        String sprite = FMLConfig.defaultConfigPath()+spritePath;
+        //Update sprite here
+        updater.displayCharacter(poseStack,sprite);
         this.currentId++;
     }
 
-    public void showDialogue(String label, String content) {
-        System.out.printf("\n%s: %s", label, content);
-        scanner.nextLine(); // For input()
+    public void showDialogue(String label, String content,PoseStack poseStack) {
+        //Update Dialogue Box here
+        updater.updateDialogue(poseStack,content,label);
         this.currentId++;
     }
 
-    public String processCommand(Command command) {
-        String action = command.action();
+    public String processCommand(Object command) {
+        String action="";
+        if(command instanceof Command){
+            action = ((Command) command).action();
+        }
+        if(command instanceof Dialogue){
+            action = ((Dialogue) command).action();
+        }
+
         switch (action) {
             case "get_gamemode":
                 return "Survival";
@@ -137,54 +166,76 @@ public class DialogueManager {
         }
     }
 
+    public Variable findVariableByName(String name){
+        for (Variable variable : this.variables){
+            if (Objects.equals(variable.name(), name)){
+                return variable;
+            }
+        }
+        return null;
+    }
+
+    public List<Variable> removeVariableByName(String nameToRemove) {
+        List<Variable> resultingList = new ArrayList<>(this.variables);
+        resultingList.removeIf(variable -> variable.name().equals(nameToRemove));
+        return resultingList;
+    }
+
+
     public void modifyVariable(String variable, String operation, Object value) {
         if (value instanceof Command) {
             value = processCommand((Command) value);
         }
-
+        Variable var = findVariableByName(variable);
         switch (operation) {
             case "increment_var":
-                if (variables.get(variable) instanceof Number && value instanceof Number) {
-                    variables.put(variable, ((Number) variables.get(variable)).doubleValue() +
-                            ((Number) value).doubleValue());
+                if (var.value() instanceof Number && value instanceof Number) {
+                    this.variables = removeVariableByName(var.name());
+                    Integer newValue = (Integer) var.value();
+                    newValue++;
+                    this.variables.add(new Variable(variable,newValue));
                 }
                 break;
             case "substract_var":
-                if (variables.get(variable) instanceof Number && value instanceof Number) {
-                    variables.put(variable, ((Number) variables.get(variable)).doubleValue() -
-                            ((Number) value).doubleValue());
+                if (var.value() instanceof Number && value instanceof Number) {
+                    this.variables = removeVariableByName(var.name());
+                    Integer newValue = (Integer) var.value();
+                    newValue--;
+                    this.variables.add(new Variable(variable,newValue));
                 }
-                break;
             default:
-                variables.put(variable, value);
+                variables.add(new Variable(variable, value));
         }
         this.currentId++;
     }
 
     public void giveItem(String item, int amount) {
-        System.out.printf("\n[Received %dx %s]\n", amount, item);
-        System.out.println("Press Enter to continue...");
-        scanner.nextLine();
+        //Process this with Minecraft Command
         this.currentId++;
     }
 
-    public void processJump(Map<String, Object> action) {
-        this.currentId = findLabelId((String) action.get("label"));
+    public void processJump(Dialogue action) {
+        this.currentId = findLabelId((String) action.label());
     }
 
-    public void processConditional(Map<String, Object> condition) {
-        Object var = variables.get(condition.get("var"));
-        Object value = condition.get("value");
-        int end = (Integer) condition.get("end");
+    public void processConditional(Dialogue condition) {
+        Object var="";
+        for (Variable variable:variables) {
+            if(Objects.equals(variable.name(), condition.var())){
+                var = variable.value();
+            }
+        }
+        Object value = condition.value();
+        int end = condition.end();
 
-        if (value instanceof Map) {
-            value = processCommand((Map<String, Object>) value);
+        if (value instanceof Command) {
+            value = processCommand((Command) value);
         }
 
         System.out.println(value);
         System.out.println(var);
 
-        String conditionType = (String) condition.get("condition");
+        String conditionType = condition.condition();
         boolean result = false;
 
         if (var instanceof Number && value instanceof Number) {
@@ -192,58 +243,27 @@ public class DialogueManager {
             double numValue = ((Number) value).doubleValue();
 
             switch (conditionType) {
-                case "equal":
-                    result = numVar == numValue;
-                    break;
-                case "not_equal":
-                    result = numVar != numValue;
-                    break;
-                case "less_than":
-                    result = numVar < numValue;
-                    break;
-                case "greater_than":
-                    result = numVar > numValue;
-                    break;
+                case "equal" -> result = numVar == numValue;
+                case "not_equal" -> result = numVar != numValue;
+                case "less_than" -> result = numVar < numValue;
+                case "greater_than" -> result = numVar > numValue;
             }
         } else {
-            switch (conditionType) {
-                case "equal":
-                    result = var.equals(value);
-                    break;
-                case "not_equal":
-                    result = !var.equals(value);
-                    break;
-            }
+            result = switch (conditionType) {
+                case "equal" -> var.equals(value);
+                case "not_equal" -> !var.equals(value);
+                default -> false;
+            };
         }
 
         this.currentId = result ? this.currentId + 1 : end;
     }
 
-    @SuppressWarnings("unchecked")
-    public void showChoices(List<Map<String, Object>> choices) {
-        System.out.println("\nChoices:");
-        for (int i = 0; i < choices.size(); i++) {
-            System.out.printf("%d. %s\n", i + 1, choices.get(i).get("display"));
-        }
 
-        while (true) {
-            try {
-                System.out.println("\nEnter your choice (number): ");
-                int choice = Integer.parseInt(scanner.nextLine()) - 1;
-                if (choice >= 0 && choice < choices.size()) {
-                    String targetLabel = (String) choices.get(choice).get("label");
-                    this.currentId = findLabelId(targetLabel);
-                    break;
-                }
-            } catch (NumberFormatException e) {
-                // Handle parse error
-            }
-            System.out.println("Invalid choice. Please try again.");
-        }
-    }
+
 
     public void createVariable(String varName, Object varInit) {
-        variables.put(varName, varInit);
+        variables.add(new Variable(varName,varInit));
         this.currentId++;
     }
 
