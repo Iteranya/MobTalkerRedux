@@ -6,18 +6,15 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.arsparadox.mobtalkerredux.vn.controller.DialogueManager;
-import org.arsparadox.mobtalkerredux.vn.controller.DialogueUpdater;
-import org.arsparadox.mobtalkerredux.vn.data.dialogue.ChoiceItem;
+import org.arsparadox.mobtalkerredux.vn.controller.ScriptManager;
 import org.arsparadox.mobtalkerredux.vn.data.dialogue.DialogueList;
-import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
-public class DialogueScreen extends Screen implements DialogueUpdater{
+public class DialogueScreen extends Screen{
     private static final int DIALOGUE_BOX_PADDING = 15;
     private static final int CHARACTER_NAME_OFFSET = 40;
     private static final int SPRITE_WIDTH = 530/4;  // Original sprite width
@@ -31,49 +28,49 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
     private List<Button> choiceButtons = new ArrayList<>();
     private DialogueList dialogueList;
 
-    private DialogueManager dialogueManager;
+    private ScriptManager scriptManager;
 
 
 
-    public DialogueScreen(String dialoguePath) throws FileNotFoundException {
+    public DialogueScreen(ScriptManager scriptManager) throws FileNotFoundException {
         super(new TextComponent("Mob Talker"));
-        this.dialogueList = ScriptLoader.loadDialogue(dialoguePath);
-        this.dialogueManager = new DialogueManager(this.dialogueList, this);
+        this.scriptManager = scriptManager;
+
     }
 
     @Override
     protected void init() {
         // Initialize the display
-        updateDisplay();
+        startScene();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) { // Left click
-
+            scriptManager.leftClick();
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void updateDisplay() {
-        clearWidgets();  // Clear previous widgets/buttons if any
+    private void startScene() {
+        scriptManager.leftClick();
     }
 
     private void onPress(String choice) {
-
+        scriptManager.buttonPress(choice);
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
-        // Let the dialogue manager update the display
-        dialogueManager.update(poseStack);
+
+        this.scriptManager.update(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
-    private void renderCharacterSprite(PoseStack poseStack, String sprite) {
+    public void renderCharacterSprite(PoseStack poseStack, ResourceLocation sprite) {
 
-        RenderSystem.setShaderTexture(0, Objects.requireNonNull(ResourceLocation.tryParse(sprite)));
+        RenderSystem.setShaderTexture(0, sprite);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -98,77 +95,82 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
         RenderSystem.disableBlend();
     }
 
-    private void renderCharacterName(PoseStack poseStack, String name) {
-        // Add a dark background behind the name for better readability
-        int nameWidth = this.font.width(name);
-        int nameX = (this.width - nameWidth) / 2;
-        int nameY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3 - CHARACTER_NAME_OFFSET;
+    public void renderCharacterName(PoseStack poseStack, String name) {
+        if(name!=null){
+            // Add a dark background behind the name for better readability
+            int nameWidth = this.font.width(name);
+            int nameX = (this.width - nameWidth) / 2;
+            int nameY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3 - CHARACTER_NAME_OFFSET;
 
-        // Draw name background
-        fill(
-                poseStack,
-                nameX - DIALOGUE_BOX_PADDING,
-                nameY - 2,
-                nameX + nameWidth + DIALOGUE_BOX_PADDING,
-                nameY + this.font.lineHeight + 2,
-                0x88000000
-        );
+            // Draw name background
+            fill(
+                    poseStack,
+                    nameX - DIALOGUE_BOX_PADDING,
+                    nameY - 2,
+                    nameX + nameWidth + DIALOGUE_BOX_PADDING,
+                    nameY + this.font.lineHeight + 2,
+                    0x88000000
+            );
 
-        // Draw name
-        drawCenteredString(
-                poseStack,
-                this.font,
-                name,
-                this.width / 2,
-                nameY,
-                0xFFFFFF
-        );
-    }
-
-    private void renderDialogueBox(PoseStack poseStack, String dialogue) {
-        // Calculate dialogue box dimensions
-        int boxWidth = Math.min(600, this.width - 40); // Max width of 600 or screen width - 40
-        int boxX = (this.width - boxWidth) / 2;
-        int boxY = this.height - dialogueBoxHeight - 20; // 20 pixels from bottom
-
-        // Draw dialogue box background with gradient
-        fill(
-                poseStack,
-                boxX,
-                boxY,
-                boxX + boxWidth,
-                boxY + dialogueBoxHeight,
-                0xCC000000 // Base color
-        );
-
-        // Add border
-        fill(
-                poseStack,
-                boxX - 1,
-                boxY - 1,
-                boxX + boxWidth + 1,
-                boxY + dialogueBoxHeight + 1,
-                0xFF004400 // Border color
-        );
-
-        // Word wrap and render dialogue text
-        List<String> wrappedText = wrapText(dialogue, boxWidth - (DIALOGUE_BOX_PADDING * 2));
-        int textY = boxY + DIALOGUE_BOX_PADDING;
-
-        for (String line : wrappedText) {
-            drawString(
+            // Draw name
+            drawCenteredString(
                     poseStack,
                     this.font,
-                    line,
-                    boxX + DIALOGUE_BOX_PADDING,
-                    textY,
+                    name,
+                    this.width / 2,
+                    nameY,
                     0xFFFFFF
             );
-            textY += this.font.lineHeight + 2;
         }
+
     }
 
-    private void renderChoiceButtons(List<ChoiceItem> choices) {
+    public void renderDialogueBox(PoseStack poseStack, String dialogue) {
+        if(dialogue !=null){
+            // Calculate dialogue box dimensions
+            int boxWidth = Math.min(600, this.width - 40); // Max width of 600 or screen width - 40
+            int boxX = (this.width - boxWidth) / 2;
+            int boxY = this.height - dialogueBoxHeight - 20; // 20 pixels from bottom
+
+            // Draw dialogue box background with gradient
+            fill(
+                    poseStack,
+                    boxX,
+                    boxY,
+                    boxX + boxWidth,
+                    boxY + dialogueBoxHeight,
+                    0xCC000000 // Base color
+            );
+
+            // Add border
+            fill(
+                    poseStack,
+                    boxX - 1,
+                    boxY - 1,
+                    boxX + boxWidth + 1,
+                    boxY + dialogueBoxHeight + 1,
+                    0xFF004400 // Border color
+            );
+
+            // Word wrap and render dialogue text
+            List<String> wrappedText = wrapText(dialogue, boxWidth - (DIALOGUE_BOX_PADDING * 2));
+            int textY = boxY + DIALOGUE_BOX_PADDING;
+
+            for (String line : wrappedText) {
+                drawString(
+                        poseStack,
+                        this.font,
+                        line,
+                        boxX + DIALOGUE_BOX_PADDING,
+                        textY,
+                        0xFFFFFF
+                );
+                textY += this.font.lineHeight + 2;
+            }
+        }
+
+    }
+    public void renderChoiceButtons(List<Map<String, Object>> choices) {
         // Clear existing buttons
         choiceButtons.forEach(this::removeWidget);
         choiceButtons.clear();
@@ -181,9 +183,9 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
         // Start position for first button
         int startY = this.height - dialogueBoxHeight - 40 - totalButtonsHeight;
         int buttonX = (this.width - CHOICE_BUTTON_WIDTH) / 2;
+        int i = 0;
+        for (Map<String, Object> choice: choices) {
 
-        for (int i = 0; i < choices.size(); i++) {
-            ChoiceItem choice = choices.get(i);
             int buttonY = startY + (CHOICE_BUTTON_HEIGHT + CHOICE_BUTTON_SPACING) * i;
 
             Button button = new Button(
@@ -191,12 +193,13 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
                     buttonY,
                     CHOICE_BUTTON_WIDTH,
                     CHOICE_BUTTON_HEIGHT,
-                    new TextComponent(choice.display()),
-                    btn -> onPress(choice.label())
+                    new TextComponent((String) choice.get("display")),
+                    btn -> onPress((String) choice.get("label"))
             );
 
             choiceButtons.add(button);
             this.addRenderableWidget(button);
+            i++;
         }
     }
 
@@ -223,30 +226,5 @@ public class DialogueScreen extends Screen implements DialogueUpdater{
         }
 
         return lines;
-    }
-    @Override
-    public boolean isPauseScreen() {
-        return false; // Don't pause the game
-    }
-
-    @Override
-    public void renderBackground(PoseStack poseStack) {
-        // Disable background darkening
-    }
-
-    @Override
-    public void updateDialogue(PoseStack poseStack, String dialogue, String characterName) {
-        renderDialogueBox(poseStack, dialogue);
-        renderCharacterName(poseStack,characterName);
-    }
-
-    @Override
-    public void setChoices(List<ChoiceItem> choices) {
-        renderChoiceButtons(choices);
-    }
-
-    @Override
-    public void displayCharacter(PoseStack poseStack, String sprite) {
-        renderCharacterSprite(poseStack, sprite);
     }
 }
