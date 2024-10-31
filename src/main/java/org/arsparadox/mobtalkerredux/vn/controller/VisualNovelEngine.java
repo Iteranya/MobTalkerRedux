@@ -1,11 +1,7 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
+import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,26 +9,17 @@ import java.util.Map;
 
 public class VisualNovelEngine {
     private List<Map<String, Object>> gameData;
-    private int minId;
-    private int maxId;
-    private int currentState;
+    private int currentState=0;
     private Map<String, Object> variables;
 
+    public DialogueState state;
     public boolean isEngineRunning = false;
 
     public VisualNovelEngine(List<Map<String, Object>> gameData) {
         this.gameData = gameData;
-//        this.minId = gameData.stream()
-//                .map(map -> (int) map.getOrDefault("id", Integer.MAX_VALUE))
-//                .min(Comparator.naturalOrder())
-//                .orElse(0);
-//        this.maxId = gameData.stream()
-//                .map(map -> (int) map.getOrDefault("id", Integer.MIN_VALUE))
-//                .max(Comparator.naturalOrder())
-//                .orElse(0);
         this.currentState = 0;
         this.variables = new HashMap<>();
-
+        this.state = new DialogueState(null,null,null,null);
     }
 
     private Integer findLabelId(String var) {
@@ -50,19 +37,24 @@ public class VisualNovelEngine {
                 .orElse(null);
     }
 
-    private void showSprite(String spritePath, DialogueScreen dialogueScreen, PoseStack poseStack) {
+    private void updateSprite(String spritePath) {
         ResourceLocation location = new ResourceLocation(
-                "textures/characters/"+spritePath
+                "mobtalkerredux", "textures/characters/" + spritePath
         );
-        dialogueScreen.renderCharacterSprite(poseStack,location);
+        state.setSprite(location);
         this.currentState++;
     }
 
-    private void showDialogue(String label, String content, DialogueScreen dialogueScreen, PoseStack poseStack) {
-        dialogueScreen.renderDialogueBox(poseStack,content);
-        dialogueScreen.renderCharacterName(poseStack,label);
+    private void updateDialogue(String label, String content) {
+        state.setLabel(label);
+        state.setContent(content);
         this.isEngineRunning = false;
         this.currentState++;
+    }
+
+    private void updateChoices(List<Map<String, Object>> choices) {
+        state.setChoices(choices);
+        this.isEngineRunning = false;
     }
 
     private Object processCommand(Map<String, Object> value) {
@@ -144,10 +136,7 @@ public class VisualNovelEngine {
     }
 
     @SuppressWarnings("unchecked")
-    private void showChoices(List<Map<String, Object>> choices, DialogueScreen dialogueScreen) {
-        dialogueScreen.renderChoiceButtons(choices);
-        this.isEngineRunning = false;
-    }
+
 
     private void createVariable(String varName, Object varInit) {
         this.variables.put(varName, varInit);
@@ -164,15 +153,15 @@ public class VisualNovelEngine {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean processAction(Map<String, Object> action, DialogueScreen dialogueScreen, PoseStack poseStack) {
+    private boolean processAction(Map<String, Object> action) {
         String actionType = (String) action.get("type");
 
         switch (actionType) {
             case "show_sprite":
-                showSprite((String) action.get("sprite"),dialogueScreen,poseStack);
+                updateSprite((String) action.get("sprite"));
                 return true;
             case "dialogue":
-                showDialogue((String) action.get("label"), (String) action.get("content"),dialogueScreen,poseStack);
+                updateDialogue((String) action.get("label"), (String) action.get("content"));
                 return true;
             case "modify_variable":
                 modifyVariable((String) action.get("var"),
@@ -191,7 +180,7 @@ public class VisualNovelEngine {
                 }
                 break;
             case "choice":
-                showChoices((List<Map<String, Object>>) action.get("choice"),dialogueScreen);
+                updateChoices((List<Map<String, Object>>) action.get("choice"));
                 break;
             case "command":
                 processCommand(action);
@@ -208,54 +197,39 @@ public class VisualNovelEngine {
         return false;
     }
 
-    public void readScript(DialogueScreen dialogueScreen, PoseStack poseStack) {
-        while (true) { // Infinite loop
-            if (isEngineRunning) { // Check if engine is running
-                Map<String, Object> action = getDictById(currentState);
+    public void runEngine() {
+        while (isEngineRunning) { // Infinite loop
+            // Check if engine is running
+            System.out.println("Engine State = "+ (this.currentState));
+            if(isEngineRunning){
+                Map<String, Object> action = getDictById(this.currentState);
+                System.out.println(action.get("type"));
                 if ("meta".equals(action.get("type"))) {
-                    processMeta(action);
+                     processMeta(action);
                 } else {
-                    processAction(action, dialogueScreen, poseStack);
+                    processAction(action);
                 }
-            } else {
-                try {
-                    Thread.sleep(100); // Pause briefly to avoid busy-waiting
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt(); // Restore interrupt status
-                    break; // Exit loop if the thread is interrupted
-                }
-            }
-        }
-    }
+            }else{
 
-    public void startReadingScript(DialogueScreen dialogueScreen, PoseStack poseStack) {
-        // Schedule this to run every game tick
-        MinecraftForge.EVENT_BUS.register(new Object() {
-            @SubscribeEvent
-            public void onClientTick(TickEvent.ClientTickEvent event) {
-                if (event.phase == TickEvent.Phase.END) { // Only act at the end of each tick
-                    if (isEngineRunning) {
-                        readScriptStep(dialogueScreen, poseStack);
-                    } else {
-                        MinecraftForge.EVENT_BUS.unregister(this); // Unregister to stop the task
-                    }
-                }
-            }
-        });
-    }
+                    return;
 
-    private void readScriptStep(DialogueScreen dialogueScreen, PoseStack poseStack) {
-        Map<String, Object> action = getDictById(currentState);
-        if ("meta".equals(action.get("type"))) {
-            processMeta(action);
-        } else {
-            processAction(action, dialogueScreen, poseStack);
+            }
+
         }
     }
 
 
-    public void changeStateByLabel(String label) {
+    public int changeStateByLabel(String label) {
         this.currentState = findLabelId(label);
+        return this.currentState;
 
+    }
+
+    public DialogueState getNext() {
+        return this.state;
+    }
+
+    public void buttonPress(String choice) {
+        changeStateByLabel(choice);
     }
 }

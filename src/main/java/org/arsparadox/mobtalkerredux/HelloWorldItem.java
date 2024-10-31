@@ -7,8 +7,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.arsparadox.mobtalkerredux.vn.controller.ScriptManager;
+import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.controller.WaifuManager;
+import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
+import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
 import java.io.FileNotFoundException;
 
@@ -26,15 +28,15 @@ public class HelloWorldItem extends Item {
         else {
 //            ScriptLoader scriptLoader = new ScriptLoader();
 //            DialogueScreenVM dialogue = scriptLoader.loadDialogue("debug.dialogue.lua");
-            try {
-                ScriptManager scriptManager = new ScriptManager("story.json");
-                Minecraft.getInstance().execute(() -> {
-                            Minecraft.getInstance().setScreen(scriptManager.dialogueScreen);
-                        }
-                );
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+
+            Minecraft.getInstance().execute(() -> {
+                    try {
+                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript("story.json"))));
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            );
 
             WaifuManager waifuManager = new WaifuManager(context.getPlayer());
 
