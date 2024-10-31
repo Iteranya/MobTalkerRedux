@@ -189,7 +189,7 @@ public class VisualNovelEngine {
                 this.currentState++;
                 break;
             case "finish_dialogue":
-                return true;
+                isEngineRunning=false;
             default:
                 this.currentState++;
                 break;
