@@ -30,4 +30,6 @@ public class DialogueState {
         return choices;
     }
     public void setChoices(List<Map<String, Object>> choices) { this.choices = choices; }
+
+    public void emptyChoices() { this.choices.clear(); }
 }

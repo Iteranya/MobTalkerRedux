@@ -1,13 +1,13 @@
 package org.arsparadox.mobtalkerredux;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +15,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +40,8 @@ public class MobTalkerRedux {
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
+        RegistryEvents.initialize();
+
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -44,15 +49,15 @@ public class MobTalkerRedux {
     private void setup(final FMLCommonSetupEvent event) {
         // Some preinit code
         LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-        // Load dialog data from JSON file
-        Gson gson = new Gson();
 
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // Some example code to dispatch IMC to another mod
-        InterModComms.sendTo(MobTalkerRedux.MODID, "helloworld", () -> { LOGGER.info("Hello world from the MDK"); return "Hello world";});
+        InterModComms.sendTo(MobTalkerRedux.MODID, "helloworld", () -> {
+            LOGGER.info("Hello world from the MDK");
+            return "Hello world";
+        });
     }
 
     private void processIMC(final InterModProcessEvent event) {
@@ -71,20 +76,31 @@ public class MobTalkerRedux {
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
+    @Mod.EventBusSubscriber(modid = "mobtalkerredux", bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class RegistryEvents {
+
         @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // Register a new block here
-            LOGGER.info("HELLO from Register Block");
+        public void buildContents(BuildCreativeModeTabContentsEvent event) {
+            // Add to ingredients tab
+            if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+                event.accept(HELLO_WORLD_ITEM);
+            }
         }
-        @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> itemsRegistryEvent) {
-            // Register a new item here
-            LOGGER.info("HELLO from Register Item");
-            itemsRegistryEvent.getRegistry().registerAll(
-                    new HelloWorldItem().setRegistryName("mobtalkerredux", "hello_world_item")
-            );
+
+        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "mobtalkerredux");
+        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "mobtalkerredux");
+
+        // Example of a registered block and item
+        public static final RegistryObject<Item> HELLO_WORLD_ITEM = ITEMS.register("hello_world_item",HelloWorldItem::new);
+
+        public static void register(IEventBus eventBus) {
+            BLOCKS.register(eventBus);
+            ITEMS.register(eventBus);
+        }
+
+        public static void initialize() {
+            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+            register(modEventBus);
         }
     }
 }

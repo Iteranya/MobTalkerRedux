@@ -1,9 +1,8 @@
 package org.arsparadox.mobtalkerredux;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -13,17 +12,20 @@ import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
 import java.io.FileNotFoundException;
+import java.util.Objects;
 
 public class HelloWorldItem extends Item {
     public HelloWorldItem() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
         if (!world.isClientSide) { // Only run on server side
-            context.getPlayer().sendMessage(new TextComponent("Hewwo World"),context.getPlayer().getUUID());
+            Objects.requireNonNull(context.getPlayer()).sendSystemMessage(
+                    Component.literal("Hewwo World~")
+            );
         }
         else {
 //            ScriptLoader scriptLoader = new ScriptLoader();
