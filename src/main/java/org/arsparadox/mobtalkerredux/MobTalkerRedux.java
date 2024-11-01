@@ -1,10 +1,11 @@
 package org.arsparadox.mobtalkerredux;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,14 +49,15 @@ public class MobTalkerRedux {
     private void setup(final FMLCommonSetupEvent event) {
         // Some preinit code
         LOGGER.info("HELLO FROM PREINIT");
-        // Load dialog data from JSON file
-        Gson gson = new Gson();
 
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // Some example code to dispatch IMC to another mod
-        InterModComms.sendTo(MobTalkerRedux.MODID, "helloworld", () -> { LOGGER.info("Hello world from the MDK"); return "Hello world";});
+        InterModComms.sendTo(MobTalkerRedux.MODID, "helloworld", () -> {
+            LOGGER.info("Hello world from the MDK");
+            return "Hello world";
+        });
     }
 
     private void processIMC(final InterModProcessEvent event) {
@@ -76,6 +78,14 @@ public class MobTalkerRedux {
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(modid = "mobtalkerredux", bus = Mod.EventBusSubscriber.Bus.MOD)
     public class RegistryEvents {
+
+        @SubscribeEvent
+        public void buildContents(BuildCreativeModeTabContentsEvent event) {
+            // Add to ingredients tab
+            if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+                event.accept(HELLO_WORLD_ITEM);
+            }
+        }
 
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "mobtalkerredux");
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "mobtalkerredux");

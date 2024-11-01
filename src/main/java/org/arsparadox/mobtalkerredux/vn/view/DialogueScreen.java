@@ -1,7 +1,7 @@
 package org.arsparadox.mobtalkerredux.vn.view;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -84,7 +84,7 @@ public class DialogueScreen extends Screen{
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
         //renderBackground(poseStack);
         renderCharacterName(poseStack);
@@ -100,7 +100,7 @@ public class DialogueScreen extends Screen{
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
-    public void renderCharacterSprite(PoseStack poseStack) {
+    public void renderCharacterSprite(GuiGraphics poseStack) {
         if(sprite!=null){
             RenderSystem.setShaderTexture(0, sprite);
             RenderSystem.enableBlend();
@@ -112,8 +112,9 @@ public class DialogueScreen extends Screen{
             int spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Position it in upper third
 
             // Render the sprite with proper scaling
-            blit(
-                    poseStack,
+
+            poseStack.blit(
+                    sprite,
                     spriteX,
                     spriteY,
                     0, // uOffset
@@ -129,7 +130,7 @@ public class DialogueScreen extends Screen{
 
     }
 
-    public void renderCharacterName(PoseStack poseStack) {
+    public void renderCharacterName(GuiGraphics poseStack) {
             if(label!=null){
                 // Add a dark background behind the name for better readability
                 int nameWidth = this.font.width(label);
@@ -137,8 +138,7 @@ public class DialogueScreen extends Screen{
                 int nameY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3 - CHARACTER_NAME_OFFSET;
 
                 // Draw name background
-                fill(
-                        poseStack,
+                poseStack.fill(
                         nameX - DIALOGUE_BOX_PADDING,
                         nameY - 2,
                         nameX + nameWidth + DIALOGUE_BOX_PADDING,
@@ -147,8 +147,7 @@ public class DialogueScreen extends Screen{
                 );
 
                 // Draw name
-                drawCenteredString(
-                        poseStack,
+                poseStack.drawCenteredString(
                         this.font,
                         label,
                         this.width / 2,
@@ -161,7 +160,7 @@ public class DialogueScreen extends Screen{
 
     }
 
-    public void renderDialogueBox(PoseStack poseStack) {
+    public void renderDialogueBox(GuiGraphics poseStack) {
         if (content != null) {
             // Set dialogue box dimensions and position
             int boxWidth = Math.min(600, this.width - 40); // Max width of 600 or screen width - 40
@@ -171,10 +170,10 @@ public class DialogueScreen extends Screen{
             int backgroundColor = 0xCC000000; // Semi-transparent background color
 
             // Draw the border
-            fill(poseStack, boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
+            poseStack.fill( boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
 
             // Draw the main dialogue box background
-            fill(poseStack, boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
+            poseStack.fill( boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
 
             // Draw label box at the top of the dialogue box
             int labelBoxHeight = 20; // Height of the label box
@@ -182,21 +181,21 @@ public class DialogueScreen extends Screen{
             int labelBoxX = boxX; // Align label box with the left of the dialogue box
             int labelBoxY = boxY - labelBoxHeight - 5; // Position label box slightly above the dialogue box
 // Draw the label box
-            fill(poseStack, labelBoxX, labelBoxY, labelBoxX + labelBoxWidth, labelBoxY + labelBoxHeight, backgroundColor);
+            poseStack.fill(labelBoxX, labelBoxY, labelBoxX + labelBoxWidth, labelBoxY + labelBoxHeight, backgroundColor);
 
 
             // Render label text centered in label box
             int labelWidth = this.font.width(label);
             int labelX = labelBoxX + (labelBoxWidth - labelWidth) / 2; // Center the label horizontally
             int labelY = labelBoxY + (labelBoxHeight - this.font.lineHeight) / 2; // Center the label vertically
-            drawString(poseStack, this.font, label, labelX, labelY, 0xFFFFFF); // White text color
+            poseStack.drawString(this.font, label, labelX, labelY, 0xFFFFFF); // White text color
 
             // Render dialogue text with word wrapping
             List<String> wrappedText = wrapText(content, boxWidth - (DIALOGUE_BOX_PADDING * 2));
             int textY = boxY + DIALOGUE_BOX_PADDING;
 
             for (String line : wrappedText) {
-                drawString(poseStack, this.font, line, boxX + DIALOGUE_BOX_PADDING, textY, 0xFFFFFF); // White text color
+                poseStack.drawString(this.font, line, boxX + DIALOGUE_BOX_PADDING, textY, 0xFFFFFF); // White text color
                 textY += this.font.lineHeight + 2;
             }
         }
@@ -219,15 +218,11 @@ public class DialogueScreen extends Screen{
             for (Map<String, Object> choice: choices) {
 
                 int buttonY = startY + (CHOICE_BUTTON_HEIGHT + CHOICE_BUTTON_SPACING) * i;
-
-                Button button = new Button(
-                        buttonX,
-                        buttonY,
-                        CHOICE_BUTTON_WIDTH,
-                        CHOICE_BUTTON_HEIGHT,
-                        Component.literal((String) choice.get("display")), // Use Component.literal instead of TextComponent
+                Button button = Button.builder(
+                        Component.literal((String) choice.get("display")),
                         btn -> onPress((String) choice.get("label"))
-                );
+
+                ).pos(buttonX,buttonY).build();
 
                 choiceButtons.add(button);
                 this.addRenderableWidget(button);

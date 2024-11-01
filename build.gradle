@@ -93,6 +93,9 @@ repositories {
     maven {
         url 'https://repo1.maven.org/maven2/org/luaj/luaj-jse/3.0.1'
     }
+    maven {
+        url = 'https://maven.minecraftforge.net/'
+    }
 
 }
 
