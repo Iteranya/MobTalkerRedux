@@ -13,8 +13,8 @@ This is my attempt at recreating the old Mob Talker Mod. I have zero experience 
 
 
 ## Planned Features
-- Dialogue System, VN Style 
-- Custom Scripting with Lua Integration
+- Dialogue System, VN Style
+- ~~Custom Scripting with Lua Integration~~ (Made a custom DSL and a Framework and an SDK Instead)
 - Branching Dialogue
 - Affection System
 - 2D Sprite, like Visual Novel
