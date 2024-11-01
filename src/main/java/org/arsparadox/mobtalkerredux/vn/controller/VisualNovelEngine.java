@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VisualNovelEngine {
+    public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
     private int currentState=0;
     private Map<String, Object> variables;
@@ -190,6 +191,7 @@ public class VisualNovelEngine {
                 break;
             case "finish_dialogue":
                 isEngineRunning=false;
+                shutdown = true;
             default:
                 this.currentState++;
                 break;
@@ -203,7 +205,11 @@ public class VisualNovelEngine {
             System.out.println("Engine State = "+ (this.currentState));
             if(isEngineRunning){
                 Map<String, Object> action = getDictById(this.currentState);
-                System.out.println(action.get("type"));
+                if(action.get("type")==null){
+                    shutdown = true;
+                    isEngineRunning = false;
+                    return;
+                }
                 if ("meta".equals(action.get("type"))) {
                      processMeta(action);
                 } else {

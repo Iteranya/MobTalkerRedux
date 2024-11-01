@@ -32,12 +32,14 @@ public class DialogueScreen extends Screen{
     private String content;
     private ResourceLocation sprite;
     private List<Map<String, Object>> choices;
+    //private DialogueBoxComponent dialogueBox;
 
 
 
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
         super(new TextComponent("Mob Talker"));
         this.vn = vn;
+        //dialogueBox = new DialogueBoxComponent();
     }
 
     @Override
@@ -56,7 +58,7 @@ public class DialogueScreen extends Screen{
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) { // Left click
+        if (button == 0) {
             vn.isEngineRunning=true;
             vn.runEngine();
             //Tell Engine to update the Globals, as in like, get the current state and put it in the global in this class
@@ -75,6 +77,7 @@ public class DialogueScreen extends Screen{
     private void onPress(String choice) { // BUTTON press,  btw
         vn.buttonPress(choice);//Tell engine to update their globals then update this class's global
         //After clicking, it tries to load the next dialogue...
+        vn.state.emptyChoices();
         vn.isEngineRunning=true;
         vn.runEngine();
         update();
@@ -82,11 +85,17 @@ public class DialogueScreen extends Screen{
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        // Update content as needed
         renderBackground(poseStack);
         renderCharacterName(poseStack);
         renderCharacterSprite(poseStack);
         renderDialogueBox(poseStack);
+//        dialogueBox.setContent(this.content); Still working on this bad boy
+//        dialogueBox.render(poseStack); I want modularity, but I like my sanity intact
         renderChoiceButtons();
+        if(vn.shutdown){
+            onClose();
+        }
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
@@ -198,10 +207,10 @@ public class DialogueScreen extends Screen{
 
     }
     public void renderChoiceButtons() {
+        choiceButtons.forEach(this::removeWidget);
+        choiceButtons.clear();
         if(choices!=null){
             // Clear existing buttons
-            choiceButtons.forEach(this::removeWidget);
-            choiceButtons.clear();
 
             if (choices.isEmpty()) return;
 
@@ -257,4 +266,12 @@ public class DialogueScreen extends Screen{
 
         return lines;
     }
+
+    @Override
+    public void onClose() {
+        assert this.minecraft != null;
+        this.minecraft.setScreen(null);
+    }
+
+
 }
