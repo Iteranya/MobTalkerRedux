@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
@@ -37,7 +37,7 @@ public class DialogueScreen extends Screen{
 
 
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
-        super(new TextComponent("Mob Talker"));
+        super(Component.empty());;
         this.vn = vn;
         //dialogueBox = new DialogueBoxComponent();
     }
@@ -86,7 +86,7 @@ public class DialogueScreen extends Screen{
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
-        renderBackground(poseStack);
+        //renderBackground(poseStack);
         renderCharacterName(poseStack);
         renderCharacterSprite(poseStack);
         renderDialogueBox(poseStack);
@@ -162,49 +162,44 @@ public class DialogueScreen extends Screen{
     }
 
     public void renderDialogueBox(PoseStack poseStack) {
-        if(content !=null){
-            // Calculate dialogue box dimensions
+        if (content != null) {
+            // Set dialogue box dimensions and position
             int boxWidth = Math.min(600, this.width - 40); // Max width of 600 or screen width - 40
             int boxX = (this.width - boxWidth) / 2;
-            int boxY = this.height - dialogueBoxHeight - 20; // 20 pixels from bottom
+            int boxY = this.height - dialogueBoxHeight - 5; // 20 pixels from bottom
+            int borderColor = 0xFF004400; // Border color with full opacity
+            int backgroundColor = 0xCC000000; // Semi-transparent background color
 
-            // Draw dialogue box background with gradient
-            fill(
-                    poseStack,
-                    boxX,
-                    boxY,
-                    boxX + boxWidth,
-                    boxY + dialogueBoxHeight,
-                    0xCC000000 // Base color
-            );
+            // Draw the border
+            fill(poseStack, boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
 
-            // Add border
-            fill(
-                    poseStack,
-                    boxX - 1,
-                    boxY - 1,
-                    boxX + boxWidth + 1,
-                    boxY + dialogueBoxHeight + 1,
-                    0xFF004400 // Border color
-            );
+            // Draw the main dialogue box background
+            fill(poseStack, boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
 
-            // Word wrap and render dialogue text
+            // Draw label box at the top of the dialogue box
+            int labelBoxHeight = 20; // Height of the label box
+            int labelBoxWidth = boxWidth / 5; // Width of the label box (1/5 of the dialogue box width)
+            int labelBoxX = boxX; // Align label box with the left of the dialogue box
+            int labelBoxY = boxY - labelBoxHeight - 5; // Position label box slightly above the dialogue box
+// Draw the label box
+            fill(poseStack, labelBoxX, labelBoxY, labelBoxX + labelBoxWidth, labelBoxY + labelBoxHeight, backgroundColor);
+
+
+            // Render label text centered in label box
+            int labelWidth = this.font.width(label);
+            int labelX = labelBoxX + (labelBoxWidth - labelWidth) / 2; // Center the label horizontally
+            int labelY = labelBoxY + (labelBoxHeight - this.font.lineHeight) / 2; // Center the label vertically
+            drawString(poseStack, this.font, label, labelX, labelY, 0xFFFFFF); // White text color
+
+            // Render dialogue text with word wrapping
             List<String> wrappedText = wrapText(content, boxWidth - (DIALOGUE_BOX_PADDING * 2));
             int textY = boxY + DIALOGUE_BOX_PADDING;
 
             for (String line : wrappedText) {
-                drawString(
-                        poseStack,
-                        this.font,
-                        line,
-                        boxX + DIALOGUE_BOX_PADDING,
-                        textY,
-                        0xFFFFFF
-                );
+                drawString(poseStack, this.font, line, boxX + DIALOGUE_BOX_PADDING, textY, 0xFFFFFF); // White text color
                 textY += this.font.lineHeight + 2;
             }
         }
-
     }
     public void renderChoiceButtons() {
         choiceButtons.forEach(this::removeWidget);
@@ -230,7 +225,7 @@ public class DialogueScreen extends Screen{
                         buttonY,
                         CHOICE_BUTTON_WIDTH,
                         CHOICE_BUTTON_HEIGHT,
-                        new TextComponent((String) choice.get("display")),
+                        Component.literal((String) choice.get("display")), // Use Component.literal instead of TextComponent
                         btn -> onPress((String) choice.get("label"))
                 );
 

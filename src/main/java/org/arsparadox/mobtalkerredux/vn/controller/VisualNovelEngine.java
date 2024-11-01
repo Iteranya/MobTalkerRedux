@@ -205,7 +205,7 @@ public class VisualNovelEngine {
             System.out.println("Engine State = "+ (this.currentState));
             if(isEngineRunning){
                 Map<String, Object> action = getDictById(this.currentState);
-                if(action.get("type")==null){
+                if(action == null){
                     shutdown = true;
                     isEngineRunning = false;
                     return;
