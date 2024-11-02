@@ -1,0 +1,30 @@
+name: build
+on: [push]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Gradle
+        uses: null2264/actions/gradle-setup@6712f98d592b126629afd27dc4870c93b53426b4
+        with:
+          java: 17
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew build
+
+      - name: Archive build results
+        run: tar -I zstd -cf build.tar.zst build/libs
+
+      - name: Upload build folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build.tar.zst
+          if-no-files-found: error
+          retention-days: 3
