@@ -79,13 +79,7 @@ public class MobTalkerRedux {
     @Mod.EventBusSubscriber(modid = "mobtalkerredux", bus = Mod.EventBusSubscriber.Bus.MOD)
     public class RegistryEvents {
 
-        @SubscribeEvent
-        public void buildContents(BuildCreativeModeTabContentsEvent event) {
-            // Add to ingredients tab
-            if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-                event.accept(HELLO_WORLD_ITEM);
-            }
-        }
+
 
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "mobtalkerredux");
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "mobtalkerredux");
@@ -101,6 +95,14 @@ public class MobTalkerRedux {
         public static void initialize() {
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             register(modEventBus);
+        }
+
+        @SubscribeEvent
+        public void buildContents(BuildCreativeModeTabContentsEvent event) {
+            // Add to ingredients tab
+            if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+                event.accept(HELLO_WORLD_ITEM);
+            }
         }
     }
 }

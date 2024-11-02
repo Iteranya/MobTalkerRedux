@@ -11,7 +11,7 @@ import java.util.Map;
 public class VisualNovelEngine {
     public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
-    private int currentState=0;
+    private long currentState=0;
     private Map<String, Object> variables;
 
     public DialogueState state;
@@ -24,17 +24,17 @@ public class VisualNovelEngine {
         this.state = new DialogueState(null,null,null,null);
     }
 
-    private Integer findLabelId(String var) {
+    private Long findLabelId(String var) {
         return gameData.stream()
                 .filter(action -> "label".equals(action.get("type")) && var.equals(action.get("label")))
-                .map(action -> (int) action.get("id"))
+                .map(action -> (long) action.get("id"))
                 .findFirst()
                 .orElse(null);
     }
 
-    private Map<String, Object> getDictById(int targetId) {
+    private Map<String, Object> getDictById(long targetId) {
         return gameData.stream()
-                .filter(action -> targetId == (int) action.get("id"))
+                .filter(action -> targetId == (long) action.get("id"))
                 .findFirst()
                 .orElse(null);
     }
@@ -93,7 +93,7 @@ public class VisualNovelEngine {
         this.currentState++;
     }
 
-    private void giveItem(String item, int amount) {
+    private void giveItem(String item, long amount) {
 
         this.currentState++;
     }
@@ -106,7 +106,7 @@ public class VisualNovelEngine {
     private void processConditional(Map<String, Object> condition) {
         Object var = this.variables.get(condition.get("var"));
         Object value = condition.get("value");
-        int end = (int) condition.get("end");
+        long end = (long) condition.get("end");
 
         if (value instanceof Map) {
             value = processCommand((Map<String, Object>) value);
@@ -171,7 +171,7 @@ public class VisualNovelEngine {
                         action.get("value"));
                 break;
             case "give_item":
-                giveItem((String) action.get("item"), (int) action.get("amount"));
+                giveItem((String) action.get("item"), (long) action.get("amount"));
                 break;
             case "conditional":
                 processConditional(action);
@@ -220,7 +220,7 @@ public class VisualNovelEngine {
     }
 
 
-    public int changeStateByLabel(String label) {
+    public long changeStateByLabel(String label) {
         this.currentState = findLabelId(label);
         return this.currentState;
 
