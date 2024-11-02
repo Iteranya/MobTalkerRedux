@@ -33,7 +33,7 @@ public class HelloWorldItem extends Item {
 
             Minecraft.getInstance().execute(() -> {
                     try {
-                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript("story.json"))));
+                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript("demo.json"))));
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
                     }

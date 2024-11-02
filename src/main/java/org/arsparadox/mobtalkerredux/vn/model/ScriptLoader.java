@@ -34,7 +34,7 @@ public class ScriptLoader{
 //    }
 
     public static List<Map<String, Object>> loadScript(String filePath) throws FileNotFoundException {
-        filePath = FMLPaths.CONFIGDIR.get() +"\\" +filePath;
+        filePath = FMLPaths.CONFIGDIR.get() +"\\mobtalkerredux\\" +filePath;
         ArrayNode jsonArray = loadJson(filePath);
         return convertJsonArrayToList(jsonArray);
     }
