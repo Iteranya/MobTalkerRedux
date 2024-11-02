@@ -3,6 +3,7 @@ package org.arsparadox.mobtalkerredux.vn.controller;
 import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class VisualNovelEngine {
 
     private void updateSprite(String spritePath) {
         ResourceLocation location = new ResourceLocation(
-                "mobtalkerredux", "textures/characters/" + spritePath
+                "mobtalkerredux", "textures/" + spritePath
         );
         state.setSprite(location);
         this.currentState++;
@@ -98,7 +99,7 @@ public class VisualNovelEngine {
     }
 
     private void processJump(Map<String, Object> action) {
-        currentState = findLabelId((String) action.get("label"));
+        this.currentState = findLabelId((String) action.get("label"));
     }
 
     @SuppressWarnings("unchecked")
@@ -159,7 +160,7 @@ public class VisualNovelEngine {
 
         switch (actionType) {
             case "show_sprite":
-                updateSprite((String) action.get("sprite"));
+                updateSprite((String) action.get("location"));
                 return true;
             case "dialogue":
                 updateDialogue((String) action.get("label"), (String) action.get("content"));
@@ -181,6 +182,7 @@ public class VisualNovelEngine {
                 }
                 break;
             case "choice":
+                System.out.println("Try to yoink choice"+ action);
                 updateChoices((List<Map<String, Object>>) action.get("choice"));
                 break;
             case "command":
@@ -202,23 +204,16 @@ public class VisualNovelEngine {
     public void runEngine() {
         while (isEngineRunning) { // Infinite loop
             // Check if engine is running
-            System.out.println("Engine State = "+ (this.currentState));
-            if(isEngineRunning){
-                Map<String, Object> action = getDictById(this.currentState);
-                if(action == null){
-                    shutdown = true;
-                    isEngineRunning = false;
-                    return;
-                }
-                if ("meta".equals(action.get("type"))) {
-                     processMeta(action);
-                } else {
-                    processAction(action);
-                }
-            }else{
-
-                    return;
-
+            Map<String, Object> action = getDictById(this.currentState);
+            if(action == null){
+                shutdown = true;
+                isEngineRunning = false;
+                return;
+            }
+            if ("meta".equals(((Map<?, ?>) action).get("type"))) {
+                 processMeta(action);
+            } else {
+                processAction(action);
             }
 
         }
@@ -237,5 +232,6 @@ public class VisualNovelEngine {
 
     public void buttonPress(String choice) {
         changeStateByLabel(choice);
+        this.state.setChoices(new ArrayList<>());
     }
 }

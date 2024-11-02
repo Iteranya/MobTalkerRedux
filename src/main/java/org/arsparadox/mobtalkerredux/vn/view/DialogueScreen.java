@@ -77,7 +77,6 @@ public class DialogueScreen extends Screen{
     private void onPress(String choice) { // BUTTON press,  btw
         vn.buttonPress(choice);//Tell engine to update their globals then update this class's global
         //After clicking, it tries to load the next dialogue...
-        vn.state.emptyChoices();
         vn.isEngineRunning=true;
         vn.runEngine();
         update();
@@ -101,6 +100,8 @@ public class DialogueScreen extends Screen{
     }
 
     public void renderCharacterSprite(GuiGraphics poseStack) {
+        int spriteX = this.width;
+        int spriteY = this.height;
         if(sprite!=null){
             RenderSystem.setShaderTexture(0, sprite);
             RenderSystem.enableBlend();
@@ -108,8 +109,8 @@ public class DialogueScreen extends Screen{
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             // Calculate sprite position to center it
-            int spriteX = (this.width - DISPLAYED_SPRITE_WIDTH) / 2;
-            int spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Position it in upper third
+            spriteX = (this.width - DISPLAYED_SPRITE_WIDTH) / 2;
+            spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Position it in upper third
 
             // Render the sprite with proper scaling
 
