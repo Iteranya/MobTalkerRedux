@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
+import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -27,12 +28,12 @@ public class DialogueScreen extends Screen{
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
 
+    private List<String> spritesToRender = new ArrayList<>();
     private VisualNovelEngine vn;
     private String label;
     private String content;
-    private ResourceLocation sprite;
     private List<Map<String, Object>> choices;
-    //private DialogueBoxComponent dialogueBox;
+    private String background;
 
 
 
@@ -51,9 +52,15 @@ public class DialogueScreen extends Screen{
     public void update(){
         DialogueState state = vn.getNext();
         label = state.getLabel();
-        sprite = state.getSprite();
+        //if()
+        updateSprites();
         content = state.getContent();
         choices = state.getChoices();
+    }
+
+    public void updateSprites(){
+        List<SpriteState> currentSprites = new ArrayList<>();
+        currentSprites = spritesToRender;
     }
 
     @Override
@@ -85,7 +92,7 @@ public class DialogueScreen extends Screen{
     @Override
     public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
-        //renderBackground(poseStack);
+        renderBackground(poseStack);
         renderCharacterName(poseStack);
         renderCharacterSprite(poseStack);
         renderDialogueBox(poseStack);
@@ -98,25 +105,46 @@ public class DialogueScreen extends Screen{
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics) {
+        if(background==null||background.isEmpty()){
+            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
+            RenderSystem.setShaderTexture(0, bg);
+            guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
+            // Or if you want a specific size instead of full screen:
+            // guiGraphics.blit(background, x, y, 0, 0, width, height);
+        }
 
+    }
     public void renderCharacterSprite(GuiGraphics poseStack) {
-        int spriteX = this.width;
-        int spriteY = this.height;
-        if(sprite!=null){
-            RenderSystem.setShaderTexture(0, sprite);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        if (spritesToRender == null || spritesToRender.isEmpty()) return;
 
-            // Calculate sprite position to center it
-            spriteX = (this.width - DISPLAYED_SPRITE_WIDTH) / 2;
-            spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Position it in upper third
+        // Calculate total width needed and spacing
+        int totalSprites = spritesToRender.size();
+        int spacing = 20; // pixels between sprites
+        int totalWidth = (DISPLAYED_SPRITE_WIDTH * totalSprites) + (spacing * (totalSprites - 1));
 
-            // Render the sprite with proper scaling
+        // Calculate starting X position to center the entire group
+        int startX = (this.width - totalWidth) / 2;
+        int spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Keep vertical position in upper third
+
+        // Common render settings
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        // Render each sprite
+        for (int i = 0; i < spritesToRender.size(); i++) {
+            ResourceLocation currentSprite = new ResourceLocation(
+                    "mobtalkerredux", "textures/" + spritesToRender.get(i)
+            );
+            RenderSystem.setShaderTexture(0, currentSprite);
+
+            int currentX = startX + (i * (DISPLAYED_SPRITE_WIDTH + spacing));
 
             poseStack.blit(
-                    sprite,
-                    spriteX,
+                    currentSprite,
+                    currentX,
                     spriteY,
                     0, // uOffset
                     0, // vOffset
@@ -125,10 +153,9 @@ public class DialogueScreen extends Screen{
                     SPRITE_WIDTH,
                     SPRITE_HEIGHT
             );
-
-            RenderSystem.disableBlend();
         }
 
+        RenderSystem.disableBlend();
     }
 
     public void renderCharacterName(GuiGraphics poseStack) {

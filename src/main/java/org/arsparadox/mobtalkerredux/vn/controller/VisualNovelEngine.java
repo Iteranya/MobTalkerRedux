@@ -1,6 +1,5 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
-import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.ArrayList;
@@ -40,10 +39,7 @@ public class VisualNovelEngine {
     }
 
     private void updateSprite(String spritePath) {
-        ResourceLocation location = new ResourceLocation(
-                "mobtalkerredux", "textures/" + spritePath
-        );
-        state.setSprite(location);
+        state.setSprite("textures/" + spritePath);
         this.currentState++;
     }
 
