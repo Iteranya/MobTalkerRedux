@@ -12,6 +12,7 @@ import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 
 public class HelloWorldItem extends Item {
@@ -28,16 +29,16 @@ public class HelloWorldItem extends Item {
             );
         }
         else {
-//            ScriptLoader scriptLoader = new ScriptLoader();
-//            DialogueScreenVM dialogue = scriptLoader.loadDialogue("debug.dialogue.lua");
 
             Minecraft.getInstance().execute(() -> {
                     try {
-                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript("demo.json"))));
+                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadDemo())));
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                }
+                    }
             );
 
             WaifuManager waifuManager = new WaifuManager(context.getPlayer());

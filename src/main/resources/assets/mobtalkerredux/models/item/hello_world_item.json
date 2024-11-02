@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "yourmodid:item/mod_item"
+    "layer0": "mobtalkerredux:item/mod_item"
   }
 }
