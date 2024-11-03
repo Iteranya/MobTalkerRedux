@@ -9,7 +9,7 @@
 
 ## Description
 
-This is my attempt at recreating the old Mob Talker Mod. I have zero experience in coding, but I have so much free time and GPT, so fuck it, let's see how far I can get with this.
+This is my attempt at recreating the old Mob Talker Mod.
 
 
 ## Planned Features
@@ -37,3 +37,7 @@ This is my attempt at recreating the old Mob Talker Mod. I have zero experience 
 - [ ] Saving Player Data and Data Management (I've made the classes required, bringing them together  is PIEN without an Ingame Debugging Tool)
 - [ ] Custom Mob (Yeah, this goes later)
 - [ ] Questing System (May or may not use a 3rd Party Mod integration for this)
+
+
+![Screenshot 2024-11-03 202514](https://github.com/user-attachments/assets/a98da30b-1944-41e8-b2c6-3f8184fed51e)
+
