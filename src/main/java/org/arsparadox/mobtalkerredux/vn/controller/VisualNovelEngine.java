@@ -1,17 +1,14 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
-import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
+import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VisualNovelEngine {
     public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
-    private int currentState=0;
+    private long currentState=0;
     private Map<String, Object> variables;
 
     public DialogueState state;
@@ -21,32 +18,75 @@ public class VisualNovelEngine {
         this.gameData = gameData;
         this.currentState = 0;
         this.variables = new HashMap<>();
-        this.state = new DialogueState(null,null,null,null);
+        this.state = new DialogueState(null,null,null);
     }
 
-    private Integer findLabelId(String var) {
+    private Long findLabelId(String var) {
         return gameData.stream()
                 .filter(action -> "label".equals(action.get("type")) && var.equals(action.get("label")))
-                .map(action -> (int) action.get("id"))
+                .map(action -> (long) action.get("id"))
                 .findFirst()
                 .orElse(null);
     }
 
-    private Map<String, Object> getDictById(int targetId) {
+    private Map<String, Object> getDictById(long targetId) {
         return gameData.stream()
-                .filter(action -> targetId == (int) action.get("id"))
+                .filter(action -> targetId == (long) action.get("id"))
                 .findFirst()
                 .orElse(null);
     }
 
-    private void updateSprite(String spritePath) {
-        ResourceLocation location = new ResourceLocation(
-                "mobtalkerredux", "textures/" + spritePath
-        );
-        state.setSprite(location);
+    private void removeSprite(String remove){
+        System.out.println("Try to remove sprite: "+ remove);
+        removeSpriteByFolder(this.state.getSprites(), remove);
+    }
+
+    private void updateSprite(Map<String, Object> sprite) {
+        String spritePos;
+        if(sprite.get("position")==null){
+            spritePos = "CUSTOM";
+        }
+        else{
+            spritePos = (String) sprite.get("position");
+        }
+        SpriteState newSprite;
+        newSprite = (new SpriteState(
+                (String) sprite.get("sprite"),
+                (String) sprite.get("location"),
+                spritePos
+        ));
+
+        if(Objects.equals((String) sprite.get("action"), "show")){
+            System.out.println("New Sprite: "+newSprite.getSprite());
+            System.out.println("Old Sprite: "+sprite.get("action"));
+            if(sprite.get("wRatio")!=null){
+                newSprite.setPositioning(
+                        ((Long) sprite.get("wRatio")).intValue(),
+                        ((Long) sprite.get("hRatio")).intValue(),
+                        ((Long) sprite.get("wFrameRatio")).intValue(),
+                        ((Long) sprite.get("hFrameRatio")).intValue(),
+                        ((Long) sprite.get("column")).intValue(),
+                        ((Long) sprite.get("row")).intValue()
+                );
+            }
+            for (SpriteState oldSprite: this.state.getSprites()) {
+                System.out.println("New Sprite: "+oldSprite.getSprite());
+                System.out.println("Old Sprite: "+newSprite.getSprite());
+
+                if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
+                    removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
+                    break;
+                }
+            }
+            System.out.println("Adding New Sprite: " + newSprite.getSprite());
+            this.state.addSprite(newSprite);
+        }
         this.currentState++;
     }
-
+    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
+        System.out.println("Remove: "+folderName);
+        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
+    }
     private void updateDialogue(String label, String content) {
         state.setLabel(label);
         state.setContent(content);
@@ -93,7 +133,7 @@ public class VisualNovelEngine {
         this.currentState++;
     }
 
-    private void giveItem(String item, int amount) {
+    private void giveItem(String item, long amount) {
 
         this.currentState++;
     }
@@ -106,7 +146,7 @@ public class VisualNovelEngine {
     private void processConditional(Map<String, Object> condition) {
         Object var = this.variables.get(condition.get("var"));
         Object value = condition.get("value");
-        int end = (int) condition.get("end");
+        long end = (long) condition.get("end");
 
         if (value instanceof Map) {
             value = processCommand((Map<String, Object>) value);
@@ -160,8 +200,10 @@ public class VisualNovelEngine {
 
         switch (actionType) {
             case "show_sprite":
-                updateSprite((String) action.get("location"));
+                updateSprite(action);
                 return true;
+            case "remove_sprite":
+                removeSprite((String) action.get("sprite"));
             case "dialogue":
                 updateDialogue((String) action.get("label"), (String) action.get("content"));
                 return true;
@@ -171,7 +213,7 @@ public class VisualNovelEngine {
                         action.get("value"));
                 break;
             case "give_item":
-                giveItem((String) action.get("item"), (int) action.get("amount"));
+                giveItem((String) action.get("item"), (long) action.get("amount"));
                 break;
             case "conditional":
                 processConditional(action);
@@ -220,7 +262,7 @@ public class VisualNovelEngine {
     }
 
 
-    public int changeStateByLabel(String label) {
+    public long changeStateByLabel(String label) {
         this.currentState = findLabelId(label);
         return this.currentState;
 

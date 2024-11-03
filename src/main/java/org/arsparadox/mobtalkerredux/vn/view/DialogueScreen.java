@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
+import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -27,12 +28,12 @@ public class DialogueScreen extends Screen{
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
 
+    private List<SpriteState> spritesToRender = new ArrayList<>();
     private VisualNovelEngine vn;
     private String label;
     private String content;
-    private ResourceLocation sprite;
     private List<Map<String, Object>> choices;
-    //private DialogueBoxComponent dialogueBox;
+    private String background;
 
 
 
@@ -51,9 +52,26 @@ public class DialogueScreen extends Screen{
     public void update(){
         DialogueState state = vn.getNext();
         label = state.getLabel();
-        sprite = state.getSprite();
+        //if()
+        updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
+    }
+
+    public void updateSprites(DialogueState state){
+//        SpriteState currentSprite = state.getSprite();
+//        for (SpriteState sprite: this.spritesToRender) {
+//            if(Objects.equals(sprite.getSprite(), currentSprite.getSprite())){
+//                removeSpriteByFolder(this.spritesToRender,sprite.getSprite());
+//                break;
+//            }
+//        }
+        spritesToRender = state.getSprites();
+        System.out.println(state.getSprites().size());
+
+    }
+    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
+        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
 
     @Override
@@ -85,9 +103,9 @@ public class DialogueScreen extends Screen{
     @Override
     public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
-        //renderBackground(poseStack);
+        renderBackground(poseStack);
         renderCharacterName(poseStack);
-        renderCharacterSprite(poseStack);
+        renderForeground(poseStack);
         renderDialogueBox(poseStack);
 //        dialogueBox.setContent(this.content); Still working on this bad boy
 //        dialogueBox.render(poseStack); I want modularity, but I like my sanity intact
@@ -98,37 +116,151 @@ public class DialogueScreen extends Screen{
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
-
-    public void renderCharacterSprite(GuiGraphics poseStack) {
-        int spriteX = this.width;
-        int spriteY = this.height;
-        if(sprite!=null){
-            RenderSystem.setShaderTexture(0, sprite);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-            // Calculate sprite position to center it
-            spriteX = (this.width - DISPLAYED_SPRITE_WIDTH) / 2;
-            spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Position it in upper third
-
-            // Render the sprite with proper scaling
-
-            poseStack.blit(
-                    sprite,
-                    spriteX,
-                    spriteY,
-                    0, // uOffset
-                    0, // vOffset
-                    DISPLAYED_SPRITE_WIDTH,
-                    DISPLAYED_SPRITE_HEIGHT,
-                    SPRITE_WIDTH,
-                    SPRITE_HEIGHT
-            );
-
-            RenderSystem.disableBlend();
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics) {
+        if(background!=null&&!background.isEmpty()){
+            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
+            RenderSystem.setShaderTexture(0, bg);
+            guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
         }
 
+    }
+
+    public void renderForeground(GuiGraphics poseStack){
+
+        // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
+        // FUCK, I have to make this BS
+        //  ___ ___ ___ ___ ___
+        // |___|___|___|___|___|
+        // |___|___|HHH|___|___|
+        // |___|___|HHH|___|___|
+        // Pictured (5x3, 1x2, 3x2)
+        // Okay so, all images will be defined by their aspect ratio WxH
+        // So now I just have to make a logic that fits the thing in this thing
+        // Because there's only so much way you can fit a 3x2 images inside a 5x3 rectangle
+        // Yeah...
+        // So in the FSM, determining position should be like:
+        // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
+        // And then I code the calculation in Minecraft!!
+        // This should work, right??? Gods, I don't want to make Script Maker deal with this math...
+        // I'll let mod maker (me) do the math...
+
+
+        for (SpriteState sprite : spritesToRender) {
+            ResourceLocation currentSprite = new ResourceLocation(
+                    "mobtalkerredux", "textures/" + sprite.getLocation()
+            );
+            RenderSystem.setShaderTexture(0, currentSprite);
+
+            double wRatio = sprite.getwRatio(); // Also the number of column
+            double hRatio = sprite.gethRatio(); // Also the number of row
+
+            double frameWRatio =sprite.getFrameWRatio(); // This will be the size of the 'frame' that does the render
+            double frameHRatio = sprite.getFrameHRatio(); // Like the space the image took
+
+            double startColumn = sprite.getStartColumn();
+            double startRow = sprite.getStartRow(); //First row, we don't do zero, this isn't an array
+
+            // Okay, stuff above  is what the script maker decide.
+
+            // Now to math this shit
+
+            int wBlocks = (int) (this.width/wRatio); //Actual Pixel Size of the Screen
+            int hBlocks = (int) (this.height/hRatio); //Actual Pixel Size of the Screen
+
+            int wThingBlock = (int) (wBlocks*frameWRatio);
+            int hThingBlock = (int) (hBlocks*frameHRatio);
+
+            int startColumnPos = (int) (wBlocks*(startColumn-1));
+            int startRowPos = (int) (hBlocks*(startRow-1)); // Immediately regretted my decision there...
+
+            // Fuck, these aren't squares aren't they? Shit...
+            // Screw it, we'll see how this'll look like, then complain
+            // Okay, those are positioning, the frame size... Next up is... Image Dimensions
+
+            // Now how do we 'Fit' this fucker???
+
+            poseStack.blit(
+                    currentSprite, // The Thing
+                    (int)startColumnPos, // The x location, I think it's the
+                    (int)startRowPos, // The y location
+                    0,  // source x I don't know what this does...
+                    0,  // source y Oh nyooooo~
+                    (int)wThingBlock,   // What even is this?
+                    (int)hThingBlock,  // No seriously what is this???
+                    (int)wThingBlock,  // What's the difference!?
+                    (int)hThingBlock  // FUCK!!!
+            );
+        }
+    }
+    public void renderCharacterSprite(GuiGraphics poseStack) {
+        if (spritesToRender == null || spritesToRender.isEmpty()) return;
+        final int COLUMN = this.width/5;
+        final int ROW = this.height/3;
+        // Define base sprite dimensions
+        final int SPRITE_BASE_WIDTH = 500;
+        final int SPRITE_BASE_HEIGHT = 930;
+        final int FAR_LEFT_COLUMN = 0;
+        final int LEFT_COLUMN = COLUMN;
+        final int CENTER_COLUMN = COLUMN*2;
+        final int RIGHT_COLUMN = COLUMN*3;
+        final int FAR_RIGHT_COLUMN = COLUMN*4;
+        // Scale factor for display (half size)
+
+        final float SCALE = 0.3f;
+        final int DISPLAYED_WIDTH = (int)(SPRITE_BASE_WIDTH * SCALE);
+        final int DISPLAYED_HEIGHT = (int)(SPRITE_BASE_HEIGHT * SCALE);
+
+        // Calculate screen positions
+//        int screenCenterX = this.width / 2;
+
+        // Adjust vertical position - place it 1/3 from the top
+        int spriteY = (this.height - DISPLAYED_HEIGHT) / 3;
+
+        // Calculate horizontal positions with proper spacing
+        // Center sprite will be at screenCenterX - DISPLAYED_WIDTH/2 to properly center
+////        int centerX = screenCenterX - (DISPLAYED_WIDTH / 2);
+//        int leftX = centerX - DISPLAYED_WIDTH - 20;  // Add 20px gap
+//        int farLeftX = leftX - DISPLAYED_WIDTH - 20;
+//        int rightX = centerX + DISPLAYED_WIDTH + 20;
+//        int farRightX = rightX + DISPLAYED_WIDTH + 20;
+
+        // Setup rendering
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        // Render each sprite
+        for (SpriteState sprite : spritesToRender) {
+            ResourceLocation currentSprite = new ResourceLocation(
+                    "mobtalkerredux", "textures/" + sprite.getLocation()
+            );
+            RenderSystem.setShaderTexture(0, currentSprite);
+
+            // Determine x position
+            int xPos = switch (sprite.getPosition()) {
+                case "FAR_LEFT" -> FAR_LEFT_COLUMN;
+                case "LEFT" -> LEFT_COLUMN;
+                case "RIGHT" -> RIGHT_COLUMN;
+                case "FAR_RIGHT" -> FAR_RIGHT_COLUMN;
+                default -> CENTER_COLUMN;  // CENTER or any other value
+            };
+            // Render the sprite
+            poseStack.blit(
+                    currentSprite,
+                    xPos,
+                    spriteY,
+                    0,  // source x
+                    0,  // source y
+                    COLUMN,   // displayed width
+                    ROW*3,  // displayed height
+                    COLUMN,  // texture width
+                    ROW*2  // texture height
+            );
+        }
+
+
+        RenderSystem.disableBlend();
     }
 
     public void renderCharacterName(GuiGraphics poseStack) {
