@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class DialogueScreen extends Screen{
     private static final int DIALOGUE_BOX_PADDING = 15;
@@ -60,14 +59,15 @@ public class DialogueScreen extends Screen{
     }
 
     public void updateSprites(DialogueState state){
-        SpriteState currentSprite = state.getSprite();
-        for (SpriteState sprite: this.spritesToRender) {
-            if(Objects.equals(sprite.getSprite(), currentSprite.getSprite())){
-                removeSpriteByFolder(this.spritesToRender,sprite.getSprite());
-                break;
-            }
-        }
-        spritesToRender.add(currentSprite);
+//        SpriteState currentSprite = state.getSprite();
+//        for (SpriteState sprite: this.spritesToRender) {
+//            if(Objects.equals(sprite.getSprite(), currentSprite.getSprite())){
+//                removeSpriteByFolder(this.spritesToRender,sprite.getSprite());
+//                break;
+//            }
+//        }
+        spritesToRender = state.getSprites();
+        System.out.println(state.getSprites().size());
 
     }
     public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {

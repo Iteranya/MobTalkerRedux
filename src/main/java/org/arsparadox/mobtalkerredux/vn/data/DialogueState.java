@@ -1,19 +1,23 @@
 package org.arsparadox.mobtalkerredux.vn.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class DialogueState {
+    // This class will represent EVERYTHING visible on screen
+    // I mean this in the most literal way possible
+    // Everything on screen will be decided by this class
+    // Let's *Fucking Do This*
     private String label;
     private String content;
-    private SpriteState sprite;
+    private List <SpriteState> sprites = new ArrayList<>();
     private List<Map<String, Object>> choices;
 
-    public DialogueState(String label, String content, SpriteState sprite, List<Map<String, Object>> choices) {
+    public DialogueState(String label, String content, List<Map<String, Object>> choices) {
         this.label = label;
         this.content = content;
-        this.sprite = sprite;
-        this.choices = choices;
+
     }
 
     // Getters and setters
@@ -21,8 +25,11 @@ public class DialogueState {
     public void setLabel(String label) { this.label = label; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public SpriteState getSprite() { return sprite; }
-    public void setSprite(SpriteState sprite) { this.sprite = sprite; }
+//    public SpriteState getSprite() { return sprite; }
+//    public void setSprite(SpriteState sprite) { this.sprite = sprite; }
+
+    public List<SpriteState> getSprites() { return sprites; }
+    public void addSprite(SpriteState sprite) { this.sprites.add(sprite); }
 
     public List<Map<String, Object>> getChoices() {
         return choices;

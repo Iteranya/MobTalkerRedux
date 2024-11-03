@@ -3,10 +3,7 @@ package org.arsparadox.mobtalkerredux.vn.controller;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VisualNovelEngine {
     public boolean shutdown = false;
@@ -21,7 +18,7 @@ public class VisualNovelEngine {
         this.gameData = gameData;
         this.currentState = 0;
         this.variables = new HashMap<>();
-        this.state = new DialogueState(null,null,null,null);
+        this.state = new DialogueState(null,null,null);
     }
 
     private Long findLabelId(String var) {
@@ -39,6 +36,11 @@ public class VisualNovelEngine {
                 .orElse(null);
     }
 
+    private void removeSprite(String remove){
+        System.out.println("Try to remove sprite: "+ remove);
+        removeSpriteByFolder(this.state.getSprites(), remove);
+    }
+
     private void updateSprite(Map<String, Object> sprite) {
         String spritePos;
         if(sprite.get("position")==null){
@@ -54,20 +56,37 @@ public class VisualNovelEngine {
                 spritePos
         ));
 
-        if(sprite.get("wRatio")!=null){
-            newSprite.setPositioning(
-                    ((Long) sprite.get("wRatio")).intValue(),
-                    ((Long) sprite.get("hRatio")).intValue(),
-                    ((Long) sprite.get("wFrameRatio")).intValue(),
-                    ((Long) sprite.get("hFrameRatio")).intValue(),
-                    ((Long) sprite.get("column")).intValue(),
-                    ((Long) sprite.get("row")).intValue()
-            );
+        if(Objects.equals((String) sprite.get("action"), "show")){
+            System.out.println("New Sprite: "+newSprite.getSprite());
+            System.out.println("Old Sprite: "+sprite.get("action"));
+            if(sprite.get("wRatio")!=null){
+                newSprite.setPositioning(
+                        ((Long) sprite.get("wRatio")).intValue(),
+                        ((Long) sprite.get("hRatio")).intValue(),
+                        ((Long) sprite.get("wFrameRatio")).intValue(),
+                        ((Long) sprite.get("hFrameRatio")).intValue(),
+                        ((Long) sprite.get("column")).intValue(),
+                        ((Long) sprite.get("row")).intValue()
+                );
+            }
+            for (SpriteState oldSprite: this.state.getSprites()) {
+                System.out.println("New Sprite: "+oldSprite.getSprite());
+                System.out.println("Old Sprite: "+newSprite.getSprite());
+
+                if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
+                    removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
+                    break;
+                }
+            }
+            System.out.println("Adding New Sprite: " + newSprite.getSprite());
+            this.state.addSprite(newSprite);
         }
-        this.state.setSprite(newSprite);
         this.currentState++;
     }
-
+    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
+        System.out.println("Remove: "+folderName);
+        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
+    }
     private void updateDialogue(String label, String content) {
         state.setLabel(label);
         state.setContent(content);
@@ -183,6 +202,8 @@ public class VisualNovelEngine {
             case "show_sprite":
                 updateSprite(action);
                 return true;
+            case "remove_sprite":
+                removeSprite((String) action.get("sprite"));
             case "dialogue":
                 updateDialogue((String) action.get("label"), (String) action.get("content"));
                 return true;

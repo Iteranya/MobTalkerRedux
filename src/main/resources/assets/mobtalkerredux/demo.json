@@ -131,7 +131,7 @@
     "hRatio": 9,
     "wFrameRatio": 5,
     "hFrameRatio": 8,
-    "column": 14,
+    "column": 10,
     "row": 1,
     "id": 14
   },
@@ -173,7 +173,7 @@
     "hRatio": 9,
     "wFrameRatio": 5,
     "hFrameRatio": 8,
-    "column": 14,
+    "column": 10,
     "row": 1,
     "id": 18
   },
@@ -236,7 +236,7 @@
   {
     "type": "remove_sprite",
     "action": "remove_character",
-    "character": "cupa",
+    "sprite": "cupa",
     "id": 25
   },
   {
@@ -838,7 +838,6 @@
     "type": "remove_sprite",
     "action": "remove",
     "sprite": "old-dsl",
-    "location": "asset/old-dsl.png",
     "id": 93
   },
   {
@@ -929,7 +928,6 @@
     "type": "remove_sprite",
     "action": "remove",
     "sprite": "python-dsl",
-    "location": "asset/python-dsl.png",
     "id": 104
   },
   {
