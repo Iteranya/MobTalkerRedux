@@ -40,11 +40,31 @@ public class VisualNovelEngine {
     }
 
     private void updateSprite(Map<String, Object> sprite) {
-
-        state.setSprite(new SpriteState(
+        String spritePos;
+        if(sprite.get("position")==null){
+            spritePos = "CUSTOM";
+        }
+        else{
+            spritePos = (String) sprite.get("position");
+        }
+        SpriteState newSprite;
+        newSprite = (new SpriteState(
                 (String) sprite.get("sprite"),
-                (String) sprite.get("location")
+                (String) sprite.get("location"),
+                spritePos
         ));
+
+        if(sprite.get("wRatio")!=null){
+            newSprite.setPositioning(
+                    ((Long) sprite.get("wRatio")).intValue(),
+                    ((Long) sprite.get("hRatio")).intValue(),
+                    ((Long) sprite.get("wFrameRatio")).intValue(),
+                    ((Long) sprite.get("hFrameRatio")).intValue(),
+                    ((Long) sprite.get("column")).intValue(),
+                    ((Long) sprite.get("row")).intValue()
+            );
+        }
+        this.state.setSprite(newSprite);
         this.currentState++;
     }
 

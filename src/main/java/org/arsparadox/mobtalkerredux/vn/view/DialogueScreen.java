@@ -105,7 +105,7 @@ public class DialogueScreen extends Screen{
         // Update content as needed
         renderBackground(poseStack);
         renderCharacterName(poseStack);
-        renderCharacterSprite(poseStack);
+        renderForeground(poseStack);
         renderDialogueBox(poseStack);
 //        dialogueBox.setContent(this.content); Still working on this bad boy
 //        dialogueBox.render(poseStack); I want modularity, but I like my sanity intact
@@ -122,50 +122,143 @@ public class DialogueScreen extends Screen{
             ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
             RenderSystem.setShaderTexture(0, bg);
             guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
-            // Or if you want a specific size instead of full screen:
-            // guiGraphics.blit(background, x, y, 0, 0, width, height);
         }
 
     }
+
+    public void renderForeground(GuiGraphics poseStack){
+
+        // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
+        // FUCK, I have to make this BS
+        //  ___ ___ ___ ___ ___
+        // |___|___|___|___|___|
+        // |___|___|HHH|___|___|
+        // |___|___|HHH|___|___|
+        // Pictured (5x3, 1x2, 3x2)
+        // Okay so, all images will be defined by their aspect ratio WxH
+        // So now I just have to make a logic that fits the thing in this thing
+        // Because there's only so much way you can fit a 3x2 images inside a 5x3 rectangle
+        // Yeah...
+        // So in the FSM, determining position should be like:
+        // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
+        // And then I code the calculation in Minecraft!!
+        // This should work, right??? Gods, I don't want to make Script Maker deal with this math...
+        // I'll let mod maker (me) do the math...
+
+
+        for (SpriteState sprite : spritesToRender) {
+            ResourceLocation currentSprite = new ResourceLocation(
+                    "mobtalkerredux", "textures/" + sprite.getLocation()
+            );
+            RenderSystem.setShaderTexture(0, currentSprite);
+
+            double wRatio = sprite.getwRatio(); // Also the number of column
+            double hRatio = sprite.gethRatio(); // Also the number of row
+
+            double frameWRatio =sprite.getFrameWRatio(); // This will be the size of the 'frame' that does the render
+            double frameHRatio = sprite.getFrameHRatio(); // Like the space the image took
+
+            double startColumn = sprite.getStartColumn();
+            double startRow = sprite.getStartRow(); //First row, we don't do zero, this isn't an array
+
+            // Okay, stuff above  is what the script maker decide.
+
+            // Now to math this shit
+
+            int wBlocks = (int) (this.width/wRatio); //Actual Pixel Size of the Screen
+            int hBlocks = (int) (this.height/hRatio); //Actual Pixel Size of the Screen
+
+            int wThingBlock = (int) (wBlocks*frameWRatio);
+            int hThingBlock = (int) (hBlocks*frameHRatio);
+
+            int startColumnPos = (int) (wBlocks*(startColumn-1));
+            int startRowPos = (int) (hBlocks*(startRow-1)); // Immediately regretted my decision there...
+
+            // Fuck, these aren't squares aren't they? Shit...
+            // Screw it, we'll see how this'll look like, then complain
+            // Okay, those are positioning, the frame size... Next up is... Image Dimensions
+
+            // Now how do we 'Fit' this fucker???
+
+            poseStack.blit(
+                    currentSprite, // The Thing
+                    (int)startColumnPos, // The x location, I think it's the
+                    (int)startRowPos, // The y location
+                    0,  // source x I don't know what this does...
+                    0,  // source y Oh nyooooo~
+                    (int)wThingBlock,   // What even is this?
+                    (int)hThingBlock,  // No seriously what is this???
+                    (int)wThingBlock,  // What's the difference!?
+                    (int)hThingBlock  // FUCK!!!
+            );
+        }
+    }
     public void renderCharacterSprite(GuiGraphics poseStack) {
         if (spritesToRender == null || spritesToRender.isEmpty()) return;
+        final int COLUMN = this.width/5;
+        final int ROW = this.height/3;
+        // Define base sprite dimensions
+        final int SPRITE_BASE_WIDTH = 500;
+        final int SPRITE_BASE_HEIGHT = 930;
+        final int FAR_LEFT_COLUMN = 0;
+        final int LEFT_COLUMN = COLUMN;
+        final int CENTER_COLUMN = COLUMN*2;
+        final int RIGHT_COLUMN = COLUMN*3;
+        final int FAR_RIGHT_COLUMN = COLUMN*4;
+        // Scale factor for display (half size)
 
-        // Calculate total width needed and spacing
-        int totalSprites = spritesToRender.size();
-        int spacing = 20; // pixels between sprites
-        int totalWidth = (DISPLAYED_SPRITE_WIDTH * totalSprites) + (spacing * (totalSprites - 1));
+        final float SCALE = 0.3f;
+        final int DISPLAYED_WIDTH = (int)(SPRITE_BASE_WIDTH * SCALE);
+        final int DISPLAYED_HEIGHT = (int)(SPRITE_BASE_HEIGHT * SCALE);
 
-        // Calculate starting X position to center the entire group
-        int startX = (this.width - totalWidth) / 2;
-        int spriteY = (this.height - DISPLAYED_SPRITE_HEIGHT) / 3; // Keep vertical position in upper third
+        // Calculate screen positions
+//        int screenCenterX = this.width / 2;
 
-        // Common render settings
+        // Adjust vertical position - place it 1/3 from the top
+        int spriteY = (this.height - DISPLAYED_HEIGHT) / 3;
+
+        // Calculate horizontal positions with proper spacing
+        // Center sprite will be at screenCenterX - DISPLAYED_WIDTH/2 to properly center
+////        int centerX = screenCenterX - (DISPLAYED_WIDTH / 2);
+//        int leftX = centerX - DISPLAYED_WIDTH - 20;  // Add 20px gap
+//        int farLeftX = leftX - DISPLAYED_WIDTH - 20;
+//        int rightX = centerX + DISPLAYED_WIDTH + 20;
+//        int farRightX = rightX + DISPLAYED_WIDTH + 20;
+
+        // Setup rendering
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        //System.out.println(spritesToRender);
+
         // Render each sprite
-        for (int i = 0; i < spritesToRender.size(); i++) {
+        for (SpriteState sprite : spritesToRender) {
             ResourceLocation currentSprite = new ResourceLocation(
-                    "mobtalkerredux", "textures/" + spritesToRender.get(i).getLocation()
+                    "mobtalkerredux", "textures/" + sprite.getLocation()
             );
-            System.out.println(currentSprite.toString());
             RenderSystem.setShaderTexture(0, currentSprite);
 
-            int currentX = startX + (i * (DISPLAYED_SPRITE_WIDTH + spacing));
-
+            // Determine x position
+            int xPos = switch (sprite.getPosition()) {
+                case "FAR_LEFT" -> FAR_LEFT_COLUMN;
+                case "LEFT" -> LEFT_COLUMN;
+                case "RIGHT" -> RIGHT_COLUMN;
+                case "FAR_RIGHT" -> FAR_RIGHT_COLUMN;
+                default -> CENTER_COLUMN;  // CENTER or any other value
+            };
+            // Render the sprite
             poseStack.blit(
                     currentSprite,
-                    currentX,
+                    xPos,
                     spriteY,
-                    0, // uOffset
-                    0, // vOffset
-                    DISPLAYED_SPRITE_WIDTH,
-                    DISPLAYED_SPRITE_HEIGHT,
-                    SPRITE_WIDTH,
-                    SPRITE_HEIGHT
+                    0,  // source x
+                    0,  // source y
+                    COLUMN,   // displayed width
+                    ROW*3,  // displayed height
+                    COLUMN,  // texture width
+                    ROW*2  // texture height
             );
         }
+
 
         RenderSystem.disableBlend();
     }
