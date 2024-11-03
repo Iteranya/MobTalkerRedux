@@ -1,6 +1,7 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
+import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,8 +39,12 @@ public class VisualNovelEngine {
                 .orElse(null);
     }
 
-    private void updateSprite(String spritePath) {
-        state.setSprite("textures/" + spritePath);
+    private void updateSprite(Map<String, Object> sprite) {
+
+        state.setSprite(new SpriteState(
+                (String) sprite.get("sprite"),
+                (String) sprite.get("location")
+        ));
         this.currentState++;
     }
 
@@ -156,7 +161,7 @@ public class VisualNovelEngine {
 
         switch (actionType) {
             case "show_sprite":
-                updateSprite((String) action.get("location"));
+                updateSprite(action);
                 return true;
             case "dialogue":
                 updateDialogue((String) action.get("label"), (String) action.get("content"));

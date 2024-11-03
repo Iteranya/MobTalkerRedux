@@ -6,10 +6,10 @@ import java.util.Map;
 public class DialogueState {
     private String label;
     private String content;
-    private String sprite;
+    private SpriteState sprite;
     private List<Map<String, Object>> choices;
 
-    public DialogueState(String label, String content, String sprite, List<Map<String, Object>> choices) {
+    public DialogueState(String label, String content, SpriteState sprite, List<Map<String, Object>> choices) {
         this.label = label;
         this.content = content;
         this.sprite = sprite;
@@ -21,8 +21,8 @@ public class DialogueState {
     public void setLabel(String label) { this.label = label; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public String getSprite() { return sprite; }
-    public void setSprite(String sprite) { this.sprite = sprite; }
+    public SpriteState getSprite() { return sprite; }
+    public void setSprite(SpriteState sprite) { this.sprite = sprite; }
 
     public List<Map<String, Object>> getChoices() {
         return choices;

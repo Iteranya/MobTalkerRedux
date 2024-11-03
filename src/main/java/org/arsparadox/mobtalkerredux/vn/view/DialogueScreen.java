@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DialogueScreen extends Screen{
     private static final int DIALOGUE_BOX_PADDING = 15;
@@ -28,7 +29,7 @@ public class DialogueScreen extends Screen{
     private int dialogueBoxHeight = 80;
     private List<Button> choiceButtons = new ArrayList<>();
 
-    private List<String> spritesToRender = new ArrayList<>();
+    private List<SpriteState> spritesToRender = new ArrayList<>();
     private VisualNovelEngine vn;
     private String label;
     private String content;
@@ -53,14 +54,24 @@ public class DialogueScreen extends Screen{
         DialogueState state = vn.getNext();
         label = state.getLabel();
         //if()
-        updateSprites();
+        updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
     }
 
-    public void updateSprites(){
-        List<SpriteState> currentSprites = new ArrayList<>();
-        currentSprites = spritesToRender;
+    public void updateSprites(DialogueState state){
+        SpriteState currentSprite = state.getSprite();
+        for (SpriteState sprite: this.spritesToRender) {
+            if(Objects.equals(sprite.getSprite(), currentSprite.getSprite())){
+                removeSpriteByFolder(this.spritesToRender,sprite.getSprite());
+                break;
+            }
+        }
+        spritesToRender.add(currentSprite);
+
+    }
+    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
+        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
 
     @Override
@@ -107,7 +118,7 @@ public class DialogueScreen extends Screen{
     }
     @Override
     public void renderBackground(GuiGraphics guiGraphics) {
-        if(background==null||background.isEmpty()){
+        if(background!=null&&!background.isEmpty()){
             ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
             RenderSystem.setShaderTexture(0, bg);
             guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
@@ -132,12 +143,13 @@ public class DialogueScreen extends Screen{
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
+        //System.out.println(spritesToRender);
         // Render each sprite
         for (int i = 0; i < spritesToRender.size(); i++) {
             ResourceLocation currentSprite = new ResourceLocation(
-                    "mobtalkerredux", "textures/" + spritesToRender.get(i)
+                    "mobtalkerredux", "textures/" + spritesToRender.get(i).getLocation()
             );
+            System.out.println(currentSprite.toString());
             RenderSystem.setShaderTexture(0, currentSprite);
 
             int currentX = startX + (i * (DISPLAYED_SPRITE_WIDTH + spacing));
