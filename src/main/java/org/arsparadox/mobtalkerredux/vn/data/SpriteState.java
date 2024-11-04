@@ -12,6 +12,16 @@ public class SpriteState {
     int startColumn = 7; // Of the screen
     int startRow = 1; //First row is one, we don't do zero, this isn't an array
 
+    boolean animationEnabled = false;
+    boolean animationExists = false;
+
+    int wRatioAnimation = 16; // These guys
+    int hRatioAnimation = 9; // Will Default
+    int frameWRatioAnimation =5; // To putting image
+    int frameHRatioAnimation = 8; // In the middle
+    int startColumnAnimation = 7; // Of the screen
+    int startRowAnimation = 1; //First row is one, we don't do zero, this isn't an array
+
     public SpriteState(String folder,String location,String position) {
         this.folder = folder;
         this.location = location;
@@ -19,6 +29,11 @@ public class SpriteState {
     }
 
     // Getters and setters
+
+    public boolean getAnimationStatus(){return animationEnabled;}
+    public void disableAnimation(){this.animationEnabled = false;}
+    public void enableAnimation(){this.animationEnabled = true;}
+
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
     public String getSprite() { return folder; }

@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
+import org.joml.Quaternionf;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -56,19 +57,11 @@ public class DialogueScreen extends Screen{
         updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
+
     }
 
     public void updateSprites(DialogueState state){
-//        SpriteState currentSprite = state.getSprite();
-//        for (SpriteState sprite: this.spritesToRender) {
-//            if(Objects.equals(sprite.getSprite(), currentSprite.getSprite())){
-//                removeSpriteByFolder(this.spritesToRender,sprite.getSprite());
-//                break;
-//            }
-//        }
         spritesToRender = state.getSprites();
-        System.out.println(state.getSprites().size());
-
     }
     public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
         sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
@@ -100,12 +93,111 @@ public class DialogueScreen extends Screen{
         update();
     }
 
+    public GuiGraphics processAnimation(GuiGraphics poseStack, int wBlock, int hBlock){
+        // WELL FUCK GUESS WE'RE DOING ANIMATIONS NOW!!!
+        // SHIT!!! FUCK!!! GOD WHY!?
+
+        //Okay, no studio quality professional grade animation...
+        // JUST SOMETHING SIMPLE
+        // SOMTHING RESEMBLING AN ANIMATION, YEA!?
+        // okay... nyaaa...
+        // ...
+        // I want to be cat...
+        // Anyway...
+
+        // Translation right???
+        // poseStack.pose().translate(x, y, z);
+        // What do I want for Translation???
+        // X, Y, Z, right??? That's it... Nothing Weird...
+        // So...
+        // Let's do that, X, Y, Z
+
+        // No, not  X, Y, Z
+        // Simplify it you FUCK!
+        // Left Right, Up Down
+        // X and Y, that's IT!
+        // Just because the function wants a Z doesn't mean we should give it!
+
+        // Now, how far???, nay, what should the script maker care about?
+        // Script Makers are FUCKING HUMAN they don't see things in Pixels, they barely know what a Kilometers are
+        // So... (Deep Breath)
+        // Block Distance.
+
+        int moveRowDistance = 1; // 2 blocks worth of distance right...
+        int moveColDistance = 3; // 2 blocks worth of distance down...
+        int moveRowDistanceInPixels = moveRowDistance*wBlock; // 1 blocks worth of distance right...
+        int moveColDistanceInPixels = moveColDistance*hBlock; // 3 blocks worth of distance down...
+
+        // Okay that's translation distance...
+        // Now for the 'Timing' the Glorious 'Timing'
+
+        float animationTime = 500f; // How long it takes to travel 2 blocks worth of distance 1000 milis  is a second
+        // Should we add like... Ease In, Ease Out...
+        // NO! FUCK NO! (later) YOU LITTLE FUCK! YOU HAVEN'T EVEN FIGURE THIS OUT YET!!!
+        float currentTime = (System.currentTimeMillis() % 500) / 500f; // Math magic, I guess
+        float offsetX = moveRowDistanceInPixels * currentTime;// Just multiply to get current position
+        float offsetY = moveColDistanceInPixels * currentTime;
+
+        poseStack.pose().pushPose(); // Start animation block
+        //poseStack.pose().translate(offsetX, offsetY, 0);// Go Nyooom To Bottom Left Corner
+        // Now, how about scale and nyoomin? I mean zoomin
+        // Uhhh
+        // poseStack.pose().scale(a,b,c);
+        // Day 57 questioning why Minecraft Don't Put Proper Parameter Names
+        // What the fuck is a? What the fuck is b? What the fuck is c?
+        // Oh nevermind, same shit, x,y,z
+        // Okay width scaling and height scaling, we can pretend z don't exist
+
+        // So like... We take the old block dimension, say uhh... 5x8
+        // and then scale it
+        // For example
+        float oldThingBlockWidth = 5f;
+        float oldThingBlockHeight = 8f;
+        float newThingBlockWidth = 5.5f;
+        float newThingBlockHeight = 8.5f;
+
+        // Then, I want to turn this into a certain dimension...
+        // God... I have TO MATH, FUCK!
+        // So uhh... newWidth = oldWidth*scale
+        // scale = newWidth/oldWidth
+        // Hell yeah! Elementary Algebra Baby, WOOOOO!!!
+
+        // Wait, so I expect Script Maker to decide the resulting size???
+        // Is that more intuitive?? I mean, if you think about it...
+        // This is more responsive, right? Maybe?? Ah, screw it, better this than nothing.
+
+        float widen = newThingBlockWidth/oldThingBlockWidth;
+        float heighten = newThingBlockHeight/oldThingBlockHeight;
+        // This should work right??
+        // Wait... WAIT! Scale Through TIME isn't it!?
+        // Oh nyooooo~
+        // Wait, the translate pose doesn't take the result it takes the thingy to add
+        // Ahhhhh... I have to redo everything!!!
+        // Screw it, I need to grab coffee I'm committing this first...
+        poseStack.pose().scale(widen,heighten,0);
+
+        // Okay, next is the rotate around function...
+        // Uhh... Fuck, how do I do this???
+        // I dunno... Maybe uhh...
+        //poseStack.pose().rotateAround((float) Math.toRadians(90), 0, 1, 0);
+        // Apparently that will rotate the thing in y axis
+        // Excuse me what the fuck is a y axis?
+        // Just rotate? Why do we need axis to rotate!?
+        // ^utter lack of animation / rendering experience
+        Quaternionf quaternion = new Quaternionf().rotateAxis((float) Math.toRadians(90), 0,0, 0);
+        //poseStack.pose().rotateAround(quaternion,0,0,0);
+        return poseStack;
+        // Now how the fuck do I make this shit modular???
+    }
+
     @Override
     public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
+
+
         renderBackground(poseStack);
         renderCharacterName(poseStack);
-        renderForeground(poseStack);
+        renderForegroundWithAnimation(poseStack);
         renderDialogueBox(poseStack);
 //        dialogueBox.setContent(this.content); Still working on this bad boy
 //        dialogueBox.render(poseStack); I want modularity, but I like my sanity intact
@@ -124,6 +216,79 @@ public class DialogueScreen extends Screen{
             guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
         }
 
+    }
+
+    public void renderForegroundWithAnimation(GuiGraphics poseStack){
+
+        // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
+        // FUCK, I have to make this BS
+        //  ___ ___ ___ ___ ___
+        // |___|___|___|___|___|
+        // |___|___|HHH|___|___|
+        // |___|___|HHH|___|___|
+        // Pictured (5x3, 1x2, 3x2)
+        // Okay so, all images will be defined by their aspect ratio WxH
+        // So now I just have to make a logic that fits the thing in this thing
+        // Because there's only so much way you can fit a 3x2 images inside a 5x3 rectangle
+        // Yeah...
+        // So in the FSM, determining position should be like:
+        // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
+        // And then I code the calculation in Minecraft!!
+        // This should work, right??? Gods, I don't want to make Script Maker deal with this math...
+        // I'll let mod maker (me) do the math...
+
+
+        for (SpriteState sprite : spritesToRender) {
+            ResourceLocation currentSprite = new ResourceLocation(
+                    "mobtalkerredux", "textures/" + sprite.getLocation()
+            );
+            RenderSystem.setShaderTexture(0, currentSprite);
+
+            double wRatio = sprite.getwRatio(); // Also the number of column
+            double hRatio = sprite.gethRatio(); // Also the number of row
+
+            double frameWRatio =sprite.getFrameWRatio(); // This will be the size of the 'frame' that does the render
+            double frameHRatio = sprite.getFrameHRatio(); // Like the space the image took
+
+            double startColumn = sprite.getStartColumn();
+            double startRow = sprite.getStartRow(); //First row, we don't do zero, this isn't an array
+
+            // Okay, stuff above  is what the script maker decide.
+
+            // Now to math this shit
+
+            int wBlocks = (int) (this.width/wRatio); //Actual Pixel Size of the Screen
+            int hBlocks = (int) (this.height/hRatio); //Actual Pixel Size of the Screen
+
+            int wThingBlock = (int) (wBlocks*frameWRatio);
+            int hThingBlock = (int) (hBlocks*frameHRatio);
+
+            int startColumnPos = (int) (wBlocks*(startColumn-1));
+            int startRowPos = (int) (hBlocks*(startRow-1)); // Immediately regretted my decision there...
+
+            // Fuck, these aren't squares aren't they? Shit...
+            // Screw it, we'll see how this'll look like, then complain
+            // Okay, those are positioning, the frame size... Next up is... Image Dimensions
+
+            // Now how do we 'Fit' this fucker???
+            //if(sprite.getAnimationStatus()) {
+                // Another Nightmare Under Progress
+                //poseStack = processAnimation(poseStack, wBlocks, hBlocks); DO NOT TOGGLE IN PRODUCTION
+            //}
+            poseStack.blit(
+                    currentSprite, // The image to show on screen
+                    (int)startColumnPos, // I refuse to call this x, this is a COLUMN
+                    (int)startRowPos, //  I refuse to call this y, this is a ROW
+                    0, // I have No Bloody Clue
+                    0, // What the fuck this does
+                    (int)wThingBlock, // Put Image Dimension, the width
+                    (int)hThingBlock, // Put Image Dimension, the height
+                    (int)wThingBlock, // Put it again, I guess
+                    (int)hThingBlock // Fuck if I know what this does, it works
+            );
+            sprite.disableAnimation();
+            poseStack.pose().popPose(); // End animation block
+        }
     }
 
     public void renderForeground(GuiGraphics poseStack){
@@ -180,10 +345,12 @@ public class DialogueScreen extends Screen{
 
             // Now how do we 'Fit' this fucker???
 
+            // GUESS WE'RE DOING ANIMATION NOW!!!
+
             poseStack.blit(
                     currentSprite, // The Thing
-                    (int)startColumnPos, // The x location, I think it's the
-                    (int)startRowPos, // The y location
+                    (int)startColumnPos, // The x location (Column)
+                    (int)startRowPos, // The y location (Row)
                     0,  // source x I don't know what this does...
                     0,  // source y Oh nyooooo~
                     (int)wThingBlock,   // What even is this?
@@ -193,75 +360,7 @@ public class DialogueScreen extends Screen{
             );
         }
     }
-    public void renderCharacterSprite(GuiGraphics poseStack) {
-        if (spritesToRender == null || spritesToRender.isEmpty()) return;
-        final int COLUMN = this.width/5;
-        final int ROW = this.height/3;
-        // Define base sprite dimensions
-        final int SPRITE_BASE_WIDTH = 500;
-        final int SPRITE_BASE_HEIGHT = 930;
-        final int FAR_LEFT_COLUMN = 0;
-        final int LEFT_COLUMN = COLUMN;
-        final int CENTER_COLUMN = COLUMN*2;
-        final int RIGHT_COLUMN = COLUMN*3;
-        final int FAR_RIGHT_COLUMN = COLUMN*4;
-        // Scale factor for display (half size)
 
-        final float SCALE = 0.3f;
-        final int DISPLAYED_WIDTH = (int)(SPRITE_BASE_WIDTH * SCALE);
-        final int DISPLAYED_HEIGHT = (int)(SPRITE_BASE_HEIGHT * SCALE);
-
-        // Calculate screen positions
-//        int screenCenterX = this.width / 2;
-
-        // Adjust vertical position - place it 1/3 from the top
-        int spriteY = (this.height - DISPLAYED_HEIGHT) / 3;
-
-        // Calculate horizontal positions with proper spacing
-        // Center sprite will be at screenCenterX - DISPLAYED_WIDTH/2 to properly center
-////        int centerX = screenCenterX - (DISPLAYED_WIDTH / 2);
-//        int leftX = centerX - DISPLAYED_WIDTH - 20;  // Add 20px gap
-//        int farLeftX = leftX - DISPLAYED_WIDTH - 20;
-//        int rightX = centerX + DISPLAYED_WIDTH + 20;
-//        int farRightX = rightX + DISPLAYED_WIDTH + 20;
-
-        // Setup rendering
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        // Render each sprite
-        for (SpriteState sprite : spritesToRender) {
-            ResourceLocation currentSprite = new ResourceLocation(
-                    "mobtalkerredux", "textures/" + sprite.getLocation()
-            );
-            RenderSystem.setShaderTexture(0, currentSprite);
-
-            // Determine x position
-            int xPos = switch (sprite.getPosition()) {
-                case "FAR_LEFT" -> FAR_LEFT_COLUMN;
-                case "LEFT" -> LEFT_COLUMN;
-                case "RIGHT" -> RIGHT_COLUMN;
-                case "FAR_RIGHT" -> FAR_RIGHT_COLUMN;
-                default -> CENTER_COLUMN;  // CENTER or any other value
-            };
-            // Render the sprite
-            poseStack.blit(
-                    currentSprite,
-                    xPos,
-                    spriteY,
-                    0,  // source x
-                    0,  // source y
-                    COLUMN,   // displayed width
-                    ROW*3,  // displayed height
-                    COLUMN,  // texture width
-                    ROW*2  // texture height
-            );
-        }
-
-
-        RenderSystem.disableBlend();
-    }
 
     public void renderCharacterName(GuiGraphics poseStack) {
             if(label!=null){
