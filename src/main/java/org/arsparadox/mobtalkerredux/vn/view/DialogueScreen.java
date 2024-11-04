@@ -287,10 +287,10 @@ public class DialogueScreen extends Screen{
             // Okay, those are positioning, the frame size... Next up is... Image Dimensions
 
             // Now how do we 'Fit' this fucker???
-            //if(sprite.getAnimationStatus()) {
+            if(sprite.getAnimationStatus()) {
                 // Another Nightmare Under Progress
-                poseStack = processAnimation(poseStack, wBlocks, hBlocks); //DO NOT TOGGLE IN PRODUCTION
-            //}
+                //poseStack = processAnimation(poseStack, wBlocks, hBlocks); //DO NOT TOGGLE IN PRODUCTION
+            }
             poseStack.blit(
                     currentSprite, // The image to show on screen
                     startColumnPos, // I refuse to call this x, this is a COLUMN
