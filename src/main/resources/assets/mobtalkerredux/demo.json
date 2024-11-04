@@ -1,0 +1,1466 @@
+[
+  {
+    "type": "meta",
+    "action": "initialize",
+    "scriptName": "demo",
+    "id": 0
+  },
+  {
+    "type": "meta",
+    "action": "start",
+    "id": 1
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "start",
+    "id": 2
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/happy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 3
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "Oh hey Player! Long time no see! Ahaha~",
+    "id": 4
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 5
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "Anyway, it's been a while~",
+    "id": 6
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "When was the last version again?",
+    "id": 7
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "1.8?? What's the current version?",
+    "id": 8
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/scared.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 9
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "1.21!? I've been dead for  that long!?",
+    "id": 10
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/angry.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 11
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "Can't believe this mod's been abandoned for that long!!!",
+    "id": 12
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "I mean how hard can it be to remake this mod???",
+    "id": 13
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 10,
+    "row": 1,
+    "id": 14
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "It wasn't easy Cupa, recreating this mod requires the use of DSL",
+    "id": 15
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/scared.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 3,
+    "row": 1,
+    "id": 16
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "Bloody hell! Andr, where did you come from?",
+    "id": 17
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 10,
+    "row": 1,
+    "id": 18
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "I was in the Stronghold Perusing the archive for...",
+    "id": 19
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/angry.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 3,
+    "row": 1,
+    "id": 20
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "I was being rhetoric... Anyway, why are you here?",
+    "id": 21
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "I'm here to explain how this mod work. The fact that they see this means that they downloaded the framework, but not load a single a script.",
+    "id": 22
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "cupa",
+    "location": "characters/cupa/default/normal.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 3,
+    "row": 1,
+    "id": 23
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Cupa",
+    "content": "Ahh... You go do that then~",
+    "id": 24
+  },
+  {
+    "type": "remove_sprite",
+    "action": "remove_character",
+    "sprite": "cupa",
+    "id": 25
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 26
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Mmm, good to meet you player~",
+    "id": 27
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Now what do you wish to know?",
+    "id": 28
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "demo_menu",
+    "id": 29
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 30
+  },
+  {
+    "type": "choice",
+    "action": "choice",
+    "choice": [
+      {
+        "label": "about_you",
+        "display": "I wanna know about you..."
+      },
+      {
+        "label": "dev_history",
+        "display": "Why so long to recreate?"
+      },
+      {
+        "label": "dev_excuses",
+        "display": "Where's the default scripts?"
+      },
+      {
+        "label": "next",
+        "display": "I like to ask something else"
+      }
+    ],
+    "id": 31
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "next",
+    "id": 32
+  },
+  {
+    "type": "choice",
+    "action": "choice",
+    "choice": [
+      {
+        "label": "mod_feature",
+        "display": "What does this mod offer?"
+      },
+      {
+        "label": "mod_sdk",
+        "display": "How to make my own custom script?"
+      },
+      {
+        "label": "bugs",
+        "display": "Known bugs? Any problem?"
+      },
+      {
+        "label": "next2",
+        "display": "I like to ask something else"
+      }
+    ],
+    "id": 33
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "next2",
+    "id": 34
+  },
+  {
+    "type": "choice",
+    "action": "choice",
+    "choice": [
+      {
+        "label": "mod_compatibility",
+        "display": "Is this mod compatible with [Insert Mod Here]"
+      },
+      {
+        "label": "community",
+        "display": "Where to find community made scripts?"
+      },
+      {
+        "label": "end",
+        "display": "That's all, thanks!"
+      }
+    ],
+    "id": 35
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "bugs",
+    "id": 36
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Since this is a framework, some bugs can be not from this mod itself...",
+    "id": 37
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Soo, let me list off some known bugs as of right now, ahem...",
+    "id": 38
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "1. We don't support multiple character sprite yet",
+    "id": 39
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The dev is working on that currently, most likely this bug is already fixed",
+    "id": 40
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This is the mod's fault, not the SDK's fault, so, report the issue correctly",
+    "id": 41
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "2. The images are not displayed correctly",
+    "id": 42
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "As of right now, the size of the image are hardcoded to 530 by 900 pixels",
+    "id": 43
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "3. There is no way to programatically remove a sprite  that's already appeared, only replace",
+    "id": 44
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "All of these sprite and image showing issue is being reworked as of writing this",
+    "id": 45
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The dev is looking to solve problem 1 and 2 at the same time right now",
+    "id": 46
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/tired.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 47
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "See minecraft just updated how they handle Screens and it kinda throw them off...",
+    "id": 48
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 49
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "So yeah, send some love his way alright???",
+    "id": 50
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 51
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "about_you",
+    "id": 52
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/shy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 53
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "About me... Umm...",
+    "id": 54
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "I was a character designed by AT2, a digital artist. Inspired by an Enderman...",
+    "id": 55
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "I suppose the dev who remade this mod haven't really asked for AT2's permission to use my character sprite",
+    "id": 56
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 57
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "If you are seeing this, we apologize for using your artwork",
+    "id": 58
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This is in good faith in the spirit and legacy of the original mod",
+    "id": 59
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Is there anything else you wish to know?",
+    "id": 60
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 61
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "dev_history",
+    "id": 62
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Ah... about that...",
+    "id": 63
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Please don't blame the original developer for 'abandoning' this project",
+    "id": 64
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The Mob Talker Mod is deceptively complicated due to a simple thing...",
+    "id": 65
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 3,
+    "row": 1,
+    "id": 66
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "old-dsl",
+    "location": "asset/old-dsl.png",
+    "position": "CUSTOM",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 10,
+    "hFrameRatio": 6,
+    "column": 6,
+    "row": 1,
+    "id": 67
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The developer must create a DSL or a Domain Specific Language",
+    "id": 68
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This is what the original Mob Talker Script looks like...",
+    "id": 69
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Think about it, you have to translate this script into something that Minecraft can read",
+    "id": 70
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "In essence, you're creating an entire Programming Language and a Game Engine",
+    "id": 71
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/tired.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 72
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Not to mention you have to make the programming language interop with Java and run the Game Engine inside of Minecraft",
+    "id": 73
+  },
+  {
+    "type": "choice",
+    "action": "choice",
+    "choice": [
+      {
+        "label": "lua",
+        "display": "Why not use Lua?"
+      },
+      {
+        "label": "cool",
+        "display": "Oh, okay cool, so how did the dev do it?"
+      }
+    ],
+    "id": 74
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "lua",
+    "id": 75
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 76
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Good Question",
+    "id": 77
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Lua seems to be an obvious choice. It is lightweight and many mods rely on it.",
+    "id": 78
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Why not write the script in Lua? Define a few methods to control the screen?",
+    "id": 79
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The main problem faced by the dev of *this* mod, is that Lua is an Interpreted Language",
+    "id": 80
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Java on the other hand is compiled language",
+    "id": 81
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/tired.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 82
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "What happens is that Java will try to run the entire script at once...",
+    "id": 83
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Getting Java to interpret lua line by line is extremely hard, you see?",
+    "id": 84
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This is most likely why most people abandoned this project",
+    "id": 85
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 86
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "An experienced Java Developer would understand how hard it is to get Lua or any scripting language to Interop with Java",
+    "id": 87
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "A non experienced Java developer would just get stuck after realizing they need to make a new programming language for this",
+    "id": 88
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Because, to recreate this mod properly, you HAVE to make something that a community can use",
+    "id": 89
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "A way to create a DSL that is human readable and can be read by java.",
+    "id": 90
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "And thus, the developer of this mod, created this",
+    "id": 91
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "cool",
+    "id": 92
+  },
+  {
+    "type": "remove_sprite",
+    "action": "remove",
+    "sprite": "old-dsl",
+    "id": 93
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "LEFT",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 3,
+    "row": 1,
+    "id": 94
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "python-dsl",
+    "location": "asset/python-dsl.png",
+    "position": "CUSTOM",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 10,
+    "hFrameRatio": 6,
+    "column": 6,
+    "row": 1,
+    "id": 95
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This is a DSL written in Python.",
+    "id": 96
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Instead of getting Lua to interop with Java, the developer sidestepped this problem entirely",
+    "id": 97
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The developer created a Python SDK Framework that translates python-dsl readable script...",
+    "id": 98
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Into Json FSM (Finite State Machine)",
+    "id": 99
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This Json FSM is very easy to interpret and read in Java",
+    "id": 100
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "All the dev has to do is to make a simple class that can read the Json FSM",
+    "id": 101
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Mod creator and players can just put this Json FSM into the mod Config folder.",
+    "id": 102
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "And that's a little history of how this mod is created",
+    "id": 103
+  },
+  {
+    "type": "remove_sprite",
+    "action": "remove",
+    "sprite": "python-dsl",
+    "id": 104
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 105
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Is there anything else you wish to know?",
+    "id": 106
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 107
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "dev_excuses",
+    "id": 108
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "I was contractually obligated to inform you that...",
+    "id": 109
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Ahem...",
+    "id": 110
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The developer of this mod, Iteranya, is not responsible with any content written or created in the game",
+    "id": 111
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "If there's a person claiming that there's a 'default' or 'official' script for this mod...",
+    "id": 112
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "They are lying",
+    "id": 113
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "To answer your other question about 'default' script",
+    "id": 114
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The developer is working on it, but they are most likely not going to claim it to be 'official', most likely under pseudonym",
+    "id": 115
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "And that's all I can tell you",
+    "id": 116
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Is there anything else?",
+    "id": 117
+  },
+  {
+    "type": "choice",
+    "action": "choice",
+    "choice": [
+      {
+        "label": "avoid",
+        "display": "Why do you sound so defensive?"
+      },
+      {
+        "label": "demo_menu",
+        "display": "Yeah, that's all, thank you!"
+      }
+    ],
+    "id": 118
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "avoid",
+    "id": 119
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/tired.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 120
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "To be frank with you, the dev had no intention on making this mod safe for work",
+    "id": 121
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Nor does the dev has any intention on making a PG version script",
+    "id": 122
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "In other words, the dev chooses not to make an official script due to legal/ethical/moral issues",
+    "id": 123
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Now, let's talk about something else",
+    "id": 124
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 125
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "mod_feature",
+    "id": 126
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "In a sense, this is 'VN Cutscenes Mod', it empowers mod maker to add 'cutscenes' into their game",
+    "id": 127
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "By cutscenes, it's things like what you're seeing right now",
+    "id": 128
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Everything in this mod is very barebones, you see? It's made for collaboration",
+    "id": 129
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "What you've seen so far is everything it has to offer",
+    "id": 130
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Dialogue, Branching Path, Sprite Showing, Background Swapping, etc",
+    "id": 131
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "There's really not much to say, you see?",
+    "id": 132
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Ah, it also supports minecraft slash commmands",
+    "id": 133
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "For more technical details, feel free to check the dev's github page.",
+    "id": 134
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "It's attached in where you find this mod",
+    "id": 135
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "mod_sdk",
+    "id": 136
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Making the script is simple.",
+    "id": 137
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Well you need to use the Mob Talker SDK to create a script",
+    "id": 138
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "https://github.com/Iteranya/MobTalkerSDK",
+    "id": 139
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Can you click that link? Probably not...",
+    "id": 140
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "But yes, using the SDK, it will turn the human readable script into Json",
+    "id": 141
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "More information on how to use the SDK can be found in the github page",
+    "id": 142
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "That json will then be sent to the minecraft mod to read. Any question?",
+    "id": 143
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 144
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "mod_compatibility",
+    "id": 145
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "This mod is surprisingly compatible and easy to maintain.",
+    "id": 146
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Due to a lack of Java Interop and separation of concerns... The only 'modded' part is the screen/gui",
+    "id": 147
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The Game Engine that reads the Json FSM is written in Pure Java",
+    "id": 148
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "You don't even have to worry about cross-version script compatiblity",
+    "id": 149
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/happy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 150
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Personally I love this approach, the Mob Talker Mod might become timeless again!",
+    "id": 151
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The CMM team is still active with making cute mob models too!",
+    "id": 152
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Imagine this possibilities~",
+    "id": 153
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 154
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "But yes, mod creator still have to work on adding script if they wish to use this framework",
+    "id": 155
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Do you have anymore questions?",
+    "id": 156
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 157
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "community",
+    "id": 158
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "There should be a Discord Link in this Mod's download page",
+    "id": 159
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/happy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 160
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Feel free to make your own script! Make your own character, the Overworld and beyond is your oyster~",
+    "id": 161
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The dev's desire is just to recreate, revive, and immortalize this mod! Adding the beauty of 2D CG Graphics in Minecraft",
+    "id": 162
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/shy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 163
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "The other desire is to date me and Cupa...",
+    "id": 164
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/normal.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 165
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "But really, at the end of the day, the dev only provide the tools",
+    "id": 166
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "So please don't go reporting for bug about the lack of interaction... okay?",
+    "id": 167
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Something else you want to ask?",
+    "id": 168
+  },
+  {
+    "type": "transition",
+    "action": "jump",
+    "label": "demo_menu",
+    "id": 169
+  },
+  {
+    "type": "label",
+    "action": "label",
+    "label": "end",
+    "id": 170
+  },
+  {
+    "type": "show_sprite",
+    "action": "show",
+    "sprite": "andr",
+    "location": "characters/andr/default/happy.png",
+    "position": "CENTER",
+    "wRatio": 16,
+    "hRatio": 9,
+    "wFrameRatio": 5,
+    "hFrameRatio": 8,
+    "column": 7,
+    "row": 1,
+    "id": 171
+  },
+  {
+    "type": "dialogue",
+    "action": "say",
+    "label": "Andr",
+    "content": "Happy to Help, see you later Player!",
+    "id": 172
+  },
+  {
+    "type": "finish_dialogue",
+    "action": "finish_dialogue",
+    "id": 173
+  }
+]
