@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
-import org.joml.Quaternionf;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -134,12 +133,16 @@ public class DialogueScreen extends Screen{
         float animationTime = 500f; // How long it takes to travel 2 blocks worth of distance 1000 milis  is a second
         // Should we add like... Ease In, Ease Out...
         // NO! FUCK NO! (later) YOU LITTLE FUCK! YOU HAVEN'T EVEN FIGURE THIS OUT YET!!!
-        float currentTime = (System.currentTimeMillis() % 500) / 500f; // Math magic, I guess
-        float offsetX = moveRowDistanceInPixels * currentTime;// Just multiply to get current position
-        float offsetY = moveColDistanceInPixels * currentTime;
+        float translateTime = (System.currentTimeMillis() % (int)animationTime) / animationTime; // Math magic, I guess
+        float offsetX = moveRowDistanceInPixels * translateTime;// Just multiply to get current position
+        float offsetY = moveColDistanceInPixels * translateTime;
 
         poseStack.pose().pushPose(); // Start animation block
-        //poseStack.pose().translate(offsetX, offsetY, 0);// Go Nyooom To Bottom Left Corner
+        poseStack.pose().translate(offsetX, offsetY, 0);// Go Nyooom To Bottom Left Corner
+
+        return poseStack;
+        // The Following is under construction. Let's go with Translation first...
+        // Rotate and scaling can wait.
         // Now, how about scale and nyoomin? I mean zoomin
         // Uhhh
         // poseStack.pose().scale(a,b,c);
@@ -151,43 +154,56 @@ public class DialogueScreen extends Screen{
         // So like... We take the old block dimension, say uhh... 5x8
         // and then scale it
         // For example
-        float oldThingBlockWidth = 5f;
-        float oldThingBlockHeight = 8f;
-        float newThingBlockWidth = 5.5f;
-        float newThingBlockHeight = 8.5f;
-
-        // Then, I want to turn this into a certain dimension...
-        // God... I have TO MATH, FUCK!
-        // So uhh... newWidth = oldWidth*scale
-        // scale = newWidth/oldWidth
-        // Hell yeah! Elementary Algebra Baby, WOOOOO!!!
-
-        // Wait, so I expect Script Maker to decide the resulting size???
-        // Is that more intuitive?? I mean, if you think about it...
-        // This is more responsive, right? Maybe?? Ah, screw it, better this than nothing.
-
-        float widen = newThingBlockWidth/oldThingBlockWidth;
-        float heighten = newThingBlockHeight/oldThingBlockHeight;
-        // This should work right??
-        // Wait... WAIT! Scale Through TIME isn't it!?
-        // Oh nyooooo~
-        // Wait, the translate pose doesn't take the result it takes the thingy to add
-        // Ahhhhh... I have to redo everything!!!
-        // Screw it, I need to grab coffee I'm committing this first...
-        poseStack.pose().scale(widen,heighten,0);
-
-        // Okay, next is the rotate around function...
-        // Uhh... Fuck, how do I do this???
-        // I dunno... Maybe uhh...
-        //poseStack.pose().rotateAround((float) Math.toRadians(90), 0, 1, 0);
-        // Apparently that will rotate the thing in y axis
-        // Excuse me what the fuck is a y axis?
-        // Just rotate? Why do we need axis to rotate!?
-        // ^utter lack of animation / rendering experience
-        Quaternionf quaternion = new Quaternionf().rotateAxis((float) Math.toRadians(90), 0,0, 0);
-        //poseStack.pose().rotateAround(quaternion,0,0,0);
-        return poseStack;
-        // Now how the fuck do I make this shit modular???
+//        float oldThingBlockWidth = 5f;
+//        float oldThingBlockHeight = 8f;
+//        float newThingBlockWidth = 5.5f;
+//        float newThingBlockHeight = 8.5f;
+//
+//        // Then, I want to turn this into a certain dimension...
+//        // God... I have TO MATH, FUCK!
+//        // So uhh... newWidth = oldWidth*scale
+//        // scale = newWidth/oldWidth
+//        // Hell yeah! Elementary Algebra Baby, WOOOOO!!!
+//
+//        // Wait, so I expect Script Maker to decide the resulting size???
+//        // Is that more intuitive?? I mean, if you think about it...
+//        // This is more responsive, right? Maybe?? Ah, screw it, better this than nothing.
+//
+//        float widen = newThingBlockWidth/oldThingBlockWidth;
+//        float heighten = newThingBlockHeight/oldThingBlockHeight;
+//        // This should work right??
+//        // Wait... WAIT! Scale Through TIME isn't it!?
+//        // Oh nyooooo~
+//        // Wait, the translate pose doesn't take the result it takes the thingy to add
+//        // Ahhhhh... I have to redo everything!!!
+//        // Screw it, I need to grab coffee I'm committing this first...
+//        // Aight, let's try widen*currenttime
+//
+//        // Okay, that actually works, THANK FUCK
+//        // Anyway, it starts at zero though
+//        // So it Cupa just go nyoooom~ from a distance
+//        // Hilarious, but I want it to start scaling from the current size...
+//        // Okay, next is the rotate around function...
+//        // Uhh... Fuck, how do I do this???
+//        // I dunno... Maybe uhh...
+//        float widthScaleTime = 1 + ((System.currentTimeMillis() % 500) / 500f) * (widen - 1); // Modify scaleTime for width
+//        float heightScaleTime = 1 + ((System.currentTimeMillis() % 500) / 500f) * (heighten - 1); // Modify scaleTime for height
+//
+//        poseStack.pose().scale(widthScaleTime,heightScaleTime,0);
+//
+//        // This somewhat works
+//        // I need to pair this with a translate function though...
+//        // Eh, later I guess...
+//
+//        //poseStack.pose().rotateAround((float) Math.toRadians(90), 0, 1, 0);
+//        // Apparently that will rotate the thing in y axis
+//        // Excuse me what the fuck is a y axis?
+//        // Just rotate? Why do we need axis to rotate!?
+//        // ^utter lack of animation / rendering experience
+//        Quaternionf quaternion = new Quaternionf().rotateAxis((float) Math.toRadians(90), 0,0, 0);
+//        //poseStack.pose().rotateAround(quaternion,0,0,0);
+//        return poseStack;
+//        // Now how the fuck do I make this shit modular???
     }
 
     @Override
@@ -273,91 +289,21 @@ public class DialogueScreen extends Screen{
             // Now how do we 'Fit' this fucker???
             //if(sprite.getAnimationStatus()) {
                 // Another Nightmare Under Progress
-                //poseStack = processAnimation(poseStack, wBlocks, hBlocks); DO NOT TOGGLE IN PRODUCTION
+                poseStack = processAnimation(poseStack, wBlocks, hBlocks); //DO NOT TOGGLE IN PRODUCTION
             //}
             poseStack.blit(
                     currentSprite, // The image to show on screen
-                    (int)startColumnPos, // I refuse to call this x, this is a COLUMN
-                    (int)startRowPos, //  I refuse to call this y, this is a ROW
+                    startColumnPos, // I refuse to call this x, this is a COLUMN
+                    startRowPos, //  I refuse to call this y, this is a ROW
                     0, // I have No Bloody Clue
                     0, // What the fuck this does
-                    (int)wThingBlock, // Put Image Dimension, the width
-                    (int)hThingBlock, // Put Image Dimension, the height
-                    (int)wThingBlock, // Put it again, I guess
-                    (int)hThingBlock // Fuck if I know what this does, it works
+                    wThingBlock, // Put Image Dimension, the width
+                    hThingBlock, // Put Image Dimension, the height
+                    wThingBlock, // Put it again, I guess
+                    hThingBlock // Fuck if I know what this does, it works
             );
             sprite.disableAnimation();
             poseStack.pose().popPose(); // End animation block
-        }
-    }
-
-    public void renderForeground(GuiGraphics poseStack){
-
-        // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
-        // FUCK, I have to make this BS
-        //  ___ ___ ___ ___ ___
-        // |___|___|___|___|___|
-        // |___|___|HHH|___|___|
-        // |___|___|HHH|___|___|
-        // Pictured (5x3, 1x2, 3x2)
-        // Okay so, all images will be defined by their aspect ratio WxH
-        // So now I just have to make a logic that fits the thing in this thing
-        // Because there's only so much way you can fit a 3x2 images inside a 5x3 rectangle
-        // Yeah...
-        // So in the FSM, determining position should be like:
-        // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
-        // And then I code the calculation in Minecraft!!
-        // This should work, right??? Gods, I don't want to make Script Maker deal with this math...
-        // I'll let mod maker (me) do the math...
-
-
-        for (SpriteState sprite : spritesToRender) {
-            ResourceLocation currentSprite = new ResourceLocation(
-                    "mobtalkerredux", "textures/" + sprite.getLocation()
-            );
-            RenderSystem.setShaderTexture(0, currentSprite);
-
-            double wRatio = sprite.getwRatio(); // Also the number of column
-            double hRatio = sprite.gethRatio(); // Also the number of row
-
-            double frameWRatio =sprite.getFrameWRatio(); // This will be the size of the 'frame' that does the render
-            double frameHRatio = sprite.getFrameHRatio(); // Like the space the image took
-
-            double startColumn = sprite.getStartColumn();
-            double startRow = sprite.getStartRow(); //First row, we don't do zero, this isn't an array
-
-            // Okay, stuff above  is what the script maker decide.
-
-            // Now to math this shit
-
-            int wBlocks = (int) (this.width/wRatio); //Actual Pixel Size of the Screen
-            int hBlocks = (int) (this.height/hRatio); //Actual Pixel Size of the Screen
-
-            int wThingBlock = (int) (wBlocks*frameWRatio);
-            int hThingBlock = (int) (hBlocks*frameHRatio);
-
-            int startColumnPos = (int) (wBlocks*(startColumn-1));
-            int startRowPos = (int) (hBlocks*(startRow-1)); // Immediately regretted my decision there...
-
-            // Fuck, these aren't squares aren't they? Shit...
-            // Screw it, we'll see how this'll look like, then complain
-            // Okay, those are positioning, the frame size... Next up is... Image Dimensions
-
-            // Now how do we 'Fit' this fucker???
-
-            // GUESS WE'RE DOING ANIMATION NOW!!!
-
-            poseStack.blit(
-                    currentSprite, // The Thing
-                    (int)startColumnPos, // The x location (Column)
-                    (int)startRowPos, // The y location (Row)
-                    0,  // source x I don't know what this does...
-                    0,  // source y Oh nyooooo~
-                    (int)wThingBlock,   // What even is this?
-                    (int)hThingBlock,  // No seriously what is this???
-                    (int)wThingBlock,  // What's the difference!?
-                    (int)hThingBlock  // FUCK!!!
-            );
         }
     }
 
