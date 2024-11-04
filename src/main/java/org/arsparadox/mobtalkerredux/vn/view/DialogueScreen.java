@@ -40,7 +40,6 @@ public class DialogueScreen extends Screen{
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
         super(Component.empty());;
         this.vn = vn;
-        //dialogueBox = new DialogueBoxComponent();
     }
 
     @Override
@@ -116,15 +115,15 @@ public class DialogueScreen extends Screen{
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
-//    @Override
-//    public void renderBackground(PoseStack guiGraphics) {
-//        if(background!=null&&!background.isEmpty()){
-//            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
-//            RenderSystem.setShaderTexture(0, bg);
-//            blit(guiGraphics,bg, 0, 0, 0, 0,0);
-//        }
-//
-//    }
+    @Override
+    public void renderBackground(PoseStack guiGraphics) {
+        if(background!=null&&!background.isEmpty()){
+            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
+            RenderSystem.setShaderTexture(0, bg);
+            blit(guiGraphics, 0, 0, 0, 0,0,0);
+        }
+
+    }
 
     public void renderForeground(PoseStack poseStack){
 
