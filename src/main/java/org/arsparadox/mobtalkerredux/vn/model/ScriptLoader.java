@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.arsparadox.mobtalkerredux.MobTalkerRedux;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -57,7 +58,7 @@ public class ScriptLoader {
     }
 
     public static List<Map<String, Object>> loadScript(String filePath) {
-        filePath = FMLPaths.CONFIGDIR.get() + "\\mobtalkerredux\\" + filePath;
+        filePath = FMLPaths.CONFIGDIR.get() + "\\"+ MobTalkerRedux.MODID +"\\" + filePath;
         return loadJson(filePath);
     }
 
