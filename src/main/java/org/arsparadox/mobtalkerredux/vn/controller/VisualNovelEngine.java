@@ -20,9 +20,19 @@ public class VisualNovelEngine {
     public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName) {
         this.gameData = gameData;
         this.currentState = 0;
-        this.variables = new HashMap<>();
         this.state = new DialogueState(null,null,null);
         this.scriptName = scriptName;
+        initializeVariable();
+    }
+
+    private void initializeVariable() {
+        if(this.gameData.get(0).get("type")!="variable"){
+            this.variables = new HashMap<>();
+            this.variables.put("type", "variable");
+            this.gameData.add(0, variables);
+        }else{
+            this.variables = this.gameData.get(0);
+        }
     }
 
     private Long findLabelId(String var) {
@@ -61,8 +71,6 @@ public class VisualNovelEngine {
         ));
 
         if(Objects.equals((String) sprite.get("action"), "show")){
-//            System.out.println("New Sprite: "+newSprite.getSprite());
-//            System.out.println("Old Sprite: "+sprite.get("action"));
             if(sprite.get("wRatio")!=null){
                 newSprite.setPositioning(
                         ((Long) sprite.get("wRatio")).intValue(),
@@ -74,8 +82,6 @@ public class VisualNovelEngine {
                 );
             }
             for (SpriteState oldSprite: this.state.getSprites()) {
-//                System.out.println("New Sprite: "+oldSprite.getSprite());
-//                System.out.println("Old Sprite: "+newSprite.getSprite());
 
                 if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
                     removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
@@ -88,7 +94,6 @@ public class VisualNovelEngine {
         this.currentState++;
     }
     public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
-        //System.out.println("Remove: "+folderName);
         sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
     private void updateDialogue(String label, String content) {
@@ -114,6 +119,7 @@ public class VisualNovelEngine {
         if ("get_gamemode".equals(action)) {
             return "Survival";
         } else if ("custom_command".equals(action)) {
+            // NOT IMPLEMENTED YET
             return "Nothing for now";
         }
         return "Nothing for now";
@@ -144,13 +150,13 @@ public class VisualNovelEngine {
     }
 
     private void giveItem(String item, long amount) {
-
+        // Not Implemented Yet
         this.currentState++;
     }
 
     private void processJump(Map<String, Object> action) {
         this.currentState = findLabelId((String) action.get("label"));
-        this.currentState++; //TODO: Figure out if this is necessary
+        this.currentState++; //TO-DO: Figure out if this is necessary (Update: Yes It Is)
     }
 
     @SuppressWarnings("unchecked")
@@ -262,7 +268,7 @@ public class VisualNovelEngine {
 
     private void processFinishing() {
         isEngineRunning=false;
-        ScriptLoader.saveState(variables,scriptName);
+        ScriptLoader.saveState(gameData,scriptName);
         shutdown = true;
     }
 
