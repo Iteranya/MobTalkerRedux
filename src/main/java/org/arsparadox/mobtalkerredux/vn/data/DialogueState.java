@@ -11,6 +11,7 @@ public class DialogueState {
     // Let's *Fucking Do This*
     private String label;
     private String content;
+    private String background;
     private List <SpriteState> sprites = new ArrayList<>();
     private List<Map<String, Object>> choices;
 
@@ -24,7 +25,12 @@ public class DialogueState {
     public String getLabel() { return label; }
     public void setLabel(String label) { this.label = label; }
     public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public void setContent(String content) {
+        if (content != null && !content.isEmpty()) {
+            this.content = content;
+        }
+
+    }
 //    public SpriteState getSprite() { return sprite; }
 //    public void setSprite(SpriteState sprite) { this.sprite = sprite; }
 
@@ -36,4 +42,15 @@ public class DialogueState {
     }
     public void setChoices(List<Map<String, Object>> choices) { this.choices = choices; }
 
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public void clearBackground() {
+        this.background = null;
+    }
+
+    public String getBackground() {
+        return this.background;
+    }
 }

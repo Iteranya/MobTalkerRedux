@@ -8,7 +8,6 @@ import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 import java.util.List;
 
 public class ForegroundComponent {
-    // Coming Soon
     // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
     // FUCK, I have to make this BS
     //  ___ ___ ___ ___ ___
@@ -22,9 +21,6 @@ public class ForegroundComponent {
     // Yeah...
     // So in the FSM, determining position should be like:
     // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
-    // And then I code the calculation in Minecraft!!
-    // This should work, right??? Gods, I don't want to make Script Maker deal with this math...
-    // I'll let mod maker (me) do the math...
     public static GuiGraphics processForeground(GuiGraphics poseStack, int width, int height, List<SpriteState> spritesToRender){
 
             for (SpriteState sprite : spritesToRender) {
@@ -63,14 +59,14 @@ public class ForegroundComponent {
 
                 poseStack.blit(
                         currentSprite, // The Thing
-                        (int)startColumnPos, // The x location, I think it's the
-                        (int)startRowPos, // The y location
+                        startColumnPos, // The x location, I think it's the
+                        startRowPos, // The y location
                         0,  // source x I don't know what this does...
                         0,  // source y Oh nyooooo~
-                        (int)wThingBlock,   // What even is this?
-                        (int)hThingBlock,  // No seriously what is this???
-                        (int)wThingBlock,  // What's the difference!?
-                        (int)hThingBlock  // FUCK!!!
+                        wThingBlock,   // What even is this?
+                        hThingBlock,  // No seriously what is this???
+                        wThingBlock,  // What's the difference!?
+                        hThingBlock  // FUCK!!!
                 );
             }
 

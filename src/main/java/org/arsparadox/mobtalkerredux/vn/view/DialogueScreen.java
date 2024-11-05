@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DialogueScreen extends Screen{
-    private static final int DIALOGUE_BOX_PADDING = 15;
-    private static final int CHARACTER_NAME_OFFSET = 40;
-    private static final int DISPLAYED_SPRITE_HEIGHT = 300; // How tall we want it on screen
     private static final int CHOICE_BUTTON_WIDTH = 200;
     private static final int CHOICE_BUTTON_HEIGHT = 20;
     private static final int CHOICE_BUTTON_SPACING = 5;
@@ -55,6 +52,7 @@ public class DialogueScreen extends Screen{
         updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
+        background = state.getBackground();
     }
 
     public void updateSprites(DialogueState state){
@@ -119,7 +117,8 @@ public class DialogueScreen extends Screen{
     @Override
     public void renderBackground(GuiGraphics guiGraphics) {
         if(background!=null&&!background.isEmpty()){
-            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
+            ResourceLocation bg = new ResourceLocation("mobtalkerredux","textures/"+background);
+            //System.out.println("Tried to change background to: "+background);
             RenderSystem.setShaderTexture(0, bg);
             guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
         }

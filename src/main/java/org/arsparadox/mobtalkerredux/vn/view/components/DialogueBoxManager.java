@@ -52,7 +52,7 @@ public class DialogueBoxManager {
             }
         }
 
-        if(label!=null){
+        if(label!=null && !label.isEmpty()){
             // Add a dark background behind the name for better readability
             int nameWidth = font.width(label);
             int nameX = (width - nameWidth) / 2;

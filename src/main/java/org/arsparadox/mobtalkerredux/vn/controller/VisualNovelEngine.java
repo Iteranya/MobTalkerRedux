@@ -37,7 +37,7 @@ public class VisualNovelEngine {
     }
 
     private void removeSprite(String remove){
-        System.out.println("Try to remove sprite: "+ remove);
+        //System.out.println("Try to remove sprite: "+ remove);
         removeSpriteByFolder(this.state.getSprites(), remove);
     }
 
@@ -57,8 +57,8 @@ public class VisualNovelEngine {
         ));
 
         if(Objects.equals((String) sprite.get("action"), "show")){
-            System.out.println("New Sprite: "+newSprite.getSprite());
-            System.out.println("Old Sprite: "+sprite.get("action"));
+//            System.out.println("New Sprite: "+newSprite.getSprite());
+//            System.out.println("Old Sprite: "+sprite.get("action"));
             if(sprite.get("wRatio")!=null){
                 newSprite.setPositioning(
                         ((Long) sprite.get("wRatio")).intValue(),
@@ -70,27 +70,33 @@ public class VisualNovelEngine {
                 );
             }
             for (SpriteState oldSprite: this.state.getSprites()) {
-                System.out.println("New Sprite: "+oldSprite.getSprite());
-                System.out.println("Old Sprite: "+newSprite.getSprite());
+//                System.out.println("New Sprite: "+oldSprite.getSprite());
+//                System.out.println("Old Sprite: "+newSprite.getSprite());
 
                 if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
                     removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
                     break;
                 }
             }
-            System.out.println("Adding New Sprite: " + newSprite.getSprite());
+            //System.out.println("Adding New Sprite: " + newSprite.getSprite());
             this.state.addSprite(newSprite);
         }
         this.currentState++;
     }
     public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
-        System.out.println("Remove: "+folderName);
+        //System.out.println("Remove: "+folderName);
         sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
     private void updateDialogue(String label, String content) {
         state.setLabel(label);
         state.setContent(content);
         this.isEngineRunning = false;
+        this.currentState++;
+    }
+
+    private void updateBackground(String background) {
+        state.setBackground(background);
+
         this.currentState++;
     }
 
@@ -140,6 +146,7 @@ public class VisualNovelEngine {
 
     private void processJump(Map<String, Object> action) {
         this.currentState = findLabelId((String) action.get("label"));
+        this.currentState++; //TODO: Figure out if this is necessary
     }
 
     @SuppressWarnings("unchecked")
@@ -231,6 +238,13 @@ public class VisualNovelEngine {
                 processCommand(action);
                 break;
             case "label":
+                this.currentState++;
+                break;
+            case "modify_background":
+                updateBackground((String) action.get("background"));
+                break;
+            case "clear_background":
+                state.clearBackground();
                 this.currentState++;
                 break;
             case "finish_dialogue":
