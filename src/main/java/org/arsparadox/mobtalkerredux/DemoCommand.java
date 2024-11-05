@@ -21,7 +21,7 @@ public class DemoCommand {
                     if (context.getSource().getEntity() instanceof ServerPlayer player) {
                         Minecraft.getInstance().execute(() -> {
                                     try {
-                                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadDemo())));
+                                        Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadDemo(),"demo.json")));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -38,7 +38,7 @@ public class DemoCommand {
                                 Minecraft.getInstance().execute(() -> {
                                             try {
                                                 player.sendSystemMessage(Component.literal("Trying to load the file config/mobtalkerredux/"+name));
-                                                Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript(name))));
+                                                Minecraft.getInstance().setScreen(new DialogueScreen(new VisualNovelEngine(ScriptLoader.loadScript(name),"demo.json")));
 
                                             } catch (IOException e) {
                                                 player.sendSystemMessage(Component.literal("Failed to find the file config/mobtalkerredux/"+name));

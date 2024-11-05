@@ -63,13 +63,33 @@ public class ScriptLoader {
     }
 
     public static List<Map<String, Object>> loadDemo() throws IOException {
-        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        ResourceLocation resourceLocation = new ResourceLocation("mobtalkerredux", "demo.json");
+        String configPath = FMLPaths.CONFIGDIR.get() + "\\" + MobTalkerRedux.MODID + "\\" + "demo.json";
+        File configFile = new File(configPath);
 
-        try (InputStream inputStream = resourceManager.getResource(resourceLocation).get().open()) {
-            return loadJson(inputStream);
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("Resource file demo.json could not be found.");
+        if (configFile.exists()) {
+            // Load from the config directory if it exists
+            System.out.println("Loading Save File");
+            return loadJson(configPath);
+        } else {
+            System.out.println("Making New Save File");
+            // Otherwise, try loading from the resource manager
+            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+            ResourceLocation resourceLocation = new ResourceLocation("mobtalkerredux", "demo.json");
+
+            try (InputStream inputStream = resourceManager.getResource(resourceLocation).get().open()) {
+                return loadJson(inputStream);
+            } catch (FileNotFoundException e) {
+                throw new FileNotFoundException("Resource file demo.json could not be found.");
+            }
+        }
+    }
+
+    public static void saveState(List<Map<String, Object>> gamestate, String filePath) {
+        filePath = FMLPaths.CONFIGDIR.get() + "\\" + MobTalkerRedux.MODID + "\\" + filePath;
+        try (Writer writer = new FileWriter(filePath)) {
+            gson.toJson(gamestate, writer);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save gamestate to " + filePath, e);
         }
     }
 }

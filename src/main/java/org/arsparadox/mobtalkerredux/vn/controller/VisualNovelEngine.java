@@ -2,6 +2,7 @@ package org.arsparadox.mobtalkerredux.vn.controller;
 
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
+import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
 import java.util.*;
 
@@ -14,11 +15,26 @@ public class VisualNovelEngine {
     public DialogueState state;
     public boolean isEngineRunning = false;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData) {
+    public String scriptName;
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName) {
         this.gameData = gameData;
         this.currentState = 0;
-        this.variables = new HashMap<>();
         this.state = new DialogueState(null,null,null);
+        this.scriptName = scriptName;
+        initializeVariable();
+    }
+
+    private void initializeVariable() {
+        if(!"variable".equals(this.gameData.get(this.gameData.size() - 1).get("type"))){
+            System.out.println(this.gameData.get(this.gameData.size() - 1).get("type"));
+            this.variables = new HashMap<>();
+            this.variables.put("type", "variable");
+            this.gameData.add(variables);
+            System.out.println("Initialize Variable");
+        }else{
+            this.variables = this.gameData.get(this.gameData.size() - 1);
+        }
     }
 
     private Long findLabelId(String var) {
@@ -57,8 +73,6 @@ public class VisualNovelEngine {
         ));
 
         if(Objects.equals((String) sprite.get("action"), "show")){
-//            System.out.println("New Sprite: "+newSprite.getSprite());
-//            System.out.println("Old Sprite: "+sprite.get("action"));
             if(sprite.get("wRatio")!=null){
                 newSprite.setPositioning(
                         ((Long) sprite.get("wRatio")).intValue(),
@@ -70,8 +84,6 @@ public class VisualNovelEngine {
                 );
             }
             for (SpriteState oldSprite: this.state.getSprites()) {
-//                System.out.println("New Sprite: "+oldSprite.getSprite());
-//                System.out.println("Old Sprite: "+newSprite.getSprite());
 
                 if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
                     removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
@@ -84,7 +96,6 @@ public class VisualNovelEngine {
         this.currentState++;
     }
     public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
-        //System.out.println("Remove: "+folderName);
         sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
     private void updateDialogue(String label, String content) {
@@ -110,6 +121,7 @@ public class VisualNovelEngine {
         if ("get_gamemode".equals(action)) {
             return "Survival";
         } else if ("custom_command".equals(action)) {
+            // NOT IMPLEMENTED YET
             return "Nothing for now";
         }
         return "Nothing for now";
@@ -140,19 +152,22 @@ public class VisualNovelEngine {
     }
 
     private void giveItem(String item, long amount) {
-
+        // Not Implemented Yet
         this.currentState++;
     }
 
     private void processJump(Map<String, Object> action) {
         this.currentState = findLabelId((String) action.get("label"));
-        this.currentState++; //TODO: Figure out if this is necessary
+        this.currentState++; //TO-DO: Figure out if this is necessary (Update: Yes It Is)
     }
 
     @SuppressWarnings("unchecked")
     private void processConditional(Map<String, Object> condition) {
+        System.out.println("trying to get:"+condition.get("var"));
         Object var = this.variables.get(condition.get("var"));
         Object value = condition.get("value");
+        System.out.println(var);
+        System.out.println(value);
         long end = (long) condition.get("end");
 
         if (value instanceof Map) {
@@ -161,27 +176,33 @@ public class VisualNovelEngine {
 
         String conditionType = (String) condition.get("condition");
         boolean result = false;
+        if(var!=null){
+            switch (conditionType) {
+                case "equal":
+                    result = var.equals(value);
+                    break;
+                case "not_equal":
+                    result = !var.equals(value);
+                    break;
+                case "less_than":
+                    if (var instanceof Number && value instanceof Number) {
+                        result = ((Number) var).doubleValue() < ((Number) value).doubleValue();
+                    }
+                    break;
+                case "greater_than":
+                    if (var instanceof Number && value instanceof Number) {
+                        result = ((Number) var).doubleValue() > ((Number) value).doubleValue();
+                    }
+                    break;
+            }
 
-        switch (conditionType) {
-            case "equal":
-                result = var.equals(value);
-                break;
-            case "not_equal":
-                result = !var.equals(value);
-                break;
-            case "less_than":
-                if (var instanceof Number && value instanceof Number) {
-                    result = ((Number) var).doubleValue() < ((Number) value).doubleValue();
-                }
-                break;
-            case "greater_than":
-                if (var instanceof Number && value instanceof Number) {
-                    result = ((Number) var).doubleValue() > ((Number) value).doubleValue();
-                }
-                break;
+            this.currentState = result ? this.currentState + 1 : end;
+        }
+        else{
+            this.currentState = end;
         }
 
-        this.currentState = result ? this.currentState + 1 : end;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -248,8 +269,7 @@ public class VisualNovelEngine {
                 this.currentState++;
                 break;
             case "finish_dialogue":
-                isEngineRunning=false;
-                shutdown = true;
+                processFinishing();
             default:
                 this.currentState++;
                 break;
@@ -257,9 +277,16 @@ public class VisualNovelEngine {
         return false;
     }
 
+    private void processFinishing() {
+        isEngineRunning=false;
+        ScriptLoader.saveState(gameData,scriptName);
+        shutdown = true;
+    }
+
     public void runEngine() {
         while (isEngineRunning) { // Infinite loop
             // Check if engine is running
+            System.out.println(this.currentState);
             Map<String, Object> action = getDictById(this.currentState);
             if(action == null){
                 shutdown = true;
