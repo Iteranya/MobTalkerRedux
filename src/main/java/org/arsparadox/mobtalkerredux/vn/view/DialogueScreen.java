@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
@@ -55,6 +56,7 @@ public class DialogueScreen extends Screen{
         updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
+        background = state.getBackground();
     }
 
     public void updateSprites(DialogueState state){
@@ -115,18 +117,17 @@ public class DialogueScreen extends Screen{
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
-    @Override
-    public void renderBackground(PoseStack guiGraphics) {
-        if(background!=null&&!background.isEmpty()){
-            ResourceLocation bg = new ResourceLocation("mobtalkerredux",background);
-            RenderSystem.setShaderTexture(0, bg);
-            blit(guiGraphics, 0, 0, 0, 0,0,0);
-        }
 
+    public void renderBackground(PoseStack guiGraphics) {
+        if(background != null && !background.isEmpty()) {
+            ResourceLocation bg = new ResourceLocation("mobtalkerredux", "textures/" + background);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, bg);
+            blit(guiGraphics, 0, 0, 0, 0, this.width, this.height); // Use actual width/height values
+        }
     }
 
     public void renderForeground(PoseStack poseStack){
-
         // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
         // FUCK, I have to make this BS
         //  ___ ___ ___ ___ ___
