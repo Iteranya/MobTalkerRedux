@@ -26,12 +26,14 @@ public class VisualNovelEngine {
     }
 
     private void initializeVariable() {
-        if(this.gameData.get(0).get("type")!="variable"){
+        if(!"variable".equals(this.gameData.get(this.gameData.size() - 1).get("type"))){
+            System.out.println(this.gameData.get(this.gameData.size() - 1).get("type"));
             this.variables = new HashMap<>();
             this.variables.put("type", "variable");
-            this.gameData.add(0, variables);
+            this.gameData.add(variables);
+            System.out.println("Initialize Variable");
         }else{
-            this.variables = this.gameData.get(0);
+            this.variables = this.gameData.get(this.gameData.size() - 1);
         }
     }
 
@@ -161,8 +163,11 @@ public class VisualNovelEngine {
 
     @SuppressWarnings("unchecked")
     private void processConditional(Map<String, Object> condition) {
+        System.out.println("trying to get:"+condition.get("var"));
         Object var = this.variables.get(condition.get("var"));
         Object value = condition.get("value");
+        System.out.println(var);
+        System.out.println(value);
         long end = (long) condition.get("end");
 
         if (value instanceof Map) {
@@ -171,27 +176,33 @@ public class VisualNovelEngine {
 
         String conditionType = (String) condition.get("condition");
         boolean result = false;
+        if(var!=null){
+            switch (conditionType) {
+                case "equal":
+                    result = var.equals(value);
+                    break;
+                case "not_equal":
+                    result = !var.equals(value);
+                    break;
+                case "less_than":
+                    if (var instanceof Number && value instanceof Number) {
+                        result = ((Number) var).doubleValue() < ((Number) value).doubleValue();
+                    }
+                    break;
+                case "greater_than":
+                    if (var instanceof Number && value instanceof Number) {
+                        result = ((Number) var).doubleValue() > ((Number) value).doubleValue();
+                    }
+                    break;
+            }
 
-        switch (conditionType) {
-            case "equal":
-                result = var.equals(value);
-                break;
-            case "not_equal":
-                result = !var.equals(value);
-                break;
-            case "less_than":
-                if (var instanceof Number && value instanceof Number) {
-                    result = ((Number) var).doubleValue() < ((Number) value).doubleValue();
-                }
-                break;
-            case "greater_than":
-                if (var instanceof Number && value instanceof Number) {
-                    result = ((Number) var).doubleValue() > ((Number) value).doubleValue();
-                }
-                break;
+            this.currentState = result ? this.currentState + 1 : end;
+        }
+        else{
+            this.currentState = end;
         }
 
-        this.currentState = result ? this.currentState + 1 : end;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -275,6 +286,7 @@ public class VisualNovelEngine {
     public void runEngine() {
         while (isEngineRunning) { // Infinite loop
             // Check if engine is running
+            System.out.println(this.currentState);
             Map<String, Object> action = getDictById(this.currentState);
             if(action == null){
                 shutdown = true;
