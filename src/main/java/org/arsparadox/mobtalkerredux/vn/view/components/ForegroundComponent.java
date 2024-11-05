@@ -10,6 +10,10 @@ import java.util.List;
 public class ForegroundComponent {
     // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
     // FUCK, I have to make this BS
+    // God, I hate Math, I refuse to do math
+    // AND WHY THE FUCK DO PEOPLE USE PIXELS!?
+    // COME ON What's simpler than pixels???
+    // Aspect Ratio, no funni number above 20. I suck at math, triple digit numbers scares me.
     //  ___ ___ ___ ___ ___
     // |___|___|___|___|___|
     // |___|___|HHH|___|___|
