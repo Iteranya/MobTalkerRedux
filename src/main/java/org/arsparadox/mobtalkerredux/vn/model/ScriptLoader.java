@@ -10,6 +10,7 @@ import org.arsparadox.mobtalkerredux.MobTalkerRedux;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,27 @@ public class ScriptLoader {
             return loadJson(inputStream);
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("Resource file demo.json could not be found.");
+        }
+    }
+
+    public static void saveState(Map<String, Object> variables, String filePath) {
+        try {
+            filePath = FMLPaths.CONFIGDIR.get() + "\\"+ MobTalkerRedux.MODID +"\\" + filePath;
+            // Load existing JSON content
+            List<Map<String, Object>> list = loadJson(filePath);
+
+            // Append the 'variables' map to the list
+            list.add(variables);
+
+            // Convert the updated list back to a JSON string
+            String jsonContent = gson.toJson(list);
+
+            // Save the JSON string back into the file
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8)) {
+                writer.write(jsonContent);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save state to file at " + filePath, e);
         }
     }
 }

@@ -2,6 +2,7 @@ package org.arsparadox.mobtalkerredux.vn.controller;
 
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
+import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
 import java.util.*;
 
@@ -14,11 +15,14 @@ public class VisualNovelEngine {
     public DialogueState state;
     public boolean isEngineRunning = false;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData) {
+    public String scriptName;
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName) {
         this.gameData = gameData;
         this.currentState = 0;
         this.variables = new HashMap<>();
         this.state = new DialogueState(null,null,null);
+        this.scriptName = scriptName;
     }
 
     private Long findLabelId(String var) {
@@ -248,13 +252,18 @@ public class VisualNovelEngine {
                 this.currentState++;
                 break;
             case "finish_dialogue":
-                isEngineRunning=false;
-                shutdown = true;
+                processFinishing();
             default:
                 this.currentState++;
                 break;
         }
         return false;
+    }
+
+    private void processFinishing() {
+        isEngineRunning=false;
+        ScriptLoader.saveState(variables,scriptName);
+        shutdown = true;
     }
 
     public void runEngine() {
