@@ -7,7 +7,7 @@ public class SpriteState {
 
     int wRatio = 16; // These guys
     int hRatio = 9; // Will Default
-    int frameWRatio =5; // To putting image
+    int frameWRatio =4; // To putting image
     int frameHRatio = 8; // In the middle
     int startColumn = 7; // Of the screen
     int startRow = 1; //First row is one, we don't do zero, this isn't an array
@@ -46,6 +46,8 @@ public class SpriteState {
         if(position==null)return "CENTER";
         else return position;
     }
-    public void setPosition(String position){this.position = position;}
+    public void setPosition(String position){
+        this.position = position;
+    }
 
 }

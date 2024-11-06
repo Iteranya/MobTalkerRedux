@@ -17,7 +17,11 @@ public class VisualNovelEngine {
 
     public String scriptName;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName) {
+    public String uid;
+
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid) {
+        this.uid = uid;
         this.gameData = gameData;
         this.currentState = 0;
         this.state = new DialogueState(null,null,null);
@@ -279,7 +283,7 @@ public class VisualNovelEngine {
 
     private void processFinishing() {
         isEngineRunning=false;
-        ScriptLoader.saveState(gameData,scriptName);
+        ScriptLoader.saveState(gameData,scriptName,uid);
         shutdown = true;
     }
 
