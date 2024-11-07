@@ -6,6 +6,9 @@ import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
 import java.util.*;
 
+
+
+// I should really refactor this before I regret  everything...
 public class VisualNovelEngine {
     public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
