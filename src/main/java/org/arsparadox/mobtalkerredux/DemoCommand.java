@@ -36,9 +36,9 @@ public class DemoCommand {
 
     private static void serverSideExecute(ServerPlayer player, String scriptFileName) {
         String uid = player.getName().toString();
-
+        int day = (int)(player.level().getDayTime() / 24000L); // Help me find the number of in-game day has passed in the serve
         try {
-            VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid);
+            VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid,day);
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
             clientSideRenderDialogueScreen(vnEngine);
         } catch (IOException e) {

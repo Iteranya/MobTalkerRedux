@@ -19,13 +19,16 @@ public class VisualNovelEngine {
 
     public String uid;
 
+    public int day;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid) {
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, int day) {
         this.uid = uid;
         this.gameData = gameData;
         this.currentState = 0;
         this.state = new DialogueState(null,null,null);
         this.scriptName = scriptName;
+        this.day = day;
         initializeVariable();
     }
 
@@ -39,6 +42,7 @@ public class VisualNovelEngine {
         }else{
             this.variables = this.gameData.get(this.gameData.size() - 1);
         }
+        this.variables.put("day",this.day);
     }
 
     private Long findLabelId(String var) {
@@ -208,8 +212,6 @@ public class VisualNovelEngine {
 
 
     }
-
-    @SuppressWarnings("unchecked")
 
 
     private void createVariable(String varName, Object varInit) {
