@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mobtalkerredux:item/mob_talker_item"
+  }
+}

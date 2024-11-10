@@ -6,6 +6,9 @@ import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
 import java.util.*;
 
+
+
+// I should really refactor this before I regret  everything...
 public class VisualNovelEngine {
     public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
@@ -17,11 +20,18 @@ public class VisualNovelEngine {
 
     public String scriptName;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName) {
+    public String uid;
+
+    public boolean isDay;
+
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day) {
+        this.uid = uid;
         this.gameData = gameData;
         this.currentState = 0;
         this.state = new DialogueState(null,null,null);
         this.scriptName = scriptName;
+        this.isDay = day;
         initializeVariable();
     }
 
@@ -29,15 +39,20 @@ public class VisualNovelEngine {
         if(!"variable".equals(this.gameData.get(this.gameData.size() - 1).get("type"))){
             System.out.println(this.gameData.get(this.gameData.size() - 1).get("type"));
             this.variables = new HashMap<>();
-            this.variables.put("type", "variable");
+            this.variables.put("type","variable");
             this.gameData.add(variables);
             System.out.println("Initialize Variable");
         }else{
             this.variables = this.gameData.get(this.gameData.size() - 1);
+            if(this.variables.get("checkpoint")!=null && !((String) this.variables.get("checkpoint")).isEmpty()){
+                this.currentState = findLabelId((String) this.variables.get("checkpoint"));
+            }
+
         }
     }
 
     private Long findLabelId(String var) {
+        System.out.println("Trying to find: "+var);
         return gameData.stream()
                 .filter(action -> "label".equals(action.get("type")) && var.equals(action.get("label")))
                 .map(action -> (long) action.get("id"))
@@ -116,23 +131,13 @@ public class VisualNovelEngine {
         this.isEngineRunning = false;
     }
 
-    private Object processCommand(Map<String, Object> value) {
+    private void processCommand(Map<String, Object> value) {
         String action = (String) value.get("action");
-        if ("get_gamemode".equals(action)) {
-            return "Survival";
-        } else if ("custom_command".equals(action)) {
-            // NOT IMPLEMENTED YET
-            return "Nothing for now";
-        }
-        return "Nothing for now";
+        state.setCommand(action);
     }
 
     @SuppressWarnings("unchecked")
     private void modifyVariable(String variable, String operation, Object value) {
-        if (value instanceof Map) {
-            value = processCommand((Map<String, Object>) value);
-        }
-
         if (operation.equals("increment_var")) {
             if (this.variables.get(variable) instanceof Number && value instanceof Number) {
                 double result = ((Number) this.variables.get(variable)).doubleValue() +
@@ -163,49 +168,38 @@ public class VisualNovelEngine {
 
     @SuppressWarnings("unchecked")
     private void processConditional(Map<String, Object> condition) {
-        System.out.println("trying to get:"+condition.get("var"));
-        Object var = this.variables.get(condition.get("var"));
-        Object value = condition.get("value");
-        System.out.println(var);
-        System.out.println(value);
-        long end = (long) condition.get("end");
-
-        if (value instanceof Map) {
-            value = processCommand((Map<String, Object>) value);
-        }
-
         String conditionType = (String) condition.get("condition");
         boolean result = false;
-        if(var!=null){
-            switch (conditionType) {
-                case "equal":
-                    result = var.equals(value);
-                    break;
-                case "not_equal":
-                    result = !var.equals(value);
-                    break;
-                case "less_than":
-                    if (var instanceof Number && value instanceof Number) {
-                        result = ((Number) var).doubleValue() < ((Number) value).doubleValue();
-                    }
-                    break;
-                case "greater_than":
-                    if (var instanceof Number && value instanceof Number) {
-                        result = ((Number) var).doubleValue() > ((Number) value).doubleValue();
-                    }
-                    break;
-            }
 
-            this.currentState = result ? this.currentState + 1 : end;
+        Object var = this.variables.get(condition.get("var"));
+        Object value = condition.get("value");
+        long end = (long) condition.get("end");
+
+        System.out.println("Is it day time???: "+isDay);
+
+        switch (conditionType) {
+            case "equal":
+                result = (var != null) && var.equals(value);
+                break;
+            case "not_equal":
+                result = (var == null) || !var.equals(value);
+                break;
+            case "less_than":
+                result = (var instanceof Number && value instanceof Number) && ((Number) var).doubleValue() < ((Number) value).doubleValue();
+                break;
+            case "greater_than":
+                result = (var instanceof Number && value instanceof Number) && ((Number) var).doubleValue() > ((Number) value).doubleValue();
+                break;
+            case "night":
+                result = !isDay;
+                break;
+            case "day":
+                result = isDay;
+                break;
         }
-        else{
-            this.currentState = end;
-        }
 
-
+        this.currentState = result ? this.currentState + 1 : end;
     }
-
-    @SuppressWarnings("unchecked")
 
 
     private void createVariable(String varName, Object varInit) {
@@ -257,6 +251,7 @@ public class VisualNovelEngine {
                 break;
             case "command":
                 processCommand(action);
+                this.currentState++;
                 break;
             case "label":
                 this.currentState++;
@@ -268,6 +263,26 @@ public class VisualNovelEngine {
                 state.clearBackground();
                 this.currentState++;
                 break;
+            case "night_choice":
+                if(!isDay){
+                    updateChoices((List<Map<String, Object>>) action.get("choice"));
+                }else{
+                    this.currentState++;
+                }
+                break;
+            case "unlock_dialogues":
+                List<String> events = (List<String>) this.variables.getOrDefault("unlocked_events", new ArrayList<>());
+                events.addAll((List<String>) action.get("events"));
+                this.variables.put("unlocked_events", events);
+                this.currentState++;
+                break;
+            case "next":
+                processNext(action);
+                this.currentState++;
+                break;
+            case "idle_chat":
+                processIdleChat();
+                break;
             case "finish_dialogue":
                 processFinishing();
             default:
@@ -277,9 +292,32 @@ public class VisualNovelEngine {
         return false;
     }
 
+    private void processNext(Map<String, Object> action) {
+        this.variables.put("checkpoint",action.get("label"));
+    }
+
+    private void processIdleChat(){
+        // Alright, Null Handling Time
+        // Fuck...
+        System.out.println(this.variables.get("unlocked_events"));
+        List<String> chats = (List<String>) this.variables.getOrDefault("unlocked_events", new ArrayList<>());
+        if (!chats.isEmpty()) {
+
+            Random random = new Random();
+            String chat = chats.get(random.nextInt(chats.size()));
+            System.out.println(chat);
+            this.currentState = findLabelId(chat);
+            this.currentState++;
+        } else {
+            processFinishing();
+        }
+
+    }
+
     private void processFinishing() {
         isEngineRunning=false;
-        ScriptLoader.saveState(gameData,scriptName);
+        ScriptLoader.saveState(gameData,scriptName,uid);
+        this.variables.put("type", "variable");
         shutdown = true;
     }
 

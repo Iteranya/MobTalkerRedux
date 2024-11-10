@@ -1,6 +1,6 @@
 package org.arsparadox.mobtalkerredux.vn.data;
 
-public class SpriteState {
+public class GuiState {
     private String folder;
     private String position;
     private String location;
@@ -12,7 +12,7 @@ public class SpriteState {
     int startColumn = 7; // Of the screen
     int startRow = 1; //First row is one, we don't do zero, this isn't an array
 
-    public SpriteState(String folder,String location,String position) {
+    public GuiState(String folder,String location,String position) {
         this.folder = folder;
         this.location = location;
         this.position = position;
@@ -51,3 +51,4 @@ public class SpriteState {
     }
 
 }
+

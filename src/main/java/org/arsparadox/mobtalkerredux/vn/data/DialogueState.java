@@ -12,6 +12,7 @@ public class DialogueState {
     private String label;
     private String content;
     private String background;
+    private String command;
     private List <SpriteState> sprites = new ArrayList<>();
     private List<Map<String, Object>> choices;
 
@@ -52,5 +53,13 @@ public class DialogueState {
 
     public String getBackground() {
         return this.background;
+    }
+    
+    public  String getCommand(){
+        return this.command;
+    }
+
+    public void setCommand(String action) {
+        this.command = action;
     }
 }
