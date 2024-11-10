@@ -30,6 +30,7 @@ public class DialogueScreen extends Screen{
     private String label;
     private String content;
     private List<Map<String, Object>> choices;
+
     private String background;
     private String command;
 
@@ -37,7 +38,7 @@ public class DialogueScreen extends Screen{
 
 
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
-        super(Component.empty());;
+        super(Component.empty());
         this.vn = vn;
         TextureLoader.loadTexturesFromConfig();
         //this.player = player;

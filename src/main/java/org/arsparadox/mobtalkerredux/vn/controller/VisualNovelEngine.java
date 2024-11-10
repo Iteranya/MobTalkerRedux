@@ -10,6 +10,7 @@ import java.util.*;
 
 // I should really refactor this before I regret  everything...
 public class VisualNovelEngine {
+
     public boolean shutdown = false;
     private List<Map<String, Object>> gameData;
     private long currentState=0;
@@ -24,16 +25,21 @@ public class VisualNovelEngine {
 
     public boolean isDay;
 
+    public PlayerInventoryHandler inventoryHandler;
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day) {
+
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day,PlayerInventoryHandler inventory) {
         this.uid = uid;
         this.gameData = gameData;
         this.currentState = 0;
         this.state = new DialogueState(null,null,null);
         this.scriptName = scriptName;
         this.isDay = day;
+        this.inventoryHandler = inventory;
         initializeVariable();
     }
+
+    // Look, for the sake of my own sanity, I have to refactor this thing...
 
     private void initializeVariable() {
         if(!"variable".equals(this.gameData.get(this.gameData.size() - 1).get("type"))){

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.arsparadox.mobtalkerredux.vn.controller.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
@@ -50,10 +51,11 @@ public class MobTalkerItem extends Item {
     private static void serverSideExecute(Player player, String scriptFileName) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
+        PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         long timeOfDay = player.level().getDayTime() % 24000; // Minecraft-style day/night cycle in ticks
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
-            VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid,day);
+            VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid,day,inventory);
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
             clientSideRenderDialogueScreen(vnEngine);
         } catch (IOException e) {
@@ -65,7 +67,6 @@ public class MobTalkerItem extends Item {
     private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine) {
         Minecraft.getInstance().execute(() -> {
             try {
-                //Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,player));
                 Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
