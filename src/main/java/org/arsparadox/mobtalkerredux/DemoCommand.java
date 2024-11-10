@@ -7,7 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.arsparadox.mobtalkerredux.vn.controller.PlayerInventoryHandler;
+import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;

@@ -71,7 +71,7 @@ public class DialogueScreen extends Screen{
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            vn.isEngineRunning=true;
+            vn.isEngineRunning.set(true);
             vn.runEngine();
             //Tell Engine to update the Globals, as in like, get the current state and put it in the global in this class
             update();
@@ -81,7 +81,7 @@ public class DialogueScreen extends Screen{
     }
 
     private void startScene() {
-        vn.isEngineRunning=true;
+        vn.isEngineRunning.set(true);
         vn.runEngine();//run the engine, let it do some loops and backflips, engine's globals shouldn't affect this sacred place
         update();
     }
@@ -89,7 +89,7 @@ public class DialogueScreen extends Screen{
     private void onPress(String choice) { // BUTTON press,  btw
         vn.buttonPress(choice);//Tell engine to update their globals then update this class's global
         //After clicking, it tries to load the next dialogue...
-        vn.isEngineRunning=true;
+        vn.isEngineRunning.set(true);
         vn.runEngine();
         update();
     }
@@ -114,7 +114,7 @@ public class DialogueScreen extends Screen{
         }
 
         renderChoiceButtons();
-        if(vn.shutdown){
+        if(vn.shutdown.get()){
             onClose();
         }
 

@@ -1,226 +1,57 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
+import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
-import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
-import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.DialogueHandler.*;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.removeSprite;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.updateSprite;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.StateHandler.*;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.initializeVariable;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.modifyVariable;
 
 
 // I should really refactor this before I regret  everything...
 public class VisualNovelEngine {
 
-    public boolean shutdown = false;
+    public AtomicBoolean shutdown = new AtomicBoolean(false);
     private List<Map<String, Object>> gameData;
-    private long currentState=0;
-    private Map<String, Object> variables;
+    private AtomicLong currentState = new AtomicLong(0);
+    private Map<String, Object> variables = new HashMap<>();
 
     public DialogueState state;
-    public boolean isEngineRunning = false;
+    public AtomicBoolean isEngineRunning = new AtomicBoolean(false);
 
-    public String scriptName;
+    public StringBuffer scriptName = new StringBuffer();
 
-    public String uid;
+    public StringBuffer uid = new StringBuffer();
 
-    public boolean isDay;
+    public AtomicBoolean isDay = new AtomicBoolean(true);
 
     public PlayerInventoryHandler inventoryHandler;
 
 
     public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day,PlayerInventoryHandler inventory) {
-        this.uid = uid;
+        this.uid.setLength(0);
+        this.uid.append(uid);
         this.gameData = gameData;
-        this.currentState = 0;
         this.state = new DialogueState(null,null,null);
-        this.scriptName = scriptName;
-        this.isDay = day;
+        this.scriptName.setLength(0);
+        this.scriptName.append(scriptName);
+        this.isDay.set(day);
         this.inventoryHandler = inventory;
-        initializeVariable();
+        this.variables.put("type","variable");
+        initializeVariable(this.gameData,this.variables,this.currentState);
     }
 
     // Look, for the sake of my own sanity, I have to refactor this thing...
-
-    private void initializeVariable() {
-        if(!"variable".equals(this.gameData.get(this.gameData.size() - 1).get("type"))){
-            System.out.println(this.gameData.get(this.gameData.size() - 1).get("type"));
-            this.variables = new HashMap<>();
-            this.variables.put("type","variable");
-            this.gameData.add(variables);
-            System.out.println("Initialize Variable");
-        }else{
-            this.variables = this.gameData.get(this.gameData.size() - 1);
-            if(this.variables.get("checkpoint")!=null && !((String) this.variables.get("checkpoint")).isEmpty()){
-                this.currentState = findLabelId((String) this.variables.get("checkpoint"));
-            }
-
-        }
-    }
-
-    private Long findLabelId(String var) {
-        System.out.println("Trying to find: "+var);
-        return gameData.stream()
-                .filter(action -> "label".equals(action.get("type")) && var.equals(action.get("label")))
-                .map(action -> (long) action.get("id"))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private Map<String, Object> getDictById(long targetId) {
-        return gameData.stream()
-                .filter(action -> targetId == (long) action.get("id"))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private void removeSprite(String remove){
-        //System.out.println("Try to remove sprite: "+ remove);
-        removeSpriteByFolder(this.state.getSprites(), remove);
-    }
-
-    private void updateSprite(Map<String, Object> sprite) {
-        String spritePos;
-        if(sprite.get("position")==null){
-            spritePos = "CUSTOM";
-        }
-        else{
-            spritePos = (String) sprite.get("position");
-        }
-        SpriteState newSprite;
-        newSprite = (new SpriteState(
-                (String) sprite.get("sprite"),
-                (String) sprite.get("location"),
-                spritePos
-        ));
-
-        if(Objects.equals((String) sprite.get("action"), "show")){
-            if(sprite.get("wRatio")!=null){
-                newSprite.setPositioning(
-                        ((Long) sprite.get("wRatio")).intValue(),
-                        ((Long) sprite.get("hRatio")).intValue(),
-                        ((Long) sprite.get("wFrameRatio")).intValue(),
-                        ((Long) sprite.get("hFrameRatio")).intValue(),
-                        ((Long) sprite.get("column")).intValue(),
-                        ((Long) sprite.get("row")).intValue()
-                );
-            }
-            for (SpriteState oldSprite: this.state.getSprites()) {
-
-                if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
-                    removeSpriteByFolder(this.state.getSprites(), newSprite.getSprite());
-                    break;
-                }
-            }
-            //System.out.println("Adding New Sprite: " + newSprite.getSprite());
-            this.state.addSprite(newSprite);
-        }
-        this.currentState++;
-    }
-    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
-        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
-    }
-    private void updateDialogue(String label, String content) {
-        state.setLabel(label);
-        state.setContent(content);
-        this.isEngineRunning = false;
-        this.currentState++;
-    }
-
-    private void updateBackground(String background) {
-        state.setBackground(background);
-
-        this.currentState++;
-    }
-
-    private void updateChoices(List<Map<String, Object>> choices) {
-        state.setChoices(choices);
-        this.isEngineRunning = false;
-    }
-
-    private void processCommand(Map<String, Object> value) {
-        String action = (String) value.get("action");
-        state.setCommand(action);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void modifyVariable(String variable, String operation, Object value) {
-        if (operation.equals("increment_var")) {
-            if (this.variables.get(variable) instanceof Number && value instanceof Number) {
-                double result = ((Number) this.variables.get(variable)).doubleValue() +
-                        ((Number) value).doubleValue();
-                this.variables.put(variable, result);
-            }
-        } else if (operation.equals("substract_var")) {
-            if (this.variables.get(variable) instanceof Number && value instanceof Number) {
-                double result = ((Number) this.variables.get(variable)).doubleValue() -
-                        ((Number) value).doubleValue();
-                this.variables.put(variable, result);
-            }
-        } else {
-            this.variables.put(variable, value);
-        }
-        this.currentState++;
-    }
-
-    private void giveItem(String item, long amount) {
-        // Not Implemented Yet
-        this.currentState++;
-    }
-
-    private void processJump(Map<String, Object> action) {
-        this.currentState = findLabelId((String) action.get("label"));
-        this.currentState++; //TO-DO: Figure out if this is necessary (Update: Yes It Is)
-    }
-
-    @SuppressWarnings("unchecked")
-    private void processConditional(Map<String, Object> condition) {
-        String conditionType = (String) condition.get("condition");
-        boolean result = false;
-
-        Object var = this.variables.get(condition.get("var"));
-        Object value = condition.get("value");
-        long end = (long) condition.get("end");
-
-        System.out.println("Is it day time???: "+isDay);
-
-        switch (conditionType) {
-            case "equal":
-                result = (var != null) && var.equals(value);
-                break;
-            case "not_equal":
-                result = (var == null) || !var.equals(value);
-                break;
-            case "less_than":
-                result = (var instanceof Number && value instanceof Number) && ((Number) var).doubleValue() < ((Number) value).doubleValue();
-                break;
-            case "greater_than":
-                result = (var instanceof Number && value instanceof Number) && ((Number) var).doubleValue() > ((Number) value).doubleValue();
-                break;
-            case "night":
-                result = !isDay;
-                break;
-            case "day":
-                result = isDay;
-                break;
-        }
-
-        this.currentState = result ? this.currentState + 1 : end;
-    }
-
-
-    private void createVariable(String varName, Object varInit) {
-        this.variables.put(varName, varInit);
-        this.currentState++;
-    }
-
-    private void processMeta(Map<String, Object> action) {
-        String actionType = (String) action.get("action");
-        if ("create_var".equals(actionType)) {
-            createVariable((String) action.get("var"), action.get("init"));
-        } else {
-            this.currentState++;
-        }
-    }
 
     @SuppressWarnings("unchecked")
     private boolean processAction(Map<String, Object> action) {
@@ -228,117 +59,97 @@ public class VisualNovelEngine {
 
         switch (actionType) {
             case "show_sprite":
-                updateSprite(action);
+                updateSprite(action, state, currentState);
                 return true;
             case "remove_sprite":
-                removeSprite((String) action.get("sprite"));
+                removeSprite((String) action.get("sprite"), state);
             case "dialogue":
-                updateDialogue((String) action.get("label"), (String) action.get("content"));
+                updateDialogue(
+                        (String) action.get("label"),
+                        (String) action.get("content"),
+                        state, isEngineRunning, currentState);
                 return true;
             case "modify_variable":
                 modifyVariable((String) action.get("var"),
                         (String) action.get("action"),
-                        action.get("value"));
+                        action.get("value"),
+                        variables, currentState);
                 break;
             case "give_item":
-                giveItem((String) action.get("item"), (long) action.get("amount"));
+                inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
                 break;
             case "conditional":
-                processConditional(action);
+                processConditional(action, isDay, variables, currentState);
                 break;
             case "transition":
                 if ("jump".equals(action.get("action"))) {
-                    processJump(action);
+                    processJump(action, currentState, gameData);
                 }
                 break;
             case "choice":
-                System.out.println("Try to yoink choice"+ action);
-                updateChoices((List<Map<String, Object>>) action.get("choice"));
+                System.out.println("Try to yoink choice" + action);
+                updateChoices(
+                        (List<Map<String, Object>>) action.get("choice"),
+                        state, isEngineRunning
+                );
                 break;
             case "command":
-                processCommand(action);
-                this.currentState++;
+                updateCommand(action, state);
+                this.currentState.incrementAndGet();
                 break;
             case "label":
-                this.currentState++;
+                this.currentState.incrementAndGet();
                 break;
             case "modify_background":
-                updateBackground((String) action.get("background"));
+                updateBackground((String) action.get("background"), state, currentState);
                 break;
             case "clear_background":
                 state.clearBackground();
-                this.currentState++;
+                this.currentState.incrementAndGet();
                 break;
             case "night_choice":
-                if(!isDay){
-                    updateChoices((List<Map<String, Object>>) action.get("choice"));
-                }else{
-                    this.currentState++;
+                if (!isDay.get()) {
+                    updateChoices((List<Map<String, Object>>) action.get("choice"), state, isEngineRunning);
+                } else {
+                    this.currentState.incrementAndGet();
                 }
                 break;
             case "unlock_dialogues":
                 List<String> events = (List<String>) this.variables.getOrDefault("unlocked_events", new ArrayList<>());
                 events.addAll((List<String>) action.get("events"));
                 this.variables.put("unlocked_events", events);
-                this.currentState++;
+                this.currentState.incrementAndGet();
                 break;
             case "next":
-                processNext(action);
-                this.currentState++;
+                processNext(action,variables);
+                this.currentState.incrementAndGet();
                 break;
             case "idle_chat":
-                processIdleChat();
+                processIdleChat(variables,currentState,gameData,isEngineRunning,scriptName,uid,shutdown);
                 break;
             case "finish_dialogue":
-                processFinishing();
+                processFinishing(variables,isEngineRunning,gameData,scriptName,uid,shutdown);
             default:
-                this.currentState++;
+                this.currentState.incrementAndGet();
                 break;
         }
         return false;
     }
 
-    private void processNext(Map<String, Object> action) {
-        this.variables.put("checkpoint",action.get("label"));
-    }
 
-    private void processIdleChat(){
-        // Alright, Null Handling Time
-        // Fuck...
-        System.out.println(this.variables.get("unlocked_events"));
-        List<String> chats = (List<String>) this.variables.getOrDefault("unlocked_events", new ArrayList<>());
-        if (!chats.isEmpty()) {
-
-            Random random = new Random();
-            String chat = chats.get(random.nextInt(chats.size()));
-            System.out.println(chat);
-            this.currentState = findLabelId(chat);
-            this.currentState++;
-        } else {
-            processFinishing();
-        }
-
-    }
-
-    private void processFinishing() {
-        isEngineRunning=false;
-        ScriptLoader.saveState(gameData,scriptName,uid);
-        this.variables.put("type", "variable");
-        shutdown = true;
-    }
 
     public void runEngine() {
-        while (isEngineRunning) { // Infinite loop
+        while (isEngineRunning.get()) { // Infinite loop
             // Check if engine is running
             System.out.println(this.currentState);
-            Map<String, Object> action = getDictById(this.currentState);
+            Map<String, Object> action = getDictById(this.currentState.get(),gameData);
             if(action == null){
-                shutdown = true;
-                isEngineRunning = false;
+                shutdown.set(true);
+                isEngineRunning.set(false);
                 return;
             }
             if ("meta".equals(((Map<?, ?>) action).get("type"))) {
-                 processMeta(action);
+                 processMeta(action,variables,currentState);
             } else {
                 processAction(action);
             }
@@ -347,8 +158,8 @@ public class VisualNovelEngine {
     }
 
 
-    public long changeStateByLabel(String label) {
-        this.currentState = findLabelId(label);
+    public AtomicLong changeStateByLabel(String label) {
+        this.currentState.set(findLabelId(label,gameData));
         return this.currentState;
 
     }

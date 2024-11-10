@@ -1,4 +1,4 @@
-package org.arsparadox.mobtalkerredux.vn.controller;
+package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
