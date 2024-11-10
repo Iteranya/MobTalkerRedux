@@ -1,8 +1,10 @@
 package org.arsparadox.mobtalkerredux;
 
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,8 +17,10 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.arsparadox.mobtalkerredux.vn.model.TextureLoader;
 
 import java.util.stream.Collectors;
 
@@ -42,7 +46,9 @@ public class MobTalkerRedux {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
+
         LOGGER.info("HELLO FROM PREINIT");
+        TextureLoader.loadTexturesFromConfig();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
@@ -67,10 +73,20 @@ public class MobTalkerRedux {
         public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-        // Move command registration to Forge event bus
+        public static final RegistryObject<Item> MOB_TALKER_ITEM = ITEMS.register("mob_talker_item", MobTalkerItem::new);
+
+        // Command registration stays on Forge event bus
         @SubscribeEvent
         public static void onRegisterCommands(RegisterCommandsEvent event) {
             DemoCommand.register(event.getDispatcher());
+        }
+
+        @SubscribeEvent
+        public static void buildContents(BuildCreativeModeTabContentsEvent event) {
+            // Add to tools tab
+            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+                event.accept(MOB_TALKER_ITEM);
+            }
         }
 
         public static void register(IEventBus eventBus) {
@@ -81,6 +97,8 @@ public class MobTalkerRedux {
         public static void initialize() {
             IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
             register(modEventBus);
+            // Register only the build contents event to mod bus
+            modEventBus.addListener(RegistryEvents::buildContents);
         }
     }
 }

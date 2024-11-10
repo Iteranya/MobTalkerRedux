@@ -11,10 +11,13 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.arsparadox.mobtalkerredux.MobTalkerRedux;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -149,5 +152,31 @@ public class ScriptLoader {
         String saveDir = Minecraft.getInstance().gameDirectory.getAbsolutePath() + File.separator + "saves" + File.separator +levelName+File.separator+ playerName;
         new File(saveDir).mkdirs(); // Ensure the directory exists
         return saveDir + File.separator + fileName;
+    }
+
+    public static void loadTextureFromConfig() {
+        Path configTexturePath = Paths.get(FMLPaths.CONFIGDIR.get().toString(), MobTalkerRedux.MODID, "textures");
+        Path modAssetsPath = Paths.get("assets", "mobtalkerredux", "textures");
+
+        // Check if the file exists in config
+        if (Files.exists(configTexturePath)) {
+            try {
+                // Read the image from config
+                BufferedImage image = ImageIO.read(configTexturePath.toFile());
+
+                // Ensure the target directory exists
+                Files.createDirectories(modAssetsPath.getParent());
+
+                // Write the image to mod assets
+                ImageIO.write(image, "png", modAssetsPath.toFile());
+
+                System.out.println("Successfully loaded texture from config");
+
+            } catch (IOException e) {
+                System.out.println("Failed to load texture from config");
+            }
+        } else {
+            System.out.println("No custom texture found in config");
+        }
     }
 }

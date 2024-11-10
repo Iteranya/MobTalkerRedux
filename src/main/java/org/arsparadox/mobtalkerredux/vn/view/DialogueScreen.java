@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
+import org.arsparadox.mobtalkerredux.vn.model.TextureLoader;
 import org.arsparadox.mobtalkerredux.vn.view.components.DialogueBoxManager;
 import org.arsparadox.mobtalkerredux.vn.view.components.ForegroundComponent;
 
@@ -30,12 +31,16 @@ public class DialogueScreen extends Screen{
     private String content;
     private List<Map<String, Object>> choices;
     private String background;
+    private String command;
+
 
 
 
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
         super(Component.empty());;
         this.vn = vn;
+        TextureLoader.loadTexturesFromConfig();
+        //this.player = player;
         //dialogueBox = new DialogueBoxComponent();
     }
 
@@ -53,13 +58,13 @@ public class DialogueScreen extends Screen{
         content = state.getContent();
         choices = state.getChoices();
         background = state.getBackground();
+//        if(player.server.isSingleplayer()){
+//            //ForgeCommandRunner.runCommand(player.server,command);
+//        }
     }
 
     public void updateSprites(DialogueState state){
         spritesToRender = state.getSprites();
-    }
-    public void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
-        sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
 
     @Override

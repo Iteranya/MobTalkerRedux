@@ -131,23 +131,13 @@ public class VisualNovelEngine {
         this.isEngineRunning = false;
     }
 
-    private Object processCommand(Map<String, Object> value) {
+    private void processCommand(Map<String, Object> value) {
         String action = (String) value.get("action");
-        if ("get_gamemode".equals(action)) {
-            return "Survival";
-        } else if ("custom_command".equals(action)) {
-            // NOT IMPLEMENTED YET
-            return "Nothing for now";
-        }
-        return "Nothing for now";
+        state.setCommand(action);
     }
 
     @SuppressWarnings("unchecked")
     private void modifyVariable(String variable, String operation, Object value) {
-        if (value instanceof Map) {
-            value = processCommand((Map<String, Object>) value);
-        }
-
         if (operation.equals("increment_var")) {
             if (this.variables.get(variable) instanceof Number && value instanceof Number) {
                 double result = ((Number) this.variables.get(variable)).doubleValue() +
@@ -185,9 +175,7 @@ public class VisualNovelEngine {
         Object value = condition.get("value");
         long end = (long) condition.get("end");
 
-        if (value instanceof Map) {
-            value = processCommand((Map<String, Object>) value);
-        }
+        System.out.println("Is it day time???: "+isDay);
 
         switch (conditionType) {
             case "equal":
@@ -263,6 +251,7 @@ public class VisualNovelEngine {
                 break;
             case "command":
                 processCommand(action);
+                this.currentState++;
                 break;
             case "label":
                 this.currentState++;

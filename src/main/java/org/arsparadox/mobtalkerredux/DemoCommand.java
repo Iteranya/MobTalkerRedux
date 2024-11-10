@@ -41,16 +41,17 @@ public class DemoCommand {
         try {
             VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid,day);
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
-            clientSideRenderDialogueScreen(vnEngine);
+            clientSideRenderDialogueScreen(vnEngine,player);
         } catch (IOException e) {
             sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
     }
 
-    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine) {
+    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine,ServerPlayer player) {
         Minecraft.getInstance().execute(() -> {
             try {
+                //Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,player));
                 Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
