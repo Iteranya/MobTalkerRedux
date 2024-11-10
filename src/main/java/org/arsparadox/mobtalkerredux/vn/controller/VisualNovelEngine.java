@@ -129,6 +129,7 @@ public class VisualNovelEngine {
                 break;
             case "finish_dialogue":
                 processFinishing(variables,isEngineRunning,gameData,scriptName,uid,shutdown);
+            case "check_inventory":
             default:
                 this.currentState.incrementAndGet();
                 break;
@@ -157,19 +158,12 @@ public class VisualNovelEngine {
         }
     }
 
-
-    public AtomicLong changeStateByLabel(String label) {
-        this.currentState.set(findLabelId(label,gameData));
-        return this.currentState;
-
-    }
-
     public DialogueState getNext() {
         return this.state;
     }
 
     public void buttonPress(String choice) {
-        changeStateByLabel(choice);
+        changeStateByLabel(choice,currentState,gameData);
         this.state.setChoices(new ArrayList<>());
     }
 }

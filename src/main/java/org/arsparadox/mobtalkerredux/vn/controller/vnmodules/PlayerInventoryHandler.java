@@ -65,20 +65,19 @@ public class PlayerInventoryHandler {
         return totalRemoved;
     }
 
-    public boolean giveItemToPlayer(String itemId, int amount) {
-        if (amount <= 0) return false;
+    public void giveItemToPlayer(String itemId, int amount) {
+        if (amount <= 0) return;
 
         // Convert itemId to actual item
         ResourceLocation itemResource = new ResourceLocation(itemId);
         Item targetItem = ForgeRegistries.ITEMS.getValue(itemResource);
-        if (targetItem == null) return false;  // Invalid item ID
+        if (targetItem == null) return;  // Invalid item ID
         ItemStack stack = new ItemStack(targetItem, amount);
 
             // Try to add to existing stacks first
-            boolean status = player.getInventory().add(stack);
+            player.getInventory().add(stack);
 
 
-        return status;
     }
 
 }

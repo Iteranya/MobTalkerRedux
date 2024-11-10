@@ -50,5 +50,9 @@ public class StateHandler {
         state.setCommand(action);
     }
 
+    public static void changeStateByLabel(String label,AtomicLong currentState, List<Map<String, Object>> gameData) {
+        currentState.set(findLabelId(label,gameData));
+    }
+
 
 }
