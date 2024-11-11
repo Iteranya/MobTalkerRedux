@@ -1,21 +1,20 @@
 package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
+import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class SpriteHandler {
 
     public static void removeSprite(String remove, DialogueState state){
-        //System.out.println("Try to remove sprite: "+ remove);
-        removeSpriteByFolder(state.getSprites(), remove,state);
+        removeSpriteByFolder(state.getSprites(), remove);
     }
 
-    public static void updateSprite(Map<String, Object> sprite, DialogueState state, AtomicLong currentState) {
+    public static void updateSprite(Map<String, Object> sprite, VisualNovelEngine vn) {
         String spritePos;
         if(sprite.get("position")==null){
             spritePos = "CUSTOM";
@@ -41,19 +40,19 @@ public class SpriteHandler {
                         ((Long) sprite.get("row")).intValue()
                 );
             }
-            for (SpriteState oldSprite: state.getSprites()) {
+            for (SpriteState oldSprite: vn.state.getSprites()) {
 
                 if(Objects.equals(oldSprite.getSprite(), newSprite.getSprite())){
-                    removeSpriteByFolder(state.getSprites(), newSprite.getSprite(),state);
+                    removeSpriteByFolder(vn.state.getSprites(), newSprite.getSprite());
                     break;
                 }
             }
             //System.out.println("Adding New Sprite: " + newSprite.getSprite());
-            state.addSprite(newSprite);
+            vn.state.addSprite(newSprite);
         }
-        currentState.incrementAndGet();
+        vn.currentState.incrementAndGet();
     }
-    public static void removeSpriteByFolder(List<SpriteState> sprites, String folderName,DialogueState state) {
+    public static void removeSpriteByFolder(List<SpriteState> sprites, String folderName) {
         sprites.removeIf(sprite -> sprite.getSprite().equals(folderName));
     }
 }

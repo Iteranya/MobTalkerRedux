@@ -1,23 +1,24 @@
 package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
-import java.util.List;
+import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class VariableHandler {
 
-    public static void initializeVariable(List<Map<String, Object>> gameData, Map<String, Object> variables, AtomicLong currentState) {
-        if(!"variable".equals(gameData.get(gameData.size() - 1).get("type"))){
-            variables.put("type","variable");
-            gameData.add(variables);
+    public static void initializeVariable(VisualNovelEngine vn) {
+        if(!"variable".equals(vn.gameData.get(vn.gameData.size() - 1).get("type"))){
+            vn.variables.put("type","variable");
+            vn.gameData.add(vn.variables);
             System.out.println("Initialize Variable");
         }else{
             // Copy all entries from the last gameData map to variables
-            variables.clear();
-            variables.putAll(gameData.get(gameData.size() - 1));
+            vn.variables.clear();
+            vn.variables.putAll(vn.gameData.get(vn.gameData.size() - 1)); // OH SO THAT'S WHY THE REFERENCE IS DIFFERENT!!!
 
-            if(variables.get("checkpoint")!=null && !((String) variables.get("checkpoint")).isEmpty()){
-                currentState.set(StateHandler.findLabelId((String) variables.get("checkpoint"),gameData));
+            if(vn.variables.get("checkpoint")!=null && !((String) vn.variables.get("checkpoint")).isEmpty()){
+                vn.currentState.set(StateHandler.findLabelId((String) vn.variables.get("checkpoint"),vn.gameData));
             }
         }
     }

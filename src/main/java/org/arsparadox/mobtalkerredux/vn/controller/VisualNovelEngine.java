@@ -22,9 +22,9 @@ import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHand
 public class VisualNovelEngine {
 
     public AtomicBoolean shutdown = new AtomicBoolean(false);
-    private List<Map<String, Object>> gameData;
-    private AtomicLong currentState = new AtomicLong(0);
-    private Map<String, Object> variables = new HashMap<>();
+    public List<Map<String, Object>> gameData;
+    public AtomicLong currentState = new AtomicLong(0);
+    public Map<String, Object> variables = new HashMap<>();
 
     public DialogueState state;
     public AtomicBoolean isEngineRunning = new AtomicBoolean(false);
@@ -48,27 +48,27 @@ public class VisualNovelEngine {
         this.isDay.set(day);
         this.inventoryHandler = inventory;
         this.variables.put("type","variable");
-        initializeVariable(this.gameData,this.variables,this.currentState);
+        initializeVariable(this);
     }
 
     // Look, for the sake of my own sanity, I have to refactor this thing...
 
     @SuppressWarnings("unchecked")
-    private boolean processAction(Map<String, Object> action) {
+    private void processAction(Map<String, Object> action) {
         String actionType = (String) action.get("type");
 
         switch (actionType) {
             case "show_sprite":
-                updateSprite(action, state, currentState);
-                return true;
+                updateSprite(action, this);
+                return;
             case "remove_sprite":
                 removeSprite((String) action.get("sprite"), state);
             case "dialogue":
                 updateDialogue(
                         (String) action.get("label"),
                         (String) action.get("content"),
-                        state, isEngineRunning, currentState);
-                return true;
+                        this);
+                return;
             case "modify_variable":
                 modifyVariable((String) action.get("var"),
                         (String) action.get("action"),
@@ -79,18 +79,17 @@ public class VisualNovelEngine {
                 inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
                 break;
             case "conditional":
-                processConditional(action, isDay, variables, currentState);
+                processConditional(action, this);
                 break;
             case "transition":
                 if ("jump".equals(action.get("action"))) {
-                    processJump(action, currentState, gameData);
+                    processJump(action,this);
                 }
                 break;
             case "choice":
                 System.out.println("Try to yoink choice" + action);
                 updateChoices(
-                        (List<Map<String, Object>>) action.get("choice"),
-                        state, isEngineRunning
+                        (List<Map<String, Object>>) action.get("choice"), this
                 );
                 break;
             case "command":
@@ -101,7 +100,7 @@ public class VisualNovelEngine {
                 this.currentState.incrementAndGet();
                 break;
             case "modify_background":
-                updateBackground((String) action.get("background"), state, currentState);
+                updateBackground((String) action.get("background"),this);
                 break;
             case "clear_background":
                 state.clearBackground();
@@ -109,7 +108,7 @@ public class VisualNovelEngine {
                 break;
             case "night_choice":
                 if (!isDay.get()) {
-                    updateChoices((List<Map<String, Object>>) action.get("choice"), state, isEngineRunning);
+                    updateChoices((List<Map<String, Object>>) action.get("choice"), this);
                 } else {
                     this.currentState.incrementAndGet();
                 }
@@ -121,20 +120,19 @@ public class VisualNovelEngine {
                 this.currentState.incrementAndGet();
                 break;
             case "next":
-                processNext(action,variables);
+                processNext(action,this);
                 this.currentState.incrementAndGet();
                 break;
             case "idle_chat":
-                processIdleChat(variables,currentState,gameData,isEngineRunning,scriptName,uid,shutdown);
+                processIdleChat(this);
                 break;
             case "finish_dialogue":
-                processFinishing(variables,isEngineRunning,gameData,scriptName,uid,shutdown);
+                processFinishing(this);
             case "check_inventory":
             default:
                 this.currentState.incrementAndGet();
                 break;
         }
-        return false;
     }
 
 
@@ -150,7 +148,7 @@ public class VisualNovelEngine {
                 return;
             }
             if ("meta".equals(((Map<?, ?>) action).get("type"))) {
-                 processMeta(action,variables,currentState);
+                 processMeta(action,this);
             } else {
                 processAction(action);
             }

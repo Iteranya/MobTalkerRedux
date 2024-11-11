@@ -1,10 +1,10 @@
 package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
+import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class StateHandler {
@@ -26,23 +26,23 @@ public class StateHandler {
     }
 
     public static void updateDialogue(
-            String label, String content, DialogueState state, AtomicBoolean isEngineRunning, AtomicLong currentState
-    ) {
-        state.setLabel(label);
-        state.setContent(content);
-        isEngineRunning.set(false);
-        currentState.incrementAndGet();
+            String label, String content, VisualNovelEngine vn
+            ) {
+        vn.state.setLabel(label);
+        vn.state.setContent(content);
+        vn.isEngineRunning.set(false);
+        vn.currentState.incrementAndGet();
     }
 
-    public static void updateBackground(String background,DialogueState state, AtomicLong currentState) {
-        state.setBackground(background);
+    public static void updateBackground(String background,VisualNovelEngine vn) {
+        vn.state.setBackground(background);
 
-        currentState.incrementAndGet();
+        vn.currentState.incrementAndGet();
     }
 
-    public static void updateChoices(List<Map<String, Object>> choices, DialogueState state, AtomicBoolean isEngineRunning) {
-        state.setChoices(choices);
-        isEngineRunning.set(false);
+    public static void updateChoices(List<Map<String, Object>> choices, VisualNovelEngine vn) {
+        vn.state.setChoices(choices);
+        vn.isEngineRunning.set(false);
     }
 
     public static void updateCommand(Map<String, Object> value,DialogueState state) {
