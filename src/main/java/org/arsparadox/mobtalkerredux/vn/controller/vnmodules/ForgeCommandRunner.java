@@ -1,4 +1,4 @@
-package org.arsparadox.mobtalkerredux.vn.controller;
+package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
