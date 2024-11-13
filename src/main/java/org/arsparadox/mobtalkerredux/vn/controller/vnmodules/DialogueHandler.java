@@ -14,7 +14,6 @@ import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.StateHandler
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.createVariable;
 
 public class DialogueHandler {
-    @SuppressWarnings("unchecked")
     public static void processConditional(Map<String, Object> condition, VisualNovelEngine vn) {
         String conditionType = (String) condition.get("condition");
         boolean result = false;

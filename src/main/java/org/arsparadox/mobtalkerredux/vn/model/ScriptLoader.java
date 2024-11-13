@@ -69,16 +69,23 @@ public class ScriptLoader {
     }
 
     public static List<Map<String, Object>> loadFromResource(String resourceName) throws IOException {
-        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        ResourceLocation resourceLocation = new ResourceLocation(MobTalkerRedux.MODID, resourceName);
+        try{
+            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+            ResourceLocation resourceLocation = new ResourceLocation(MobTalkerRedux.MODID, resourceName);
 
-        Resource resource = resourceManager.getResource(resourceLocation).orElseThrow(
-                () -> new FileNotFoundException("Resource file " + resourceName + " could not be found.")
-        );
+            Resource resource = resourceManager.getResource(resourceLocation).orElseThrow(
+                    () -> new FileNotFoundException("Resource file " + resourceName + " could not be found.")
+            );
 
-        try (InputStream inputStream = resource.open()) {
-            return loadJsonFromStream(inputStream);
+            try (InputStream inputStream = resource.open()) {
+                return loadJsonFromStream(inputStream);
+            }
+
+        } catch (IOException ignored) {
+
         }
+
+        return null;
     }
 
     public static String getWorldName() {
@@ -99,6 +106,7 @@ public class ScriptLoader {
      */
     public static List<Map<String, Object>> loadScript(String fileName, String playerUID) throws IOException {
         // Try loading from the save folder (level or player UID folder)
+        fileName = fileName.toLowerCase();
         File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
         if (saveFile.exists()) {
             System.out.println("Loading from save folder: " + fileName);
@@ -124,6 +132,8 @@ public class ScriptLoader {
      * @param playerName Player-specific UID for saving to a specific folder.
      */
     public static void saveState(List<Map<String, Object>> gameState, String fileName, String playerName) {
+        fileName = fileName.toLowerCase();
+        playerName = playerName.toLowerCase();
         String filePath = getSaveFilePath(fileName, playerName,getWorldName());
         try (Writer writer = new FileWriter(filePath)) {
             gson.toJson(gameState, writer);
@@ -138,6 +148,7 @@ public class ScriptLoader {
      * @return Absolute path to the config file.
      */
     private static String getConfigFilePath(String fileName) {
+        fileName = fileName.toLowerCase();
         return FMLPaths.CONFIGDIR.get() + File.separator + MobTalkerRedux.MODID + File.separator + fileName;
     }
 
@@ -149,6 +160,9 @@ public class ScriptLoader {
      * @return Absolute path to the save file.
      */
     private static String getSaveFilePath(String fileName, String playerName, String levelName) {
+        fileName = fileName.toLowerCase();
+        playerName = playerName.toLowerCase();
+        levelName = levelName.toLowerCase();
         String saveDir = Minecraft.getInstance().gameDirectory.getAbsolutePath() + File.separator + "saves" + File.separator +levelName+File.separator+ playerName;
         new File(saveDir).mkdirs(); // Ensure the directory exists
         return saveDir + File.separator + fileName;

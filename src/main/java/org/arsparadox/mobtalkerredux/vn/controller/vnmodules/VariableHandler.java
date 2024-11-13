@@ -23,7 +23,6 @@ public class VariableHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void modifyVariable(String variable, String operation, Object value,Map<String, Object> variables,AtomicLong currentState) {
         if (operation.equals("increment_var")) {
             if (variables.get(variable) instanceof Number && value instanceof Number) {
