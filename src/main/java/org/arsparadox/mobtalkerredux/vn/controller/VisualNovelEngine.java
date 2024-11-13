@@ -62,7 +62,8 @@ public class VisualNovelEngine {
                 updateSprite(action, this);
                 return;
             case "remove_sprite":
-                removeSprite((String) action.get("sprite"), state);
+                removeSprite((String) action.get("sprite"), this);
+                return;
             case "dialogue":
                 updateDialogue(
                         (String) action.get("label"),

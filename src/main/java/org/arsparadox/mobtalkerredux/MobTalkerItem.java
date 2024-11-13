@@ -64,14 +64,14 @@ public class MobTalkerItem extends Item {
             List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
             if(script!=null){
                 VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory);
-                sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
+                sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
                 clientSideRenderDialogueScreen(vnEngine);
             }
             else{
-                sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
+                sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             }
         } catch (IOException e) {
-            sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
+            sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
     }

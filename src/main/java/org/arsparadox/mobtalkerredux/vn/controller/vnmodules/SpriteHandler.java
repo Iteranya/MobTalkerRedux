@@ -1,7 +1,6 @@
 package org.arsparadox.mobtalkerredux.vn.controller.vnmodules;
 
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
-import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.util.List;
@@ -10,8 +9,9 @@ import java.util.Objects;
 
 public class SpriteHandler {
 
-    public static void removeSprite(String remove, DialogueState state){
-        removeSpriteByFolder(state.getSprites(), remove);
+    public static void removeSprite(String remove,VisualNovelEngine vn){
+        removeSpriteByFolder(vn.state.getSprites(), remove);
+        vn.currentState.incrementAndGet();
     }
 
     public static void updateSprite(Map<String, Object> sprite, VisualNovelEngine vn) {
