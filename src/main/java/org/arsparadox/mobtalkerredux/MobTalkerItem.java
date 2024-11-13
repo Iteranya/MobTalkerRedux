@@ -35,7 +35,7 @@ public class MobTalkerItem extends Item {
                 boolean day = world.isDay();
 
                 if (!world.isClientSide()) { // Only run on the server side
-                    player.sendSystemMessage(Component.literal("Hewwo World~"));
+
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
                     minecraft.execute(() -> {
@@ -66,6 +66,9 @@ public class MobTalkerItem extends Item {
                 VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory);
                 sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
                 clientSideRenderDialogueScreen(vnEngine);
+            }
+            else{
+                sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
             }
         } catch (IOException e) {
             sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
