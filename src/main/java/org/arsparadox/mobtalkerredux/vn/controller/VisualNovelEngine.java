@@ -120,6 +120,15 @@ public class VisualNovelEngine {
                 this.variables.put("unlocked_events", events);
                 this.currentState.incrementAndGet();
                 break;
+            case "play_sound":
+                updateSound(this, (String) action.get("sound"));
+            case "play_music":
+                if(action.get("music")!=null){
+                    updateMusic(this, (String) action.get("music"));
+                }else{
+                    stopMusic(this);
+                }
+
             case "next":
                 processNext(action,this);
                 this.currentState.incrementAndGet();

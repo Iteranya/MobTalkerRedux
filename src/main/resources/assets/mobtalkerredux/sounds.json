@@ -1,0 +1,35 @@
+{
+  "music.revenge": {
+    "sounds": [
+      {
+        "name": "mobtalkerredux:music/revenge",
+        "stream": true,
+        "volume": 0.5
+      }
+    ]
+  },
+  "music.battle": {
+    "sounds": [
+      {
+        "name": "mobtalkerredux:music/battle",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "sound.click": {
+    "sounds": [
+      {
+        "name": "mobtalkerredux:sounds/click"
+      }
+    ]
+  },
+  "sound.explosion": {
+    "sounds": [
+      {
+        "name": "mobtalkerredux:sounds/explosion",
+        "volume": 0.8
+      }
+    ]
+  }
+}
