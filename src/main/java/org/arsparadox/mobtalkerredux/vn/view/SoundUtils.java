@@ -8,22 +8,22 @@ import net.minecraft.sounds.SoundSource;
 
 public class SoundUtils {
 
-    private static SimpleSoundInstance currentMusic = null;
-    private static SimpleSoundInstance currentSound = null;
+    private SimpleSoundInstance currentMusic = null;
+    private SimpleSoundInstance currentSound = null;
 
     /**
      * Plays a sound effect once at full volume
      * Stops any currently playing sound effect
      * @param sound The ResourceLocation of the sound to play
      */
-    public static void playSound(ResourceLocation sound) {
+    public void playSound(ResourceLocation sound) {
         if (currentSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentSound);
         }
         currentSound = SimpleSoundInstance.forUI(
                 net.minecraft.sounds.SoundEvent.createVariableRangeEvent(sound),
-                1.0F, // Volume
-                1.0F  // Pitch
+                1.0F, // Pitch
+                1.5F  // Volume
         );
         Minecraft.getInstance().getSoundManager().play(currentSound);
     }
@@ -35,7 +35,7 @@ public class SoundUtils {
      * @param volume Volume from 0.0 to 1.0
      * @param pitch Pitch from 0.5 to 2.0
      */
-    public static void playSound(ResourceLocation sound, float volume, float pitch) {
+    public void playSound(ResourceLocation sound, float volume, float pitch) {
         if (currentSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentSound);
         }
@@ -52,7 +52,7 @@ public class SoundUtils {
      * Automatically stops any currently playing music
      * @param music The ResourceLocation of the music to play
      */
-    public static void playMusic(ResourceLocation music) {
+    public void playMusic(ResourceLocation music) {
         stopMusic();
         currentMusic = new SimpleSoundInstance(
                 music,
@@ -77,7 +77,7 @@ public class SoundUtils {
      * @param music The ResourceLocation of the music to play
      * @param volume Volume from 0.0 to 1.0
      */
-    public static void playMusic(ResourceLocation music, float volume) {
+    public void playMusic(ResourceLocation music, float volume) {
         stopMusic();
         currentMusic = new SimpleSoundInstance(
                 music,
@@ -99,7 +99,7 @@ public class SoundUtils {
     /**
      * Stops any currently playing music
      */
-    public static void stopMusic() {
+    public void stopMusic() {
         if (currentMusic != null) {
             Minecraft.getInstance().getSoundManager().stop(currentMusic);
             currentMusic = null;
@@ -109,7 +109,7 @@ public class SoundUtils {
     /**
      * Stops any currently playing sound effect
      */
-    public static void stopSound() {
+    public void stopSound() {
         if (currentSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentSound);
             currentSound = null;

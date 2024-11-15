@@ -26,10 +26,13 @@ public class StateHandler {
     }
 
     public static void updateDialogue(
-            String label, String content, VisualNovelEngine vn
+            String label, String content, String sound,VisualNovelEngine vn
             ) {
         vn.state.setLabel(label);
         vn.state.setContent(content);
+        if(sound!=null){
+            vn.state.setSound(sound);
+        }
         vn.isEngineRunning.set(false);
         vn.currentState.incrementAndGet();
     }

@@ -65,9 +65,11 @@ public class VisualNovelEngine {
                 removeSprite((String) action.get("sprite"), this);
                 return;
             case "dialogue":
+                String sound = (String) action.get("voice");
                 updateDialogue(
                         (String) action.get("label"),
                         (String) action.get("content"),
+                        (String) action.get("voice"),
                         this);
                 return;
             case "modify_variable":

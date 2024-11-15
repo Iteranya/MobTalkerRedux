@@ -35,6 +35,7 @@ public class DialogueScreen extends Screen{
     private String command;
     private String music;
     private String sound;
+    private SoundUtils se;
 
 
 
@@ -42,6 +43,8 @@ public class DialogueScreen extends Screen{
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
         super(Component.empty());
         this.vn = vn;
+        this.se = new SoundUtils();
+
         TextureLoader.loadTexturesFromConfig();
         //this.player = player;
         //dialogueBox = new DialogueBoxComponent();
@@ -89,20 +92,20 @@ public class DialogueScreen extends Screen{
     public void playMusic(String music){
         if(music!=null){
             ResourceLocation musicPath = new ResourceLocation("mobtalkerredux","music."+music);
-            SoundUtils.playMusic(musicPath);
+            se.playMusic(musicPath);
             System.out.println("Playing: "+music);
         }else{
-            SoundUtils.stopMusic();
+            se.stopMusic();
         }
 
     }
     public void playSound(String sound){
         if(sound!=null){
-            ResourceLocation soundPath = new ResourceLocation("mobtalkerredux","sound/"+sound);
-            SoundUtils.playSound(soundPath);
+            ResourceLocation soundPath = new ResourceLocation("mobtalkerredux","sound."+sound);
+            se.playSound(soundPath);
             System.out.println("Playing: "+sound);
         }else{
-            SoundUtils.stopSound();
+            se.stopSound();
         }
     }
 
