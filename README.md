@@ -2,7 +2,8 @@
 
 ### YES, IF NO ONE ELSE IS GONNA DO IT, IMMA DO IT!!!
 
-![image](https://github.com/user-attachments/assets/9cd9f9fa-f269-41c6-af07-11602cbcfa41)
+![Screenshot 2024-11-17 145419](https://github.com/user-attachments/assets/81f4f5f6-a719-4fc4-b77e-f2db0dd1e154)
+
 
 
 ...
