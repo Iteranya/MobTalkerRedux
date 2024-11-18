@@ -33,6 +33,9 @@ public class DialogueScreen extends Screen{
 
     private String background;
     private String command;
+    private String music;
+    private String sound;
+    private SoundUtils se;
 
 
 
@@ -40,6 +43,8 @@ public class DialogueScreen extends Screen{
     public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
         super(Component.empty());
         this.vn = vn;
+        this.se = new SoundUtils();
+
         TextureLoader.loadTexturesFromConfig();
         //this.player = player;
         //dialogueBox = new DialogueBoxComponent();
@@ -62,6 +67,46 @@ public class DialogueScreen extends Screen{
 //        if(player.server.isSingleplayer()){
 //            //ForgeCommandRunner.runCommand(player.server,command);
 //        }
+
+        if(state.getSound()!=null){
+            if(!state.getSound().equals(sound)){
+                sound = state.getSound();
+                playSound(sound);
+                System.out.println("Current  Sound: "+state.getSound());
+            }
+        }
+       if(state.getMusic()!=null){
+           if(!state.getMusic().equals(music)){
+               music = state.getMusic();
+               playMusic(music);
+               System.out.println("Current  Music: "+music);
+           }
+       }else{
+           playMusic(music);
+           music = state.getMusic();
+       }
+
+
+    }
+
+    public void playMusic(String music){
+        if(music!=null){
+            ResourceLocation musicPath = new ResourceLocation("mobtalkerredux","music."+music);
+            se.playMusic(musicPath);
+            System.out.println("Playing: "+music);
+        }else{
+            se.stopMusic();
+        }
+
+    }
+    public void playSound(String sound){
+        if(sound!=null){
+            ResourceLocation soundPath = new ResourceLocation("mobtalkerredux","sound."+sound);
+            se.playSound(soundPath);
+            System.out.println("Playing: "+sound);
+        }else{
+            se.stopSound();
+        }
     }
 
     public void updateSprites(DialogueState state){

@@ -65,9 +65,11 @@ public class VisualNovelEngine {
                 removeSprite((String) action.get("sprite"), this);
                 return;
             case "dialogue":
+                String sound = (String) action.get("voice");
                 updateDialogue(
                         (String) action.get("label"),
                         (String) action.get("content"),
+                        (String) action.get("voice"),
                         this);
                 return;
             case "modify_variable":
@@ -120,6 +122,15 @@ public class VisualNovelEngine {
                 this.variables.put("unlocked_events", events);
                 this.currentState.incrementAndGet();
                 break;
+            case "play_sound":
+                updateSound(this, (String) action.get("sound"));
+            case "play_music":
+                if(action.get("music")!=null){
+                    updateMusic(this, (String) action.get("music"));
+                }else{
+                    stopMusic(this);
+                }
+
             case "next":
                 processNext(action,this);
                 this.currentState.incrementAndGet();

@@ -13,6 +13,8 @@ public class DialogueState {
     private String content;
     private String background;
     private String command;
+    private String music;
+    private String sound;
     private List <SpriteState> sprites = new ArrayList<>();
     private List<Map<String, Object>> choices;
 
@@ -61,5 +63,19 @@ public class DialogueState {
 
     public void setCommand(String action) {
         this.command = action;
+    }
+
+    public String getMusic(){return this.music;}
+
+    public void setMusic(String music) {
+        this.music = music;
+    }
+
+    public String getSound() {
+        return sound;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
     }
 }

@@ -26,10 +26,13 @@ public class StateHandler {
     }
 
     public static void updateDialogue(
-            String label, String content, VisualNovelEngine vn
+            String label, String content, String sound,VisualNovelEngine vn
             ) {
         vn.state.setLabel(label);
         vn.state.setContent(content);
+        if(sound!=null){
+            vn.state.setSound(sound);
+        }
         vn.isEngineRunning.set(false);
         vn.currentState.incrementAndGet();
     }
@@ -54,5 +57,15 @@ public class StateHandler {
         currentState.set(findLabelId(label,gameData));
     }
 
+    public static void updateMusic(VisualNovelEngine vn,String music){
+        vn.state.setMusic(music);
+    }
 
+    public static void stopMusic(VisualNovelEngine vn){
+        vn.state.setMusic(null);
+    }
+
+    public static void updateSound(VisualNovelEngine vn, String sound){
+        vn.state.setSound(sound);
+    }
 }
