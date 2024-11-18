@@ -32,7 +32,6 @@ public class MobTalkerItem extends Item {
             // Check if the entity has a custom name
             if (target.getCustomName() != null) {
                 String entityName = target.getCustomName().getString();
-                boolean day = world.isDay();
 
                 if (!world.isClientSide()) { // Only run on the server side
 

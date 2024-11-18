@@ -36,7 +36,7 @@ public class DemoCommand {
     }
 
     private static void serverSideExecute(ServerPlayer player, String scriptFileName) {
-        String uid = player.getName().toString();
+        String uid = player.getName().getString();
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         boolean day = player.level().isDay();
         try {
