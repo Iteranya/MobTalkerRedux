@@ -23,6 +23,7 @@ public class VisualNovelEngine {
 
     public AtomicBoolean shutdown = new AtomicBoolean(false);
     public List<Map<String, Object>> gameData;
+    public List<Map<String, Object>> saves;
     public AtomicLong currentState = new AtomicLong(0);
     public Map<String, Object> variables = new HashMap<>();
 
@@ -38,10 +39,11 @@ public class VisualNovelEngine {
     public PlayerInventoryHandler inventoryHandler;
 
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day,PlayerInventoryHandler inventory) {
+    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day,PlayerInventoryHandler inventory,List<Map<String, Object>> save) {
         this.uid.setLength(0);
         this.uid.append(uid);
         this.gameData = gameData;
+        this.saves = save;
         this.state = new DialogueState(null,null,null);
         this.scriptName.setLength(0);
         this.scriptName.append(scriptName);

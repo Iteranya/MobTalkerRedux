@@ -61,8 +61,9 @@ public class MobTalkerItem extends Item {
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
             List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
+            List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
             if(script!=null){
-                VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory);
+                VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,save);
                 sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
                 clientSideRenderDialogueScreen(vnEngine);
             }

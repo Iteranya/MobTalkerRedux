@@ -14,6 +14,8 @@ import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class DemoCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -39,8 +41,11 @@ public class DemoCommand {
         String uid = player.getName().getString();
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         boolean day = player.level().isDay();
+
         try {
-            VisualNovelEngine vnEngine = new VisualNovelEngine(ScriptLoader.loadScript(scriptFileName,uid), scriptFileName, uid,day,inventory);
+            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
+            List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
+            VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,save);
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
             clientSideRenderDialogueScreen(vnEngine,player);
         } catch (IOException e) {

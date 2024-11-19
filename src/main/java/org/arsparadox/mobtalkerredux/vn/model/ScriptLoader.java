@@ -107,11 +107,6 @@ public class ScriptLoader {
     public static List<Map<String, Object>> loadScript(String fileName, String playerUID) throws IOException {
         // Try loading from the save folder (level or player UID folder)
         fileName = fileName.toLowerCase();
-        File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
-        if (saveFile.exists()) {
-            System.out.println("Loading from save folder: " + fileName);
-            return loadJsonFromFile(saveFile.getPath());
-        }
 
         // If not found in save, try loading from config
         File configFile = new File(getConfigFilePath(fileName));
@@ -123,6 +118,17 @@ public class ScriptLoader {
         // If not found in save or config, try loading from resources
         System.out.println("Loading from resources: " + fileName);
         return loadFromResource(fileName);
+    }
+
+    public static List<Map<String, Object>> loadSave(String fileName, String playerUID) {
+        // Try loading from the save folder (level or player UID folder)
+        fileName = fileName.toLowerCase();
+        File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
+        if (saveFile.exists()) {
+            System.out.println("Loading from save folder: " + fileName);
+            return loadJsonFromFile(saveFile.getPath());
+        }
+        return null;
     }
 
     /**
