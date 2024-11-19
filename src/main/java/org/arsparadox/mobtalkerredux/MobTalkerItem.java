@@ -31,7 +31,7 @@ public class MobTalkerItem extends Item {
         try{
             // Check if the entity has a custom name
             if (target.getCustomName() != null) {
-                String entityName = target.getCustomName().getString();
+                String entityName = target.getCustomName().getString().toLowerCase().replace(" ", "_");
 
                 if (!world.isClientSide()) { // Only run on the server side
 

@@ -30,7 +30,7 @@ public class VariableHandler {
                         ((Number) value).doubleValue();
                 variables.put(variable, result);
             }
-        } else if (operation.equals("substract_var")) {
+        } else if (operation.equals("subtract_var")) {
             if (variables.get(variable) instanceof Number && value instanceof Number) {
                 double result = ((Number) variables.get(variable)).doubleValue() -
                         ((Number) value).doubleValue();
