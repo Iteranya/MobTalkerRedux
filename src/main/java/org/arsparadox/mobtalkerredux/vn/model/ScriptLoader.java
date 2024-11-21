@@ -131,6 +131,17 @@ public class ScriptLoader {
         return null;
     }
 
+    public static List<Map<String, Object>> loadGlobal(String playerUID) {
+        // Try loading from the save folder (level or player UID folder)
+        String fileName = "global.json";
+        File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
+        if (saveFile.exists()) {
+            System.out.println("Loading from save folder: " + fileName);
+            return loadJsonFromFile(saveFile.getPath());
+        }
+        return null;
+    }
+
     /**
      * Saves the current game state to a JSON file in the save folder.
      * @param gameState The data to save.
@@ -143,6 +154,16 @@ public class ScriptLoader {
         String filePath = getSaveFilePath(fileName, playerName,getWorldName());
         try (Writer writer = new FileWriter(filePath)) {
             gson.toJson(gameState, writer);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save game state to " + filePath, e);
+        }
+    }
+
+    public static void saveGlobal(List<Map<String, Object>> save, String playerName) {
+        playerName = playerName.toLowerCase();
+        String filePath = getSaveFilePath("global.json", playerName,getWorldName());
+        try (Writer writer = new FileWriter(filePath)) {
+            gson.toJson(save, writer);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save game state to " + filePath, e);
         }

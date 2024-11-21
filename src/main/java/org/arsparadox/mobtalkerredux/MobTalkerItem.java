@@ -62,6 +62,10 @@ public class MobTalkerItem extends Item {
         try {
             List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
             List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
+            List<Map<String,Object>> global = ScriptLoader.loadGlobal(uid);
+            if(save == null){
+                save = global;
+            }
             if(script!=null){
                 VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,save);
                 sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
