@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.DialogueHandler.*;
+import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler.processFinishing;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.removeSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.updateSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.StateHandler.*;
