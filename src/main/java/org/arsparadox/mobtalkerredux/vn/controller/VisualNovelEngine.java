@@ -1,6 +1,7 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
+import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler.
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.removeSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.updateSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.StateHandler.*;
-import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.initializeVariable;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.modifyVariable;
 
 
@@ -62,8 +62,7 @@ public class VisualNovelEngine {
         this.scriptName.append(scriptName);
         this.isDay.set(day);
         this.inventoryHandler = inventory;
-        this.localVariables.put("type","variable");
-        initializeVariable(this);
+        SaveHandler.loadProgress(this);
     }
 
     // Look, for the sake of my own sanity, I have to refactor this thing...
@@ -88,16 +87,31 @@ public class VisualNovelEngine {
                         this);
                 return;
             case "modify_variable":
-                modifyVariable((String) action.get("var"),
+                modifyVariable(
+                        (String) action.get("var"),
                         (String) action.get("action"),
                         action.get("value"),
-                        localVariables, currentState);
+                        localVariables,
+                        currentState
+                );
+                break;
+            case "modify_global":
+                modifyVariable(
+                        (String) action.get("var"),
+                        (String) action.get("action"),
+                        action.get("value"),
+                        globalVariables,
+                        currentState
+                );
                 break;
             case "give_item":
                 inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
                 break;
             case "conditional":
                 processConditional(action, this);
+                break;
+            case "conditional_global":
+                processGlobalConditional(action, this);
                 break;
             case "transition":
                 if ("jump".equals(action.get("action"))) {
