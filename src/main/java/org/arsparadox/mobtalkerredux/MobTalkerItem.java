@@ -48,7 +48,7 @@ public class MobTalkerItem extends Item {
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
                     minecraft.execute(() -> {
-                        serverSideExecute(player, entityName+".json", entityType+".json",target);
+                        serverSideExecute(player, entityName+".json", entityName+".json",target);
                     });
                 }
                 return InteractionResult.SUCCESS;
@@ -60,21 +60,21 @@ public class MobTalkerItem extends Item {
         return InteractionResult.PASS; // Return PASS if the entity doesn't have a custom name
     }
 
-    private static void serverSideExecute(Player player, String scriptFileName,String saveFileName, LivingEntity target) {
+    private static void serverSideExecute(Player player, String entityType,String entityName, LivingEntity target) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         long timeOfDay = player.level().getDayTime() % 24000; // Minecraft-style day/night cycle in ticks
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
-            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
-            List<Map<String,Object>> localSave = ScriptLoader.loadSave(saveFileName,uid);
+            List<Map<String,Object>> script = ScriptLoader.loadScript(entityName,entityType,uid);
+            List<Map<String,Object>> localSave = ScriptLoader.loadSave(entityName,uid);
             List<Map<String,Object>> globalSave = ScriptLoader.loadGlobal(uid);
             if(script!=null){
                 VisualNovelEngine vnEngine = new VisualNovelEngine(
                         script,
-                        scriptFileName,
-                        saveFileName,
+                        entityType,
+                        entityName,
                         uid,
                         day,
                         inventory,
@@ -85,10 +85,10 @@ public class MobTalkerItem extends Item {
                 clientSideRenderDialogueScreen(vnEngine,target);
             }
             else{
-                sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
+                //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             }
         } catch (IOException e) {
-            sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
+            //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
     }

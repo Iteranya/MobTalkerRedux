@@ -34,9 +34,9 @@ public class VisualNovelEngine {
     public DialogueState state;
     public AtomicBoolean isEngineRunning = new AtomicBoolean(false);
 
-    public StringBuffer scriptName = new StringBuffer();
+    public StringBuffer entityType = new StringBuffer();
 
-    public StringBuffer saveName = new StringBuffer();
+    public StringBuffer entityName = new StringBuffer();
 
     public StringBuffer uid = new StringBuffer();
 
@@ -47,8 +47,8 @@ public class VisualNovelEngine {
 
     public VisualNovelEngine(
             List<Map<String, Object>> gameData,
-            String scriptName,
-            String saveName,
+            String entityType,
+            String entityName,
             String uid,
             boolean day,
             PlayerInventoryHandler inventory,
@@ -62,10 +62,10 @@ public class VisualNovelEngine {
         this.globalSave = globalSave;
         this.localSave = localSave;
         this.state = new DialogueState(null,null,null);
-        this.saveName.setLength(0);
-        this.saveName.append(saveName);
-        this.scriptName.setLength(0);
-        this.scriptName.append(scriptName);
+        this.entityName.setLength(0);
+        this.entityName.append(entityName);
+        this.entityType.setLength(0);
+        this.entityType.append(entityType);
         this.isDay.set(day);
         this.inventoryHandler = inventory;
         SaveHandler.loadProgress(this);

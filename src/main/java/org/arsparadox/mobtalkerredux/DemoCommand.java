@@ -43,7 +43,7 @@ public class DemoCommand {
         boolean day = player.level().isDay();
 
         try {
-            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
+            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,null,uid);
             List<Map<String,Object>> global = ScriptLoader.loadGlobal(uid);
             VisualNovelEngine vnEngine = new VisualNovelEngine(
                     script,
