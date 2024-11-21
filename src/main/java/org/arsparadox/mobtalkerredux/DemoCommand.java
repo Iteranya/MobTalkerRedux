@@ -44,9 +44,17 @@ public class DemoCommand {
 
         try {
             List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
-            List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
             List<Map<String,Object>> global = ScriptLoader.loadGlobal(uid);
-            VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,global,save);
+            VisualNovelEngine vnEngine = new VisualNovelEngine(
+                    script,
+                    scriptFileName,
+                    null,
+                    uid,
+                    day,
+                    inventory,
+                    global,
+                    null
+            );
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
             clientSideRenderDialogueScreen(vnEngine);
         } catch (IOException e) {

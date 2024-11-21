@@ -58,6 +58,6 @@ public class SaveHandler {
         vn.globalSave.add(vn.globalVariables);
         vn.localSave.add(vn.localVariables);
         ScriptLoader.saveGlobal(vn.globalSave,vn.uid.toString());
-        ScriptLoader.saveState(vn.localSave,vn.scriptName.toString(),vn.uid.toString());
+        ScriptLoader.saveState(vn.localSave,vn.saveName.toString(),vn.uid.toString());
     }
 }

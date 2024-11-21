@@ -37,7 +37,7 @@ public class MobTalkerItem extends Item {
             // Check if the entity has a custom name
             if (target.getCustomName() != null) {
                 String entityName = target.getCustomName().getString().toLowerCase().replace(" ", "_");
-
+                String entityType = target.getType().toString();
                 if (!world.isClientSide()) {
                     // Safely check and cast to ServerPlayer
                     if (player instanceof ServerPlayer serverPlayer) {
@@ -48,7 +48,7 @@ public class MobTalkerItem extends Item {
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
                     minecraft.execute(() -> {
-                        serverSideExecute(player, entityName+".json", target);
+                        serverSideExecute(player, entityName+".json", entityType+".json",target);
                     });
                 }
                 return InteractionResult.SUCCESS;
@@ -60,7 +60,7 @@ public class MobTalkerItem extends Item {
         return InteractionResult.PASS; // Return PASS if the entity doesn't have a custom name
     }
 
-    private static void serverSideExecute(Player player, String scriptFileName,LivingEntity target) {
+    private static void serverSideExecute(Player player, String scriptFileName,String saveFileName, LivingEntity target) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
@@ -68,11 +68,19 @@ public class MobTalkerItem extends Item {
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
             List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
-            List<Map<String,Object>> localSave = ScriptLoader.loadSave(scriptFileName,uid);
+            List<Map<String,Object>> localSave = ScriptLoader.loadSave(saveFileName,uid);
             List<Map<String,Object>> globalSave = ScriptLoader.loadGlobal(uid);
-
             if(script!=null){
-                VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,globalSave,localSave);
+                VisualNovelEngine vnEngine = new VisualNovelEngine(
+                        script,
+                        scriptFileName,
+                        saveFileName,
+                        uid,
+                        day,
+                        inventory,
+                        globalSave,
+                        localSave
+                );
                 // sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
                 clientSideRenderDialogueScreen(vnEngine,target);
             }
