@@ -19,8 +19,8 @@ public class VariableHandler {
             vn.variables.clear();
             vn.variables.putAll(vn.saves.get(vn.saves.size() - 1)); // OH SO THAT'S WHY THE REFERENCE IS DIFFERENT!!!
 
-            if(vn.variables.get("checkpoint")!=null && !((String) vn.variables.get("checkpoint")).isEmpty()){
-                vn.currentState.set(StateHandler.findLabelId((String) vn.variables.get("checkpoint"),vn.gameData));
+            if(vn.variables.get("checkpoint_"+vn.scriptName.toString())!=null && !((String) vn.variables.get("checkpoint_"+vn.scriptName.toString())).isEmpty()){
+                vn.currentState.set(StateHandler.findLabelId((String) vn.variables.get("checkpoint_"+vn.scriptName.toString()),vn.gameData));
             }
         }
     }

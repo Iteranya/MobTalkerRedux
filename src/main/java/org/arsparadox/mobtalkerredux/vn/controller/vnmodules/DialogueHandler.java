@@ -65,7 +65,7 @@ public class DialogueHandler {
     }
 
     public static void processNext(Map<String, Object> action,VisualNovelEngine vn) {
-        vn.variables.put("checkpoint",action.get("label"));
+        vn.variables.put("checkpoint_"+vn.scriptName.toString(),action.get("label"));
     }
 
     public static void processIdleChat(

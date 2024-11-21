@@ -11,11 +11,12 @@ public class SaveHandler {
 
     public static void processFinishing(VisualNovelEngine vn) {
         vn.isEngineRunning.set(false);
-        if (!vn.gameData.get(vn.gameData.size() - 1).equals(vn.variables)) {
-            // Add New Save Data with a timestamp to the list if it's not duplicate
-            vn.variables.put("time", getCurrentDateTime());
-            vn.saves.add(vn.variables);
-        }
+//        if (!vn.gameData.get(vn.gameData.size() - 1).equals(vn.variables)) {
+//            // Add New Save Data with a timestamp to the list if it's not duplicate
+//            vn.variables.put("time", getCurrentDateTime());
+//        }
+        vn.variables.put("time", getCurrentDateTime());
+        vn.saves.add(vn.variables);
         ScriptLoader.saveGlobal(vn.saves,vn.uid.toString());
         vn.shutdown.set(true);
     }
