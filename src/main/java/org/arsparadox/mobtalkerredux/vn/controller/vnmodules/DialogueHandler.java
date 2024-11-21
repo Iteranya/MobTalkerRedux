@@ -22,14 +22,18 @@ public class DialogueHandler {
         Object value = condition.get("value");
         long end = (long) condition.get("end");
 
-        System.out.println("Is it day time???: "+vn.isDay);
-
         switch (conditionType) {
             case "equal":
-                result = (var != null) && var.equals(value);
+                result = (var != null && value != null) &&
+                        ((var instanceof Number && value instanceof Number)
+                                ? ((Number) var).doubleValue() == ((Number) value).doubleValue()
+                                : var.equals(value));
                 break;
             case "not_equal":
-                result = (var == null) || !var.equals(value);
+                result = (var == null || value == null) ||
+                        ((var instanceof Number && value instanceof Number)
+                                ? ((Number) var).doubleValue() != ((Number) value).doubleValue()
+                                : !var.equals(value));
                 break;
             case "less_than":
                 result = (var instanceof Number && value instanceof Number) && ((Number) var).doubleValue() < ((Number) value).doubleValue();
