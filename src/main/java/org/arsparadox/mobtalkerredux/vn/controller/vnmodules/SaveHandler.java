@@ -15,9 +15,9 @@ public class SaveHandler {
 //            // Add New Save Data with a timestamp to the list if it's not duplicate
 //            vn.variables.put("time", getCurrentDateTime());
 //        }
-        vn.variables.put("time", getCurrentDateTime());
-        vn.saves.add(vn.variables);
-        ScriptLoader.saveGlobal(vn.saves,vn.uid.toString());
+        vn.localVariables.put("time", getCurrentDateTime());
+        vn.globalSave.add(vn.localVariables);
+        ScriptLoader.saveGlobal(vn.globalSave,vn.uid.toString());
         vn.shutdown.set(true);
     }
 
@@ -28,5 +28,13 @@ public class SaveHandler {
         // Format the date and time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter);
+    }
+
+    public static void loadProgress(VisualNovelEngine vn){
+
+    }
+
+    public static void saveProgress(VisualNovelEngine vn){
+
     }
 }

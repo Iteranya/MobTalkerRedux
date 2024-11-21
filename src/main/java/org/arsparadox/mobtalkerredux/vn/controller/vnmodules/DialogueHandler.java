@@ -16,7 +16,7 @@ public class DialogueHandler {
         String conditionType = (String) condition.get("condition");
         boolean result = false;
 
-        Object var = vn.variables.get(condition.get("var"));
+        Object var = vn.localVariables.get(condition.get("var"));
         Object value = condition.get("value");
         long end = (long) condition.get("end");
 
@@ -58,14 +58,14 @@ public class DialogueHandler {
     public static void processMeta(Map<String, Object> action,VisualNovelEngine vn) {
         String actionType = (String) action.get("action");
         if ("create_var".equals(actionType)) {
-            createVariable((String) action.get("var"), action.get("init"),vn.variables,vn.currentState);
+            createVariable((String) action.get("var"), action.get("init"),vn.localVariables,vn.currentState);
         } else {
             vn.currentState.incrementAndGet();
         }
     }
 
     public static void processNext(Map<String, Object> action,VisualNovelEngine vn) {
-        vn.variables.put("checkpoint_"+vn.scriptName.toString(),action.get("label"));
+        vn.localVariables.put("checkpoint_"+vn.scriptName.toString(),action.get("label"));
     }
 
     public static void processIdleChat(
@@ -73,8 +73,8 @@ public class DialogueHandler {
     ){
         // Alright, Null Handling Time
         // Fuck...
-        System.out.println(vn.variables.get("unlocked_events"));
-        List<String> chats = (List<String>) vn.variables.getOrDefault("unlocked_events", new ArrayList<>());
+        System.out.println(vn.localVariables.get("unlocked_events"));
+        List<String> chats = (List<String>) vn.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
         if (!chats.isEmpty()) {
 
             Random random = new Random();
