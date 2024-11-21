@@ -133,7 +133,7 @@ public class ScriptLoader {
 
     public static List<Map<String, Object>> loadGlobal(String playerUID) {
         // Try loading from the save folder (level or player UID folder)
-        String fileName = "global";
+        String fileName = "global.json";
         File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
         if (saveFile.exists()) {
             System.out.println("Loading from save folder: " + fileName);
@@ -159,9 +159,9 @@ public class ScriptLoader {
         }
     }
 
-    public static void saveGlobal(Map<String, Object> save, String playerName) {
+    public static void saveGlobal(List<Map<String, Object>> save, String playerName) {
         playerName = playerName.toLowerCase();
-        String filePath = getSaveFilePath("global", playerName,getWorldName());
+        String filePath = getSaveFilePath("global.json", playerName,getWorldName());
         try (Writer writer = new FileWriter(filePath)) {
             gson.toJson(save, writer);
         } catch (IOException e) {

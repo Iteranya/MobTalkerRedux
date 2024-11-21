@@ -16,7 +16,7 @@ public class SaveHandler {
             vn.variables.put("time", getCurrentDateTime());
             vn.saves.add(vn.variables);
         }
-        ScriptLoader.saveGlobal(vn.variables,vn.uid.toString());
+        ScriptLoader.saveGlobal(vn.saves,vn.uid.toString());
         vn.shutdown.set(true);
     }
 
