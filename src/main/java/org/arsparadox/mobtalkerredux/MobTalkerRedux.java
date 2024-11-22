@@ -20,7 +20,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.arsparadox.mobtalkerredux.vn.model.TextureLoader;
 
 import java.util.stream.Collectors;
 
@@ -48,7 +47,7 @@ public class MobTalkerRedux {
     private void setup(final FMLCommonSetupEvent event) {
 
         LOGGER.info("HELLO FROM PREINIT");
-        TextureLoader.loadTexturesFromConfig();
+
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

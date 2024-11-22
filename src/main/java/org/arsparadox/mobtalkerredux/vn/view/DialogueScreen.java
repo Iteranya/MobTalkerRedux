@@ -6,10 +6,12 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
-import org.arsparadox.mobtalkerredux.vn.model.TextureLoader;
 import org.arsparadox.mobtalkerredux.vn.view.components.DialogueBoxManager;
 import org.arsparadox.mobtalkerredux.vn.view.components.ForegroundComponent;
 
@@ -36,18 +38,20 @@ public class DialogueScreen extends Screen{
     private String music;
     private String sound;
     private SoundUtils se;
+    public Mob mob;
+    private Player player;
 
 
 
 
-    public DialogueScreen(VisualNovelEngine vn) throws FileNotFoundException {
+    public DialogueScreen(VisualNovelEngine vn, LivingEntity target, Player player) throws FileNotFoundException {
         super(Component.empty());
         this.vn = vn;
         this.se = new SoundUtils();
+        this.mob = (Mob)target;
+        this.player = player;
 
-        TextureLoader.loadTexturesFromConfig();
-        //this.player = player;
-        //dialogueBox = new DialogueBoxComponent();
+
     }
 
     @Override

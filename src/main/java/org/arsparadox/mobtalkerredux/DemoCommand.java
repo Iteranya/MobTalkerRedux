@@ -43,23 +43,32 @@ public class DemoCommand {
         boolean day = player.level().isDay();
 
         try {
-            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
-            List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
-            VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,save);
+            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,null,uid);
+            List<Map<String,Object>> global = ScriptLoader.loadGlobal(uid);
+            VisualNovelEngine vnEngine = new VisualNovelEngine(
+                    script,
+                    scriptFileName,
+                    null,
+                    uid,
+                    day,
+                    inventory,
+                    global,
+                    null
+            );
             sendClientMessage(player, "Trying to load the file config/mobtalkerredux/" + scriptFileName);
-            clientSideRenderDialogueScreen(vnEngine,player);
+            clientSideRenderDialogueScreen(vnEngine);
         } catch (IOException e) {
             sendClientMessage(player, "Failed to find the file config/mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
     }
 
-    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine,ServerPlayer player) {
+    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine) {
 
         Minecraft.getInstance().execute(() -> {
             try {
                 //Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,player));
-                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine));
+                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,null,null));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }

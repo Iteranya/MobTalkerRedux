@@ -13,6 +13,7 @@ import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,21 +27,22 @@ public class MobTalkerItem extends Item {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+    public @NotNull InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         Level world = player.level();
-        try{
+
+        try {
             // Check if the entity has a custom name
             if (target.getCustomName() != null) {
                 String entityName = target.getCustomName().getString().toLowerCase().replace(" ", "_");
-
-                if (!world.isClientSide()) { // Only run on the server side
-
+                String entityType = target.getType().toShortString();
+                if (!world.isClientSide()) {
+                    // Safely check and cast to ServerPlayer
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
                     minecraft.execute(() -> {
-
-                        serverSideExecute(player, entityName+".json");
-
+                        sendClientMessage(player,"The Entity's type is: "+entityType);
+                        VisualNovelEngine vn = serverSideExecute(player, entityType, entityName,target);
+                        clientSideRenderDialogueScreen(vn,target,player);
                     });
                 }
                 return InteractionResult.SUCCESS;
@@ -49,41 +51,48 @@ public class MobTalkerItem extends Item {
 
         }
 
-
         return InteractionResult.PASS; // Return PASS if the entity doesn't have a custom name
     }
 
-    private static void serverSideExecute(Player player, String scriptFileName) {
+    private static VisualNovelEngine serverSideExecute(Player player, String entityType,String entityName, LivingEntity target) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         long timeOfDay = player.level().getDayTime() % 24000; // Minecraft-style day/night cycle in ticks
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
-            List<Map<String,Object>> script = ScriptLoader.loadScript(scriptFileName,uid);
-            List<Map<String,Object>> save = ScriptLoader.loadSave(scriptFileName,uid);
-            List<Map<String,Object>> global = ScriptLoader.loadGlobal(uid);
-            if(save == null){
-                save = global;
-            }
+            List<Map<String,Object>> script = ScriptLoader.loadScript(entityName,entityType,uid);
+            List<Map<String,Object>> localSave = ScriptLoader.loadSave(entityName,uid);
+            List<Map<String,Object>> globalSave = ScriptLoader.loadGlobal(uid);
             if(script!=null){
-                VisualNovelEngine vnEngine = new VisualNovelEngine(script, scriptFileName, uid,day,inventory,save);
-                sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
-                clientSideRenderDialogueScreen(vnEngine);
+                VisualNovelEngine vnEngine = new VisualNovelEngine(
+                        script,
+                        entityType,
+                        entityName,
+                        uid,
+                        day,
+                        inventory,
+                        globalSave,
+                        localSave
+                );
+                return vnEngine;
+                // sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
+                //clientSideRenderDialogueScreen(vnEngine,target,player);
             }
             else{
-                sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
+                //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             }
         } catch (IOException e) {
-            sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
+            //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
+        return null;
     }
 
-    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine) {
+    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine, LivingEntity target,Player player) {
         Minecraft.getInstance().execute(() -> {
             try {
-                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine));
+                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,target,player));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }

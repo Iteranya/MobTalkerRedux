@@ -1,6 +1,7 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
+import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler.
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.removeSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SpriteHandler.updateSprite;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.StateHandler.*;
-import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.initializeVariable;
 import static org.arsparadox.mobtalkerredux.vn.controller.vnmodules.VariableHandler.modifyVariable;
 
 
@@ -24,14 +24,19 @@ public class VisualNovelEngine {
 
     public AtomicBoolean shutdown = new AtomicBoolean(false);
     public List<Map<String, Object>> gameData;
-    public List<Map<String, Object>> saves;
+    public List<Map<String, Object>> globalSave;
+    public List<Map<String, Object>> localSave;
     public AtomicLong currentState = new AtomicLong(0);
-    public Map<String, Object> variables = new HashMap<>();
+    public Map<String, Object> localVariables = new HashMap<>();
+
+    public Map<String, Object> globalVariables = new HashMap<>();
 
     public DialogueState state;
     public AtomicBoolean isEngineRunning = new AtomicBoolean(false);
 
-    public StringBuffer scriptName = new StringBuffer();
+    public StringBuffer entityType = new StringBuffer();
+
+    public StringBuffer entityName = new StringBuffer();
 
     public StringBuffer uid = new StringBuffer();
 
@@ -40,18 +45,30 @@ public class VisualNovelEngine {
     public PlayerInventoryHandler inventoryHandler;
 
 
-    public VisualNovelEngine(List<Map<String, Object>> gameData,String scriptName, String uid, boolean day,PlayerInventoryHandler inventory,List<Map<String, Object>> save) {
+    public VisualNovelEngine(
+            List<Map<String, Object>> gameData,
+            String entityType,
+            String entityName,
+            String uid,
+            boolean day,
+            PlayerInventoryHandler inventory,
+            List<Map<String, Object>> globalSave,
+            List<Map<String,Object>> localSave
+    ) {
         this.uid.setLength(0);
         this.uid.append(uid);
+
         this.gameData = gameData;
-        this.saves = save;
+        this.globalSave = globalSave;
+        this.localSave = localSave;
         this.state = new DialogueState(null,null,null);
-        this.scriptName.setLength(0);
-        this.scriptName.append(scriptName);
+        this.entityName.setLength(0);
+        this.entityName.append(entityName);
+        this.entityType.setLength(0);
+        this.entityType.append(entityType);
         this.isDay.set(day);
         this.inventoryHandler = inventory;
-        this.variables.put("type","variable");
-        initializeVariable(this);
+        SaveHandler.loadProgress(this);
     }
 
     // Look, for the sake of my own sanity, I have to refactor this thing...
@@ -76,16 +93,31 @@ public class VisualNovelEngine {
                         this);
                 return;
             case "modify_variable":
-                modifyVariable((String) action.get("var"),
+                modifyVariable(
+                        (String) action.get("var"),
                         (String) action.get("action"),
                         action.get("value"),
-                        variables, currentState);
+                        localVariables,
+                        currentState
+                );
+                break;
+            case "modify_global":
+                modifyVariable(
+                        (String) action.get("var"),
+                        (String) action.get("action"),
+                        action.get("value"),
+                        globalVariables,
+                        currentState
+                );
                 break;
             case "give_item":
                 inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
                 break;
             case "conditional":
                 processConditional(action, this);
+                break;
+            case "conditional_global":
+                processGlobalConditional(action, this);
                 break;
             case "transition":
                 if ("jump".equals(action.get("action"))) {
@@ -120,9 +152,9 @@ public class VisualNovelEngine {
                 }
                 break;
             case "unlock_dialogues":
-                List<String> events = (List<String>) this.variables.getOrDefault("unlocked_events", new ArrayList<>());
+                List<String> events = (List<String>) this.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
                 events.addAll((List<String>) action.get("events"));
-                this.variables.put("unlocked_events", events);
+                this.localVariables.put("unlocked_events", events);
                 this.currentState.incrementAndGet();
                 break;
             case "play_sound":
