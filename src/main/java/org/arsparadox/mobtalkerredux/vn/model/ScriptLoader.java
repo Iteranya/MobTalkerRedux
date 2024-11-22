@@ -106,26 +106,26 @@ public class ScriptLoader {
      */
     public static List<Map<String, Object>> loadScript(String name,String type, String playerUID) throws IOException {
         // Try loading from the save folder (level or player UID folder)
-        name = name.toLowerCase();
-
+        name = name.toLowerCase()+".json";
+        type = type.toLowerCase()+".json";
 
         // If not found in save or config, try loading from resources
         System.out.println("Loading from resources: " + name);
         List<Map<String, Object>> script = loadFromResource(name);
         if(script!=null){
-            return loadFromResource(name);
+            return script;
         }else{
             return loadFromResource(type);
         }
 
     }
 
-    public static List<Map<String, Object>> loadSave(String fileName, String playerUID) {
+    public static List<Map<String, Object>> loadSave(String entityName, String playerUID) {
         // Try loading from the save folder (level or player UID folder)
-        fileName = fileName.toLowerCase();
-        File saveFile = new File(getSaveFilePath(fileName, playerUID,getWorldName()));
+        entityName = entityName.toLowerCase()+".json";
+        File saveFile = new File(getSaveFilePath(entityName, playerUID,getWorldName()));
         if (saveFile.exists()) {
-            System.out.println("Loading from save folder: " + fileName);
+            System.out.println("Loading from save folder: " + entityName);
             return loadJsonFromFile(saveFile.getPath());
         }
         return null;
@@ -149,7 +149,7 @@ public class ScriptLoader {
      * @param playerName Player-specific UID for saving to a specific folder.
      */
     public static void saveState(List<Map<String, Object>> gameState, String fileName, String playerName) {
-        fileName = fileName.toLowerCase();
+        fileName = fileName.toLowerCase()+".json";
         playerName = playerName.toLowerCase();
         String filePath = getSaveFilePath(fileName, playerName,getWorldName());
         try (Writer writer = new FileWriter(filePath)) {

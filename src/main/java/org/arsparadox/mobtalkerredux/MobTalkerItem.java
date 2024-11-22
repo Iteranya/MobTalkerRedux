@@ -2,16 +2,13 @@ package org.arsparadox.mobtalkerredux;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.arsparadox.mobtalkerredux.command.MobFreezer;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
@@ -37,18 +34,15 @@ public class MobTalkerItem extends Item {
             // Check if the entity has a custom name
             if (target.getCustomName() != null) {
                 String entityName = target.getCustomName().getString().toLowerCase().replace(" ", "_");
-                String entityType = target.getType().toString();
+                String entityType = target.getType().toShortString();
                 if (!world.isClientSide()) {
                     // Safely check and cast to ServerPlayer
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        if(target instanceof Mob mob){
-                            MobFreezer.freezeMob(mob);
-                        }
-                    }
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
                     minecraft.execute(() -> {
-                        serverSideExecute(player, entityName+".json", entityName+".json",target);
+                        sendClientMessage(player,"The Entity's type is: "+entityType);
+                        VisualNovelEngine vn = serverSideExecute(player, entityType, entityName,target);
+                        clientSideRenderDialogueScreen(vn,target,player);
                     });
                 }
                 return InteractionResult.SUCCESS;
@@ -60,7 +54,7 @@ public class MobTalkerItem extends Item {
         return InteractionResult.PASS; // Return PASS if the entity doesn't have a custom name
     }
 
-    private static void serverSideExecute(Player player, String entityType,String entityName, LivingEntity target) {
+    private static VisualNovelEngine serverSideExecute(Player player, String entityType,String entityName, LivingEntity target) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
         PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
@@ -81,8 +75,9 @@ public class MobTalkerItem extends Item {
                         globalSave,
                         localSave
                 );
+                return vnEngine;
                 // sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
-                clientSideRenderDialogueScreen(vnEngine,target);
+                //clientSideRenderDialogueScreen(vnEngine,target,player);
             }
             else{
                 //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
@@ -91,12 +86,13 @@ public class MobTalkerItem extends Item {
             //sendClientMessage(player, "Failed to find the file mobtalkerredux/" + scriptFileName);
             throw new RuntimeException(e);
         }
+        return null;
     }
 
-    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine, LivingEntity target) {
+    private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine, LivingEntity target,Player player) {
         Minecraft.getInstance().execute(() -> {
             try {
-                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,target));
+                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,target,player));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }

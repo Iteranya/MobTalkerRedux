@@ -115,7 +115,7 @@ public class DialogueHandler {
         // Alright, Null Handling Time
         // Fuck...
         //System.out.println(vn.globalVariables.get("unlocked_events"));
-        List<String> chats = (List<String>) vn.globalVariables.getOrDefault("unlocked_events", new ArrayList<>());
+        List<String> chats = (List<String>) vn.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
         if (!chats.isEmpty()) {
 
             Random random = new Random();

@@ -68,7 +68,7 @@ public class DemoCommand {
         Minecraft.getInstance().execute(() -> {
             try {
                 //Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,player));
-                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,null));
+                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,null,null));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }

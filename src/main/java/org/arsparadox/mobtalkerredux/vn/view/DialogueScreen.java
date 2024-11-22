@@ -8,11 +8,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import org.arsparadox.mobtalkerredux.command.MobFreezer;
+import net.minecraft.world.entity.player.Player;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
-import org.arsparadox.mobtalkerredux.vn.model.TextureLoader;
 import org.arsparadox.mobtalkerredux.vn.view.components.DialogueBoxManager;
 import org.arsparadox.mobtalkerredux.vn.view.components.ForegroundComponent;
 
@@ -39,19 +38,20 @@ public class DialogueScreen extends Screen{
     private String music;
     private String sound;
     private SoundUtils se;
-    private Mob mob;
+    public Mob mob;
+    private Player player;
 
 
 
 
-    public DialogueScreen(VisualNovelEngine vn, LivingEntity target) throws FileNotFoundException {
+    public DialogueScreen(VisualNovelEngine vn, LivingEntity target, Player player) throws FileNotFoundException {
         super(Component.empty());
         this.vn = vn;
         this.se = new SoundUtils();
         this.mob = (Mob)target;
-        TextureLoader.loadTexturesFromConfig();
-        //this.player = player;
-        //dialogueBox = new DialogueBoxComponent();
+        this.player = player;
+
+
     }
 
     @Override
@@ -216,7 +216,6 @@ public class DialogueScreen extends Screen{
     public void onClose() {
         assert this.minecraft != null;
         this.minecraft.setScreen(null);
-        MobFreezer.unfreezeMob(this.mob);
     }
 
 

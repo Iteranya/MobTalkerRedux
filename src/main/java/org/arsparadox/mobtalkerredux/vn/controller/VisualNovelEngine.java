@@ -152,9 +152,9 @@ public class VisualNovelEngine {
                 }
                 break;
             case "unlock_dialogues":
-                List<String> events = (List<String>) this.globalVariables.getOrDefault("unlocked_events", new ArrayList<>());
+                List<String> events = (List<String>) this.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
                 events.addAll((List<String>) action.get("events"));
-                this.globalVariables.put("unlocked_events", events);
+                this.localVariables.put("unlocked_events", events);
                 this.currentState.incrementAndGet();
                 break;
             case "play_sound":
