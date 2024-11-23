@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.arsparadox.mobtalkerredux.command.TeamHandler;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
@@ -39,16 +40,21 @@ public class MobTalkerItem extends Item {
                     // Safely check and cast to ServerPlayer
                 } else { // Client-side: Open dialogue screen
                     Minecraft minecraft = Minecraft.getInstance();
+                    //CustomItemUtils.giveCustomItem(player,"variant1");
                     minecraft.execute(() -> {
                         sendClientMessage(player,"The Entity's type is: "+entityType);
                         VisualNovelEngine vn = serverSideExecute(player, entityType, entityName,target);
-                        clientSideRenderDialogueScreen(vn,target,player);
+                        if(vn!=null){
+                            clientSideRenderDialogueScreen(vn,target,player);
+
+                        }
+
                     });
                 }
                 return InteractionResult.SUCCESS;
             }
         } catch (Exception ignored) {
-
+            System.out.println(ignored.toString());
         }
 
         return InteractionResult.PASS; // Return PASS if the entity doesn't have a custom name
@@ -75,6 +81,7 @@ public class MobTalkerItem extends Item {
                         globalSave,
                         localSave
                 );
+                TeamHandler.addToPlayerTeam(player,target);
                 return vnEngine;
                 // sendClientMessage(player, "Trying to load the file mobtalkerredux/" + scriptFileName);
                 //clientSideRenderDialogueScreen(vnEngine,target,player);

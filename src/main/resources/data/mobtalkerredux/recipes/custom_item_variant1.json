@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    " I ",
+    " S "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "S": {
+      "item": "mobtalkerredux:custom_item",
+      "nbt": {
+        "CustomModelData": 1
+      }
+    }
+  },
+  "result": {
+    "item": "mobtalkerredux:custom_item",
+    "nbt": {
+      "CustomModelData": 2,
+      "CustomName": "item.mobtalkerredux.variant2",
+      "TextureKey": "custom_item_variant2"
+    },
+    "count": 1
+  }
+}

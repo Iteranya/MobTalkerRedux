@@ -12,8 +12,8 @@ import java.util.List;
 public class CustomItem extends Item {
     // No Like, Literally Custom Item
 
-    public CustomItem(Properties properties) {
-        super(properties);
+    public CustomItem() {
+        super(new Item.Properties());
     }
 
     @Override
@@ -24,11 +24,10 @@ public class CustomItem extends Item {
         return super.getName(stack);
     }
 
-    // Override texture retrieval
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        if (stack.hasTag() && stack.getTag().contains("TextureKey")) {
-            tooltip.add(Component.translatable("Texture: " + stack.getTag().getString("TextureKey")));
+        if (stack.hasTag() && stack.getTag().contains("Description")) {
+            tooltip.add(Component.translatable("Description: " + stack.getTag().getString("Description")));
         }
         super.appendHoverText(stack, level, tooltip, flag);
     }

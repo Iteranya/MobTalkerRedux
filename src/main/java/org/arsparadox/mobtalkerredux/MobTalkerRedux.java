@@ -73,6 +73,7 @@ public class MobTalkerRedux {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
         public static final RegistryObject<Item> MOB_TALKER_ITEM = ITEMS.register("mob_talker_item", MobTalkerItem::new);
+        public static final RegistryObject<Item> CUSTOM_ITEM = ITEMS.register("custom_item", CustomItem::new);
 
         // Command registration stays on Forge event bus
         @SubscribeEvent

@@ -4,10 +4,7 @@ import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHand
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -152,9 +149,9 @@ public class VisualNovelEngine {
                 }
                 break;
             case "unlock_dialogues":
-                List<String> events = (List<String>) this.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
+                Set<String> events = new HashSet<>((List<String>) this.localVariables.getOrDefault("unlocked_events", new ArrayList<>()));
                 events.addAll((List<String>) action.get("events"));
-                this.localVariables.put("unlocked_events", events);
+                this.localVariables.put("unlocked_events", new ArrayList<>(events));
                 this.currentState.incrementAndGet();
                 break;
             case "play_sound":
