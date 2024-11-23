@@ -41,6 +41,8 @@ public class DialogueScreen extends Screen{
     public Mob mob;
     private Player player;
 
+    private boolean hiddenDialogue = false;
+
 
 
 
@@ -120,13 +122,32 @@ public class DialogueScreen extends Screen{
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            vn.isEngineRunning.set(true);
-            vn.runEngine();
-            //Tell Engine to update the Globals, as in like, get the current state and put it in the global in this class
-            update();
+            if(!hiddenDialogue){
+                vn.isEngineRunning.set(true);
+                vn.runEngine();
+                //Tell Engine to update the Globals, as in like, get the current state and put it in the global in this class
+                update();
+            }
+
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 32 || keyCode == 257) {  // 32 = Space, 257 = Enter
+            if(!hiddenDialogue){
+                vn.isEngineRunning.set(true);
+                vn.runEngine();
+                update();
+            }
+
+        }
+        else if(keyCode == 72){
+            hiddenDialogue = !hiddenDialogue;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     private void startScene() {
@@ -156,7 +177,7 @@ public class DialogueScreen extends Screen{
         }
 
         // Render the Dialogue Box
-        if (content != null && !content.isEmpty()) {
+        if (content != null && !content.isEmpty() && !hiddenDialogue) {
             poseStack = DialogueBoxManager.processGui(
                     poseStack,this.width,this.height,content,label,this.font
             );

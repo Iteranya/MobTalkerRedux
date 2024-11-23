@@ -1,0 +1,20 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mobtalkerredux:item/custom_item"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "mobtalkerredux:item/custom_item_variant1"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "mobtalkerredux:item/custom_item_variant2"
+    }
+  ]
+}

@@ -1,3 +1,7 @@
 {
-  "item.mobtalkerredux.mob_talker_item": "The Mob Talker"
+  "item.mobtalkerredux.mob_talker_item": "The Mob Talker",
+  "item.mobtalkerredux.custom_item": "Custom Item",
+  "item.mobtalkerredux.variant1": "Variant 1 Item",
+  "item.mobtalkerredux.variant2": "Variant 2 Item"
+
 }

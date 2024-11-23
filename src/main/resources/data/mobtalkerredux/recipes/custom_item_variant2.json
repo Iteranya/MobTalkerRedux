@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "S": {
+      "item": "mobtalkerredux:custom_item",
+      "nbt": {
+        "CustomModelData": 2
+      }
+    }
+  },
+  "result": {
+    "item": "mobtalkerredux:custom_item",
+    "nbt": {
+      "CustomModelData": 1,
+      "CustomName": "item.mobtalkerredux.variant1",
+      "TextureKey": "custom_item_variant1"
+    },
+    "count": 1
+  }
+}
