@@ -50,8 +50,6 @@ public class DialogueScreen extends Screen{
         super(Component.empty());
         this.vn = vn;
         this.se = new SoundUtils();
-        this.mob = (Mob)target;
-        this.player = player;
 
 
     }
@@ -172,14 +170,14 @@ public class DialogueScreen extends Screen{
         // Render the Sprites and Everything In Foreground
         if (spritesToRender != null && !spritesToRender.isEmpty()) {
             ForegroundComponent.processForeground(
-                    poseStack, this.width, this.height, spritesToRender
+                    poseStack, this.width, this.height, spritesToRender,vn.localVariables
             );
         }
 
         // Render the Dialogue Box
         if (content != null && !content.isEmpty() && !hiddenDialogue) {
             poseStack = DialogueBoxManager.processGui(
-                    poseStack,this.width,this.height,content,label,this.font
+                    poseStack,this.width,this.height,content,label,this.font,vn.localVariables
             );
         }
 

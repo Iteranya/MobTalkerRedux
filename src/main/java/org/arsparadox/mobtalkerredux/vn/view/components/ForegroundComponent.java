@@ -6,6 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ForegroundComponent {
     // MINECRAFT RENDERING SYSTEM IS A NIGHTMARE!!!
@@ -25,11 +28,13 @@ public class ForegroundComponent {
     // Yeah...
     // So in the FSM, determining position should be like:
     // (Screen Ratio, Image Ratio, Coordinate Position) -> (16x9, 3x5, 8x1)
-    public static GuiGraphics processForeground(GuiGraphics poseStack, int width, int height, List<SpriteState> spritesToRender){
+    public static GuiGraphics processForeground(GuiGraphics poseStack, int width, int height, List<SpriteState> spritesToRender, Map<String, Object> variables){
 
             for (SpriteState sprite : spritesToRender) {
+                String spriteLocationRaw = sprite.getLocation();
+                String spriteLocation = replaceTemplateVariables(variables,spriteLocationRaw);
                 ResourceLocation currentSprite = new ResourceLocation(
-                        "mobtalkerredux", "textures/" + sprite.getLocation()
+                        "mobtalkerredux", "textures/" + spriteLocation
                 );
                 RenderSystem.setShaderTexture(0, currentSprite);
 
@@ -76,5 +81,28 @@ public class ForegroundComponent {
 
         return poseStack;
     }
+
+
+
+    public static String replaceTemplateVariables(Map<String, Object> variables, String template) {
+        if (template == null || variables == null) {
+            return template;
+        }
+
+        String result = template;
+        Pattern pattern = Pattern.compile("<(.*?)>");
+        Matcher matcher = pattern.matcher(template);
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            Object value = variables.getOrDefault(key, "default");
+
+            result = result.replace("<" + key + ">", value.toString());
+        }
+
+        return result;
+    }
+
+
 
 }

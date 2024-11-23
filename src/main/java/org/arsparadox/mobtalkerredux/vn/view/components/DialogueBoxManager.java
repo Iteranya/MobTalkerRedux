@@ -5,16 +5,20 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DialogueBoxManager {
 
-    public static GuiGraphics processGui(GuiGraphics poseStack, int width,int height,String content, String label, Font font){
+    public static GuiGraphics processGui(GuiGraphics poseStack, int width,int height,String content, String label, Font font, Map<String,Object> variables){
         int CHARACTER_NAME_OFFSET = 40;
         int DISPLAYED_SPRITE_HEIGHT = 300;
         int dialogueBoxHeight = 80;
         int DIALOGUE_BOX_PADDING = 15;
         if (content != null && !content.isEmpty()) {
             // Set dialogue box dimensions and position
+            content = replaceTemplateVariables(variables,content);
             int boxWidth = Math.min(600, width - 40); // Max width of 600 or screen width - 40
             int boxX = (width - boxWidth) / 2;
             int boxY = height - dialogueBoxHeight - 5; // 20 pixels from bottom
@@ -176,6 +180,27 @@ public class DialogueBoxManager {
         }
 
         return lines;
+    }
+
+    public static String replaceTemplateVariables(Map<String, Object> variables, String template) {
+        if (template == null || variables == null) {
+            return template;
+        }
+
+        String result = template;
+        Pattern pattern = Pattern.compile("<(.*?)>");
+        Matcher matcher = pattern.matcher(template);
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            Object value = variables.get(key);
+
+            if (value != null) {
+                result = result.replace("<" + key + ">", value.toString());
+            }
+        }
+
+        return result;
     }
 
 
