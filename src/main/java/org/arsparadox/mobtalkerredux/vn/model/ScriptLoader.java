@@ -63,10 +63,10 @@ public class ScriptLoader {
         }
     }
 
-    public static List<Map<String, Object>> loadFromConfig(String fileName) {
-        String filePath = getConfigFilePath(fileName);
-        return loadJsonFromFile(filePath);
-    }
+//    public static List<Map<String, Object>> loadFromConfig(String fileName) {
+//        String filePath = getConfigFilePath(fileName);
+//        return loadJsonFromFile(filePath);
+//    }
 
     public static List<Map<String, Object>> loadFromResource(String resourceName) throws IOException {
         try{
@@ -97,13 +97,6 @@ public class ScriptLoader {
     }
 
 
-    /**
-     * Loads JSON data from the save folder, config directory, or resources in that order.
-
-     * @param playerUID Player-specific UID if applicable.
-     * @return Deserialized list of maps representing the JSON data.
-     * @throws IOException if the file is not found in any of the locations.
-     */
     public static List<Map<String, Object>> loadScript(String name,String type, String playerUID) throws IOException {
         // Try loading from the save folder (level or player UID folder)
         name = name.toLowerCase()+".json";
