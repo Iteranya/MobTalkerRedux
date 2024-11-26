@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.arsparadox.mobtalkerredux.command.TeamHandler;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
-import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +62,7 @@ public class MobTalkerItem extends Item {
     private static VisualNovelEngine serverSideExecute(Player player, String entityType,String entityName, LivingEntity target) {
         //String uid = player.getName().toString();//literal{Dev}
         String uid = player.getName().getString();//Dev
-        PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
+        //PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         long timeOfDay = player.level().getDayTime() % 24000; // Minecraft-style day/night cycle in ticks
         boolean day = (timeOfDay >= 0 && timeOfDay < 12000);
         try {
@@ -77,7 +76,7 @@ public class MobTalkerItem extends Item {
                         entityName,
                         uid,
                         day,
-                        inventory,
+                        null,
                         globalSave,
                         localSave
                 );

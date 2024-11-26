@@ -33,7 +33,7 @@ public class ForegroundComponent {
             for (SpriteState sprite : spritesToRender) {
                 String spriteLocationRaw = sprite.getLocation();
                 String spriteLocation = replaceTemplateVariables(variables,spriteLocationRaw);
-                ResourceLocation currentSprite = new ResourceLocation(
+                ResourceLocation currentSprite = ResourceLocation.fromNamespaceAndPath(
                         "mobtalkerredux", "textures/" + spriteLocation
                 );
                 RenderSystem.setShaderTexture(0, currentSprite);

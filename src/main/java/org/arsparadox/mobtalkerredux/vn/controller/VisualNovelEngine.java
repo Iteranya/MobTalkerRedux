@@ -1,6 +1,5 @@
 package org.arsparadox.mobtalkerredux.vn.controller;
 
-import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.SaveHandler;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
@@ -39,7 +38,7 @@ public class VisualNovelEngine {
 
     public AtomicBoolean isDay = new AtomicBoolean(true);
 
-    public PlayerInventoryHandler inventoryHandler;
+    //public PlayerInventoryHandler inventoryHandler;
 
 
     public VisualNovelEngine(
@@ -48,7 +47,7 @@ public class VisualNovelEngine {
             String entityName,
             String uid,
             boolean day,
-            PlayerInventoryHandler inventory,
+            String inventory,
             List<Map<String, Object>> globalSave,
             List<Map<String,Object>> localSave
     ) {
@@ -64,7 +63,7 @@ public class VisualNovelEngine {
         this.entityType.setLength(0);
         this.entityType.append(entityType);
         this.isDay.set(day);
-        this.inventoryHandler = inventory;
+        //this.inventoryHandler = inventory;
         SaveHandler.loadProgress(this);
     }
 
@@ -108,7 +107,8 @@ public class VisualNovelEngine {
                 );
                 break;
             case "give_item":
-                inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
+                //inventoryHandler.giveItemToPlayer((String) action.get("item"), (int) (long) action.get("amount"));
+                this.currentState.incrementAndGet();
                 break;
             case "conditional":
                 processConditional(action, this);

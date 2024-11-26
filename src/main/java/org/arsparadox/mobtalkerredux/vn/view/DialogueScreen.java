@@ -1,6 +1,5 @@
 package org.arsparadox.mobtalkerredux.vn.view;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -95,7 +94,7 @@ public class DialogueScreen extends Screen{
 
     public void playMusic(String music){
         if(music!=null){
-            ResourceLocation musicPath = new ResourceLocation("mobtalkerredux","music."+music);
+            ResourceLocation musicPath = ResourceLocation.fromNamespaceAndPath("mobtalkerredux","music."+music);
             se.playMusic(musicPath);
             System.out.println("Playing: "+music);
         }else{
@@ -105,7 +104,7 @@ public class DialogueScreen extends Screen{
     }
     public void playSound(String sound){
         if(sound!=null){
-            ResourceLocation soundPath = new ResourceLocation("mobtalkerredux","sound."+sound);
+            ResourceLocation soundPath = ResourceLocation.fromNamespaceAndPath("mobtalkerredux","sound."+sound);
             se.playSound(soundPath);
             System.out.println("Playing: "+sound);
         }else{
@@ -165,7 +164,8 @@ public class DialogueScreen extends Screen{
     @Override
     public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         // Update content as needed
-        renderBackground(poseStack);
+
+        renderBackground(poseStack,mouseX,mouseY,partialTicks);
 
         // Render the Sprites and Everything In Foreground
         if (spritesToRender != null && !spritesToRender.isEmpty()) {
@@ -189,15 +189,8 @@ public class DialogueScreen extends Screen{
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
     @Override
-    public void renderBackground(GuiGraphics guiGraphics) {
-        if(background!=null&&!background.isEmpty()){
-            ResourceLocation bg = new ResourceLocation("mobtalkerredux","textures/"+background);
-            //System.out.println("Tried to change background to: "+background);
-            RenderSystem.setShaderTexture(0, bg);
-            guiGraphics.blit(bg, 0, 0, 0, 0, this.width, this.height);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         }
-
-    }
 
     public void renderChoiceButtons() {
         choiceButtons.forEach(this::removeWidget);

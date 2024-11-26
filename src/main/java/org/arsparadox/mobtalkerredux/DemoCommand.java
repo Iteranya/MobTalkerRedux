@@ -8,7 +8,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
-import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.PlayerInventoryHandler;
 import org.arsparadox.mobtalkerredux.vn.model.ScriptLoader;
 import org.arsparadox.mobtalkerredux.vn.view.DialogueScreen;
 
@@ -39,7 +38,7 @@ public class DemoCommand {
 
     private static void serverSideExecute(ServerPlayer player, String scriptFileName) {
         String uid = player.getName().getString();
-        PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
+        //PlayerInventoryHandler inventory = new PlayerInventoryHandler(player);
         boolean day = player.level().isDay();
 
         try {
@@ -51,7 +50,7 @@ public class DemoCommand {
                     "demo",
                     uid,
                     day,
-                    inventory,
+                    null,
                     global,
                     null
             );

@@ -1,66 +1,57 @@
 package org.arsparadox.mobtalkerredux;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.stream.Collectors;
 
 @Mod("mobtalkerredux")
 public class MobTalkerRedux {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "mobtalkerredux";
 
-    public MobTalkerRedux() {
-        // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        // Register the enqueueIMC method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-        // Register the processIMC method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final DeferredItem<Item> MOB_TALKER_ITEM = ITEMS.register("mob_talker_item", MobTalkerItem::new);
 
-        RegistryEvents.initialize();
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
+            DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER.key(), MODID);
 
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        // Register for command registration
-        MinecraftForge.EVENT_BUS.register(RegistryEvents.class);
-    }
-
-    private void setup(final FMLCommonSetupEvent event) {
-
-        LOGGER.info("HELLO FROM PREINIT");
+    public MobTalkerRedux(IEventBus modEventBus) {
+        // Register setup methods directly to the mod event bus
+        modEventBus.addListener(this::setup);
+        ITEMS.register(modEventBus);
+        modEventBus.addListener(this::addCreative);
+        RECIPE_SERIALIZERS.register(modEventBus);
+        modEventBus.addListener(this::onRegisterEvent);
 
     }
-
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-        InterModComms.sendTo(MODID, "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK");
-            return "Hello world";
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES)
+            event.accept(MOB_TALKER_ITEM);
+    }
+    private void onRegisterEvent(RegisterEvent event) {
+        event.register(BuiltInRegistries.RECIPE_SERIALIZER.key(), helper -> {
+            // If you have any custom recipe serializers, register them here
+            LOGGER.info("Registering recipes for " + MODID);
         });
     }
 
-    private void processIMC(final InterModProcessEvent event) {
-        LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m->m.messageSupplier().get()).
-                collect(Collectors.toList()));
+
+
+    private void setup(final FMLCommonSetupEvent event) {
+        LOGGER.info("HELLO FROM PREINIT");
     }
 
     @SubscribeEvent
@@ -69,36 +60,19 @@ public class MobTalkerRedux {
     }
 
     public static class RegistryEvents {
-        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-        public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-        public static final RegistryObject<Item> MOB_TALKER_ITEM = ITEMS.register("mob_talker_item", MobTalkerItem::new);
-        public static final RegistryObject<Item> CUSTOM_ITEM = ITEMS.register("custom_item", CustomItem::new);
 
-        // Command registration stays on Forge event bus
-        @SubscribeEvent
-        public static void onRegisterCommands(RegisterCommandsEvent event) {
+
+
+        // Move command registration to the mod event bus
+        public static void registerCommands(RegisterCommandsEvent event) {
             DemoCommand.register(event.getDispatcher());
         }
 
-        @SubscribeEvent
-        public static void buildContents(BuildCreativeModeTabContentsEvent event) {
-            // Add to tools tab
-            if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-                event.accept(MOB_TALKER_ITEM);
-            }
-        }
 
-        public static void register(IEventBus eventBus) {
-            BLOCKS.register(eventBus);
-            ITEMS.register(eventBus);
-        }
 
-        public static void initialize() {
-            IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-            register(modEventBus);
-            // Register only the build contents event to mod bus
-            modEventBus.addListener(RegistryEvents::buildContents);
-        }
+
     }
+
+
 }

@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "mobtalkerredux:mob_talker_item",
+    "id": "mobtalkerredux:mob_talker_item",
     "count": 1
   }
 }

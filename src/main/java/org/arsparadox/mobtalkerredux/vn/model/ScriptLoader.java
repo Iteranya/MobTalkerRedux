@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.loading.FMLConfig;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.arsparadox.mobtalkerredux.MobTalkerRedux;
 
 import javax.imageio.ImageIO;
@@ -71,7 +71,7 @@ public class ScriptLoader {
     public static List<Map<String, Object>> loadFromResource(String resourceName) throws IOException {
         try{
             ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-            ResourceLocation resourceLocation = new ResourceLocation(MobTalkerRedux.MODID, resourceName);
+            ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(MobTalkerRedux.MODID, resourceName);
 
             Resource resource = resourceManager.getResource(resourceLocation).orElseThrow(
                     () -> new FileNotFoundException("Resource file " + resourceName + " could not be found.")
@@ -169,7 +169,7 @@ public class ScriptLoader {
      */
     private static String getConfigFilePath(String fileName) {
         fileName = fileName.toLowerCase();
-        return FMLPaths.CONFIGDIR.get() + File.separator + MobTalkerRedux.MODID + File.separator + fileName;
+        return FMLConfig.defaultConfigPath() + File.separator + MobTalkerRedux.MODID + File.separator + fileName;
     }
 
     /**
@@ -189,7 +189,7 @@ public class ScriptLoader {
     }
 
     public static void loadTextureFromConfig() {
-        Path configTexturePath = Paths.get(FMLPaths.CONFIGDIR.get().toString(), MobTalkerRedux.MODID, "textures");
+        Path configTexturePath = Paths.get(FMLConfig.defaultConfigPath(), MobTalkerRedux.MODID, "textures");
         Path modAssetsPath = Paths.get("assets", "mobtalkerredux", "textures");
 
         // Check if the file exists in config
