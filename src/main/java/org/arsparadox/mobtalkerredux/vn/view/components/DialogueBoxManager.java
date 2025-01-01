@@ -26,10 +26,10 @@ public class DialogueBoxManager {
             int backgroundColor = 0xCC000000; // Semi-transparent background color
 
             // Draw the border
-            poseStack.fill( boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
+            poseStack.fill(boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
 
             // Draw the main dialogue box background
-            poseStack.fill( boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
+            poseStack.fill(boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
 
             // Draw label box at the top of the dialogue box
             int labelBoxHeight = 20; // Height of the label box
@@ -97,11 +97,13 @@ public class DialogueBoxManager {
             int borderColor = 0xFF004400; // Border color with full opacity
             int backgroundColor = 0xCC000000; // Semi-transparent background color
 
+            // Draw the main dialogue box background
+            poseStack.fill( boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
+
             // Draw the border
             poseStack.fill( boxX - 1, boxY - 1, boxX + boxWidth + 1, boxY + dialogueBoxHeight + 1, borderColor);
 
-            // Draw the main dialogue box background
-            poseStack.fill( boxX, boxY, boxX + boxWidth, boxY + dialogueBoxHeight, backgroundColor);
+
 
             // Draw label box at the top of the dialogue box
             int labelBoxHeight = 20; // Height of the label box
