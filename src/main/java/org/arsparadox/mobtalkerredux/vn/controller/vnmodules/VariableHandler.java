@@ -25,8 +25,15 @@ public class VariableHandler {
     }
 
 
-    public static void createVariable(String varName, Object varInit,Map<String, Object> variables,AtomicLong currentState) {
-        variables.put(varName, varInit);
+    public static void createVariable(String varName, Object varInit, Map<String, Object> variables, AtomicLong currentState) {
+        if (variables.containsKey(varName)) {
+            System.out.println("Variable '" + varName + "' already exists. Skipping creation.");
+        }
+        else{
+            variables.put(varName, varInit);
+        }
+
+
         currentState.incrementAndGet();
     }
 }

@@ -53,17 +53,24 @@ public class DialogueHandler {
     public static void processGlobalConditional(Map<String, Object> condition, VisualNovelEngine vn) {
         String conditionType = (String) condition.get("condition");
         boolean result = false;
+        System.out.println("Condition = "+condition);
+        System.out.println("Global Variable =" + vn.globalVariables);
 
         Object var = vn.globalVariables.get(condition.get("var"));
         Object value = condition.get("value");
+        System.out.println("Value = "+ value);
         long end = (long) condition.get("end");
+        System.out.println("End = "+end);
 
         switch (conditionType) {
             case "equal":
+                System.out.println("var = "+var);
+                System.out.println("value = "+value);
                 result = (var != null && value != null) &&
                         ((var instanceof Number && value instanceof Number)
                                 ? ((Number) var).doubleValue() == ((Number) value).doubleValue()
                                 : var.equals(value));
+
                 break;
             case "not_equal":
                 result = (var == null || value == null) ||
@@ -99,6 +106,7 @@ public class DialogueHandler {
             createVariable((String) action.get("var"), action.get("init"),vn.localVariables,vn.currentState);
         }
         else if("create_global".equals(actionType)){
+            //Check First If Exist
             createVariable((String) action.get("var"), action.get("init"),vn.globalVariables,vn.currentState);
         }else {
             vn.currentState.incrementAndGet();
@@ -114,7 +122,6 @@ public class DialogueHandler {
     ){
         // Alright, Null Handling Time
         // Fuck...
-        //System.out.println(vn.globalVariables.get("unlocked_events"));
         List<String> chats = (List<String>) vn.localVariables.getOrDefault("unlocked_events", new ArrayList<>());
         if (!chats.isEmpty()) {
 
