@@ -5,6 +5,7 @@ import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class StateHandler {
@@ -50,7 +51,11 @@ public class StateHandler {
 
     public static void updateCommand(Map<String, Object> value,DialogueState state) {
         String action = (String) value.get("action");
-        state.setCommand(action);
+        if(Objects.equals(action, "custom_command")){
+            System.out.println("action" + action);
+            state.setCommand((String) value.get("command"));
+        }
+
     }
 
     public static void changeStateByLabel(String label,AtomicLong currentState, List<Map<String, Object>> gameData) {

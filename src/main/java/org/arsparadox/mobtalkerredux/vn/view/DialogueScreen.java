@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import org.arsparadox.mobtalkerredux.vn.controller.VisualNovelEngine;
+import org.arsparadox.mobtalkerredux.vn.controller.vnmodules.ForgeCommandRunner;
 import org.arsparadox.mobtalkerredux.vn.data.DialogueState;
 import org.arsparadox.mobtalkerredux.vn.data.SpriteState;
 import org.arsparadox.mobtalkerredux.vn.view.components.DialogueBoxManager;
@@ -49,6 +50,7 @@ public class DialogueScreen extends Screen{
         super(Component.empty());
         this.vn = vn;
         this.se = new SoundUtils();
+        this.player = player;
 
 
     }
@@ -62,14 +64,16 @@ public class DialogueScreen extends Screen{
     public void update(){
         DialogueState state = vn.getNext();
         label = state.getLabel();
-        //if()
+
         updateSprites(state);
         content = state.getContent();
         choices = state.getChoices();
         background = state.getBackground();
-//        if(player.server.isSingleplayer()){
-//            //ForgeCommandRunner.runCommand(player.server,command);
-//        }
+        command = state.getCommand();
+        if(command != null){
+            ForgeCommandRunner.runCommand(command);
+            state.setCommand(null);
+        }
 
         if(state.getSound()!=null){
             if(!state.getSound().equals(sound)){

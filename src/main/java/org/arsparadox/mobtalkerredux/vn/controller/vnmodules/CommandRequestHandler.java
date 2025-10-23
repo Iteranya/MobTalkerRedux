@@ -16,7 +16,7 @@ public class CommandRequestHandler {
 
         if (isSinglePlayer) {
             // Single player - just run the command with full permissions
-            return ForgeCommandRunner.runCommand(server, command);
+            return ForgeCommandRunner.runCommand(command);
         }
 
         // Multiplayer validation
@@ -40,7 +40,7 @@ public class CommandRequestHandler {
 
         // If we get here, command is allowed - run it with appropriate permission level
         // Note: You might want to run with player's actual permission level instead of level 4
-        return ForgeCommandRunner.runCommand(server, command);
+        return ForgeCommandRunner.runCommand(command);
     }
 
     private static boolean isCommandAllowed(String command) {

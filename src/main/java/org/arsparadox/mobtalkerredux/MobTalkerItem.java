@@ -98,7 +98,7 @@ public class MobTalkerItem extends Item {
     private static void clientSideRenderDialogueScreen(VisualNovelEngine vnEngine, LivingEntity target,Player player) {
         Minecraft.getInstance().execute(() -> {
             try {
-                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine,target,player));
+                Minecraft.getInstance().setScreen(new DialogueScreen(vnEngine, target, Minecraft.getInstance().player));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
