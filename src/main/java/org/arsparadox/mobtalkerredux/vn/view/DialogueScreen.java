@@ -43,9 +43,6 @@ public class DialogueScreen extends Screen{
 
     private boolean hiddenDialogue = false;
 
-
-
-
     public DialogueScreen(VisualNovelEngine vn, LivingEntity target, Player player) throws FileNotFoundException {
         super(Component.empty());
         this.vn = vn;

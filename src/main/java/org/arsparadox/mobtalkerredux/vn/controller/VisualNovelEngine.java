@@ -45,7 +45,7 @@ public class VisualNovelEngine {
             List<Map<String, Object>> gameData,
             String entityType,
             String entityName,
-            String uid,
+            String uid, // THIS IS THE NAME!!!!
             boolean day,
             String inventory,
             List<Map<String, Object>> globalSave,
@@ -71,6 +71,7 @@ public class VisualNovelEngine {
 
     @SuppressWarnings("unchecked")
     private void processAction(Map<String, Object> action) {
+
         String actionType = (String) action.get("type");
 
         switch (actionType) {
@@ -208,4 +209,6 @@ public class VisualNovelEngine {
         changeStateByLabel(choice,currentState,gameData);
         this.state.setChoices(new ArrayList<>());
     }
+
+
 }

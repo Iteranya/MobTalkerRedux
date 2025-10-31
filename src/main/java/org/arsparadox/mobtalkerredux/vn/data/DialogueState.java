@@ -58,6 +58,7 @@ public class DialogueState {
     }
     
     public  String getCommand(){
+
         return this.command;
     }
 
